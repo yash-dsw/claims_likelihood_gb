@@ -352,6 +352,16 @@ class OneDriveProcessor:
                     print(f"   ✓ Deleted local JSON")
                 except:
                     pass
+            
+            # Clear temp_output folder
+            try:
+                for f in os.listdir(CONFIG['TEMP_OUTPUT_DIR']):
+                    file_path = os.path.join(CONFIG['TEMP_OUTPUT_DIR'], f)
+                    if os.path.isfile(file_path):
+                        os.remove(file_path)
+                print(f"   ✓ Cleared temp_output folder")
+            except Exception as e:
+                pass
     
     def watch_and_process(self):
         """Main loop: watch input folder and process new files"""
