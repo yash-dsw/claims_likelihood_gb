@@ -272,3 +272,5 @@ zope.interface==7.2
 zope.lifecycleevent==5.1
 zope.proxy==6.1
 zstandard==0.25.0
+
+reportlab

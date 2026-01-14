@@ -30,3 +30,5 @@ Thumbs.db
 # Project outputs (generated reports)
 output/
 test_output/
+temp_output/
+temp_input/

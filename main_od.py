@@ -15,6 +15,7 @@ from dotenv import load_dotenv
 # Import your existing modules
 from main import ClaimsAnalysisOrchestrator
 from onedrive_client_app import OneDriveClientApp
+from email_sender import EmailSender, load_email_metadata, get_recipient_email
 
 # --- Configuration ---
 load_dotenv()
@@ -27,8 +28,9 @@ CONFIG = {
     "USER_EMAIL": os.getenv("ONEDRIVE_USER_EMAIL"),
     
     # Folder Configuration
-    "INPUT_FOLDER": os.getenv("ONEDRIVE_INPUT_FOLDER", "Claims_Input"),
-    "OUTPUT_FOLDER": os.getenv("ONEDRIVE_OUTPUT_FOLDER", "Claims_Output"),
+    "INPUT_FOLDER": os.getenv("ONEDRIVE_FOLDER_NAME", "Input_attachments"),
+    "OUTPUT_FOLDER": os.getenv("ONEDRIVE_OUTPUT_FOLDER", "Output_attachments"),
+    "PROCESSED_FOLDER": os.getenv("ONEDRIVE_PROCESSED_INPUTS", "Processed_inputs"),
     
     # Local temporary directories
     "TEMP_INPUT_DIR": "./temp_input",
@@ -48,6 +50,7 @@ class OneDriveProcessor:
         self.input_client = None
         self.output_client = None
         self.orchestrator = None
+        self.email_sender = None
         self.processed_cache = set()
         
         # Create temp directories
@@ -86,6 +89,14 @@ class OneDriveProcessor:
             folder_name=CONFIG['OUTPUT_FOLDER']
         )
         
+        # Initialize email sender
+        self.email_sender = EmailSender(
+            tenant_id=CONFIG['TENANT_ID'],
+            client_id=CONFIG['CLIENT_ID'],
+            client_secret=CONFIG['CLIENT_SECRET'],
+            user_email=CONFIG['USER_EMAIL']
+        )
+        
         # Initialize analysis orchestrator
         self.orchestrator = ClaimsAnalysisOrchestrator(
             output_dir=CONFIG['TEMP_OUTPUT_DIR']
@@ -93,8 +104,10 @@ class OneDriveProcessor:
         
         print(f"✓ Input folder: {CONFIG['INPUT_FOLDER']}")
         print(f"✓ Output folder: {CONFIG['OUTPUT_FOLDER']}")
+        print(f"✓ Processed folder: {CONFIG['PROCESSED_FOLDER']}")
         print(f"✓ File filter: Files starting with '{CONFIG['FILE_PREFIX']}'")
         print(f"✓ Poll interval: {CONFIG['POLL_INTERVAL']} seconds")
+        print(f"✓ Email notifications enabled")
     
     def _should_process_file(self, filename: str) -> bool:
         """
@@ -120,11 +133,21 @@ class OneDriveProcessor:
         
         return True
     
+    def _is_companion_json(self, filename: str) -> bool:
+        """Check if file is a companion JSON for a PDF"""
+        return filename.lower().endswith('.pdf.json') and \
+               filename.lower().startswith(CONFIG['FILE_PREFIX'].lower())
+    
     def _generate_html_report(self, property_df: pd.DataFrame, 
                              claims_df: pd.DataFrame, 
                              scored_df: pd.DataFrame,
-                             client_name: str) -> str:
-        """Generate HTML report similar to html_gen1.py"""
+                             client_name: str,
+                             input_pdf_name: str = None) -> str:
+        """Generate HTML report
+        
+        Args:
+            input_pdf_name: Optional input PDF filename to base output name on
+        """
         
         from html_generator import ClaimsLikelihoodHtmlGenerator
         
@@ -135,9 +158,18 @@ class OneDriveProcessor:
                 output_df=scored_df
             )
             
-            timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-            safe_name = client_name.replace(' ', '_').replace('/', '_').replace('\\', '_')
-            html_filename = f"Report_{safe_name}_{timestamp}.html"
+            if input_pdf_name:
+                # Use same naming as PDF: {input_name}_report.html
+                base_name = input_pdf_name
+                if base_name.lower().endswith('.pdf'):
+                    base_name = base_name[:-4]
+                html_filename = f"{base_name}_report.html"
+            else:
+                # Fallback to original naming
+                timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+                safe_name = client_name.replace(' ', '_').replace('/', '_').replace('\\', '_')
+                html_filename = f"Report_{safe_name}_{timestamp}.html"
+            
             html_path = os.path.join(CONFIG['TEMP_OUTPUT_DIR'], html_filename)
             
             generator.generate_html(output_path=html_path)
@@ -148,141 +180,85 @@ class OneDriveProcessor:
             print(f"   ⚠ Warning: HTML generation failed: {str(e)}")
             return None
     
-    def _get_or_create_output_folder(self) -> str:
-        """Get output folder ID, creating it if it doesn't exist"""
-        try:
-            # Method 1: Try direct path access first (most reliable)
-            try:
-                direct_url = f"https://graph.microsoft.com/v1.0/users/{CONFIG['USER_EMAIL']}/drive/root:/{CONFIG['OUTPUT_FOLDER']}"
-                response = requests.get(direct_url, headers=self.output_client._get_headers())
-                if response.status_code == 200:
-                    folder_info = response.json()
-                    if "folder" in folder_info:
-                        print(f"   ✓ Found existing output folder: {CONFIG['OUTPUT_FOLDER']}")
-                        return folder_info["id"]
-            except:
-                pass
-            
-            # Method 2: List all children in root and find exact match
-            try:
-                list_url = f"https://graph.microsoft.com/v1.0/users/{CONFIG['USER_EMAIL']}/drive/root/children"
-                response = requests.get(list_url, headers=self.output_client._get_headers())
-                response.raise_for_status()
-                
-                items = response.json().get("value", [])
-                for item in items:
-                    if item.get("name") == CONFIG['OUTPUT_FOLDER'] and "folder" in item:
-                        print(f"   ✓ Found existing output folder: {CONFIG['OUTPUT_FOLDER']}")
-                        return item["id"]
-            except Exception as e:
-                print(f"   ⚠ Error listing root folders: {str(e)}")
-            
-            # Method 3: Try search API
-            try:
-                search_url = f"https://graph.microsoft.com/v1.0/users/{CONFIG['USER_EMAIL']}/drive/root/search(q='{CONFIG['OUTPUT_FOLDER']}')"
-                response = requests.get(search_url, headers=self.output_client._get_headers())
-                response.raise_for_status()
-                
-                items = response.json().get("value", [])
-                for item in items:
-                    if item.get("name") == CONFIG['OUTPUT_FOLDER'] and "folder" in item:
-                        print(f"   ✓ Found existing output folder: {CONFIG['OUTPUT_FOLDER']}")
-                        return item["id"]
-            except Exception as e:
-                print(f"   ⚠ Error searching for folder: {str(e)}")
-            
-            # Folder doesn't exist, create it
-            print(f"   ⚠ Output folder not found, creating: {CONFIG['OUTPUT_FOLDER']}")
-            create_url = f"https://graph.microsoft.com/v1.0/users/{CONFIG['USER_EMAIL']}/drive/root/children"
-            
-            folder_data = {
-                "name": CONFIG['OUTPUT_FOLDER'],
-                "folder": {},
-                "@microsoft.graph.conflictBehavior": "fail"
-            }
-            
-            response = requests.post(create_url, headers=self.output_client._get_headers(), json=folder_data)
-            
-            # If conflict (folder already exists), try to find it again
-            if response.status_code == 409:
-                print(f"   ⚠ Folder already exists (conflict), searching again...")
-                # Try direct access again
-                direct_url = f"https://graph.microsoft.com/v1.0/users/{CONFIG['USER_EMAIL']}/drive/root:/{CONFIG['OUTPUT_FOLDER']}"
-                response = requests.get(direct_url, headers=self.output_client._get_headers())
-                response.raise_for_status()
-                folder_info = response.json()
-                return folder_info["id"]
-            
-            response.raise_for_status()
-            folder_info = response.json()
-            print(f"   ✓ Created output folder: {CONFIG['OUTPUT_FOLDER']}")
-            return folder_info["id"]
-            
-        except Exception as e:
-            raise Exception(f"Failed to get/create output folder '{CONFIG['OUTPUT_FOLDER']}': {str(e)}")
-    
     def _upload_to_onedrive(self, local_file_path: str) -> bool:
         """Upload a file to OneDrive output folder"""
         try:
-            filename = os.path.basename(local_file_path)
+            upload_result = self.output_client.upload_file(
+                local_file_path, 
+                CONFIG['OUTPUT_FOLDER']
+            )
             
-            # Get or create output folder
-            folder_id = self._get_or_create_output_folder()
-            
-            # Upload file
-            upload_url = f"https://graph.microsoft.com/v1.0/users/{CONFIG['USER_EMAIL']}/drive/items/{folder_id}:/{filename}:/content"
-            
-            with open(local_file_path, 'rb') as f:
-                file_content = f.read()
-            
-            headers = self.output_client._get_headers()
-            headers['Content-Type'] = 'application/octet-stream'
-            
-            response = requests.put(upload_url, headers=headers, data=file_content)
-            response.raise_for_status()
-            
-            print(f"   ✓ Uploaded to OneDrive: {filename}")
-            return True
+            if upload_result:
+                print(f"   ✓ Uploaded to OneDrive: {os.path.basename(local_file_path)}")
+                return True
+            else:
+                return False
             
         except Exception as e:
             print(f"   ✗ Upload failed for {local_file_path}: {str(e)}")
             return False
     
-    def process_file(self, file_info: dict) -> bool:
-        """Process a single file through the complete pipeline"""
-        filename = file_info['name']
+    def _move_to_processed(self, file_id: str, filename: str) -> bool:
+        """Move a file from input folder to processed folder on OneDrive"""
+        try:
+            if self.input_client.move_file(file_id, CONFIG['PROCESSED_FOLDER']):
+                print(f"   ✓ Moved to {CONFIG['PROCESSED_FOLDER']}: {filename}")
+                return True
+            return False
+        except Exception as e:
+            print(f"   ⚠ Failed to move {filename}: {str(e)}")
+            return False
+    
+    def process_file_pair(self, pdf_info: dict, json_info: dict = None) -> bool:
+        """Process a PDF file with optional companion JSON"""
+        filename = pdf_info['name']
+        json_filename = json_info['name'] if json_info else None
         
         print(f"\n{'='*70}")
         print(f"PROCESSING: {filename}")
+        if json_filename:
+            print(f"WITH JSON: {json_filename}")
         print(f"{'='*70}")
         
         local_pdf_path = None
+        local_json_path = None
+        email_metadata = None
         
         try:
-            # Step 1: Download from OneDrive
-            print(f"[1/6] Downloading from OneDrive...")
+            # Step 1: Download files from OneDrive
+            print(f"[1/7] Downloading from OneDrive...")
             local_pdf_path = self.input_client.download_file(
-                file_info, 
+                pdf_info, 
                 CONFIG['TEMP_INPUT_DIR']
             )
-            print(f"   ✓ Downloaded: {local_pdf_path}")
+            print(f"   ✓ Downloaded PDF: {local_pdf_path}")
+            
+            # Download companion JSON if available
+            if json_info:
+                local_json_path = os.path.join(CONFIG['TEMP_INPUT_DIR'], json_filename)
+                local_json_path = self.input_client.download_file(
+                    json_info,
+                    CONFIG['TEMP_INPUT_DIR']
+                )
+                print(f"   ✓ Downloaded JSON: {local_json_path}")
+                
+                # Load email metadata
+                email_metadata = load_email_metadata(local_json_path)
             
             # Step 2-5: Run complete analysis (handled by orchestrator)
-            print(f"[2/6] Extracting data from PDF...")
+            print(f"[2/7] Extracting data from PDF...")
             success, extracted_data, error = self.orchestrator.extract_data_from_pdf(local_pdf_path)
             if not success:
                 print(f"   ✗ Extraction failed: {error}")
                 return False
             
-            print(f"[3/6] Preparing data...")
+            print(f"[3/7] Preparing data...")
             success, property_df, claims_df, error = self.orchestrator.prepare_dataframes(extracted_data)
-            # print(property_df.columns)
-            # print(claims_df.columns)
             if not success:
                 print(f"   ✗ Data preparation failed: {error}")
                 return False
             
-            print(f"[4/6] Performing risk analysis...")
+            print(f"[4/7] Performing risk analysis...")
             success, scored_df, analysis_summary, error = self.orchestrator.perform_risk_analysis(
                 property_df, claims_df
             )
@@ -292,41 +268,69 @@ class OneDriveProcessor:
             
             client_name = analysis_summary.get('named_insured', 'Property')
             
-            print(f"[5/6] Generating reports...")
+            print(f"[5/7] Generating reports...")
             
             # Generate PDF report
             success, pdf_path, error = self.orchestrator.generate_pdf_report(
-                property_df, claims_df, scored_df, client_name
+                property_df, claims_df, scored_df, client_name, input_pdf_name=filename
             )
             if not success:
                 print(f"   ✗ PDF generation failed: {error}")
-                return False
+                pdf_path = None
             
             # Generate HTML report
             html_path = self._generate_html_report(
-                property_df, claims_df, scored_df, client_name
+                property_df, claims_df, scored_df, client_name, input_pdf_name=filename
             )
             
             # Step 6: Upload to OneDrive
-            print(f"[6/6] Uploading to OneDrive output folder...")
+            print(f"[6/7] Uploading to OneDrive output folder...")
             
-            # pdf_uploaded = self._upload_to_onedrive(pdf_path)
             html_uploaded = False
-            
             if html_path and os.path.exists(html_path):
                 html_uploaded = self._upload_to_onedrive(html_path)
             
-            if html_uploaded:
-                print(f"\n✓ PROCESSING COMPLETE")
-                # print(f"   PDF: {os.path.basename(pdf_path)}")
-                if html_uploaded:
-                    print(f"   HTML: {os.path.basename(html_path)}")
-                print(f"   Risk Score: {analysis_summary['overall_score']:.1f}%")
-                print(f"   Risk Level: {analysis_summary['risk_level']}")
-                return True
+            if pdf_path and os.path.exists(pdf_path):
+                self._upload_to_onedrive(pdf_path)
+            
+            # Step 7: Send email notification
+            if email_metadata and self.email_sender:
+                print(f"[7/7] Sending email notification...")
+                recipient = get_recipient_email(email_metadata)
+                if recipient:
+                    print(f"   Sending to: {recipient}")
+                    
+                    # Read HTML content for email body
+                    html_content = ""
+                    if html_path and os.path.exists(html_path):
+                        with open(html_path, 'r', encoding='utf-8') as f:
+                            html_content = f.read()
+                    
+                    if self.email_sender.send_claims_report_email(
+                        to_email=recipient,
+                        email_metadata=email_metadata,
+                        html_report=html_content,
+                        input_pdf_path=local_pdf_path,
+                        output_pdf_path=pdf_path
+                    ):
+                        print(f"   ✓ Email sent successfully to {recipient}")
+                    else:
+                        print(f"   ⚠ Failed to send email to {recipient}")
+                else:
+                    print(f"   ⚠ No recipient email found in metadata")
             else:
-                print(f"\n✗ Upload failed")
-                return False
+                print(f"[7/7] No email metadata - skipping notification")
+            
+            # Move processed files on OneDrive to Processed_inputs
+            print(f"\n📋 Moving source files to {CONFIG['PROCESSED_FOLDER']}...")
+            self._move_to_processed(pdf_info['id'], filename)
+            if json_info:
+                self._move_to_processed(json_info['id'], json_filename)
+            
+            print(f"\n✓ PROCESSING COMPLETE")
+            print(f"   Risk Score: {analysis_summary['overall_score']:.1f}%")
+            print(f"   Risk Level: {analysis_summary['risk_level']}")
+            return True
             
         except Exception as e:
             print(f"\n✗ Processing failed: {str(e)}")
@@ -339,6 +343,13 @@ class OneDriveProcessor:
             if local_pdf_path and os.path.exists(local_pdf_path):
                 try:
                     os.remove(local_pdf_path)
+                    print(f"   ✓ Deleted local PDF")
+                except:
+                    pass
+            if local_json_path and os.path.exists(local_json_path):
+                try:
+                    os.remove(local_json_path)
+                    print(f"   ✓ Deleted local JSON")
                 except:
                     pass
     
@@ -350,55 +361,91 @@ class OneDriveProcessor:
         print(f"Monitoring: {CONFIG['INPUT_FOLDER']}")
         print(f"Processing: Files starting with '{CONFIG['FILE_PREFIX']}'")
         print(f"Outputs to: {CONFIG['OUTPUT_FOLDER']}")
+        print(f"Processed to: {CONFIG['PROCESSED_FOLDER']}")
         print("\nPress Ctrl+C to stop...\n")
         
         files_found_count = 0
         skipped_count = 0
+        is_interactive = sys.stdout.isatty()
+        iteration = 0
         
         while True:
             try:
+                iteration += 1
+                
                 # List files in input folder
                 files = self.input_client.list_files()
                 
+                # Handle RESET_CACHE.txt (already implemented)
                 reset_file_info = next((f for f in files if f['name'] == 'RESET_CACHE.txt'), None)
                 
                 if reset_file_info:
                     print("\n[!] REMOTE RESET DETECTED: Clearing processed_cache...")
                     self.processed_cache.clear()
-                    
                     print("✓ Cache cleared. Re-scanning all files in folder.\n")
-                # --- NEW RESET LOGIC END ---
-
-                # Filter files that should be processed
-                processable_files = []
+                
+                # Categorize files: PDFs and companion JSONs
+                pdf_files = []
+                json_files = {}
+                
                 for file_info in files:
                     filename = file_info['name']
                     
-                    # Check if file should be processed
                     if self._should_process_file(filename):
-                        processable_files.append(file_info)
+                        pdf_files.append(file_info)
+                    elif self._is_companion_json(filename):
+                        # Map JSON to its PDF name
+                        pdf_name = filename[:-5]  # Remove ".json"
+                        json_files[pdf_name] = file_info
                     elif filename.lower().endswith(CONFIG['PROCESS_EXTENSION'].lower()) and \
                          not filename.lower().startswith(CONFIG['FILE_PREFIX'].lower()):
-                        # File is PDF but doesn't match prefix - count as skipped
                         if filename not in self.processed_cache:
                             skipped_count += 1
                             print(f"⊘ Skipped (no '{CONFIG['FILE_PREFIX']}' prefix): {filename}")
-                            # Add to cache so we don't keep reporting it
                             self.processed_cache.add(filename)
                 
-                # Process filtered files
-                for file_info in processable_files:
-                    filename = file_info['name']
+                # Match PDF-JSON pairs
+                pdf_json_pairs = []
+                for pdf_info in pdf_files:
+                    pdf_name = pdf_info['name']
+                    json_info = json_files.get(pdf_name)
+                    
+                    if json_info:
+                        pdf_json_pairs.append({
+                            'pdf': pdf_info,
+                            'json': json_info,
+                            'pdf_name': pdf_name,
+                            'json_name': json_info['name']
+                        })
+                    else:
+                        # Process PDF without JSON (no email will be sent)
+                        pdf_json_pairs.append({
+                            'pdf': pdf_info,
+                            'json': None,
+                            'pdf_name': pdf_name,
+                            'json_name': None
+                        })
+                
+                # Show status
+                status_msg = f"[{datetime.now().strftime('%H:%M:%S')}] Check #{iteration}: {len(pdf_files)} PDFs, {len(pdf_json_pairs)} pairs"
+                
+                if is_interactive:
+                    print(status_msg, end='\r')
+                elif iteration == 1 or iteration % 60 == 0 or pdf_json_pairs:
+                    print(status_msg)
+                
+                # Process pairs
+                for pair in pdf_json_pairs:
+                    pdf_name = pair['pdf_name']
                     files_found_count += 1
                     
-                    print(f"\n→ Found matching file #{files_found_count}: {filename}")
+                    print(f"\n→ Found matching file #{files_found_count}: {pdf_name}")
                     
-                    # Process file
-                    success = self.process_file(file_info)
+                    # Process file pair
+                    success = self.process_file_pair(pair['pdf'], pair['json'])
                     
-                    # Mark as processed regardless of success
-                    # (prevents infinite retries of failed files)
-                    self.processed_cache.add(filename)
+                    # Note: We don't add to processed_cache anymore since files are moved to Processed_inputs
+                    # If the same filename appears again, it's a new upload and should be processed
                 
                 # Wait before next check
                 time.sleep(CONFIG['POLL_INTERVAL'])
@@ -415,105 +462,6 @@ class OneDriveProcessor:
                 import traceback
                 traceback.print_exc()
                 time.sleep(CONFIG['POLL_INTERVAL'])
-
-
-class ClaimsLikelihoodHtmlGenerator:
-    """Generates HTML reports (extracted from html_gen1.py)"""
-    
-    def __init__(self, input_df: pd.DataFrame, claims_df: pd.DataFrame, output_df: pd.DataFrame):
-        self.input_df = input_df
-        self.claims_df = claims_df if claims_df is not None and len(claims_df) > 0 else None
-        self.output_df = output_df
-        
-        if len(input_df) > 0:
-            self.property_row = input_df.iloc[0]
-        else:
-            raise ValueError("Input DataFrame is empty")
-            
-        if len(output_df) > 0:
-            self.output_row = output_df.iloc[0]
-        else:
-            raise ValueError("Output DataFrame is empty")
-
-    def _format_currency(self, value):
-        try:
-            val = float(value)
-            return f"${val:,.2f}"
-        except:
-            return "N/A"
-    
-    def _format_percentage(self, value):
-        try:
-            val = float(value)
-            return f"{val:.1f}%"
-        except:
-            return "N/A"
-    
-    def _safe_get(self, row, column, default="N/A"):
-        try:
-            val = row.get(column, default)
-            if pd.isna(val) or str(val).lower() == 'nan':
-                return default
-            return str(val)
-        except:
-            return default
-
-    def _find_column(self, df, possible_names):
-        if df is None or df.empty:
-            return None
-        df_columns_lower = {col.lower(): col for col in df.columns}
-        for name in possible_names:
-            if name.lower() in df_columns_lower:
-                return df_columns_lower[name.lower()]
-        return None
-
-    def generate_html(self, output_path: str = None):
-        """Generate HTML report (simplified version)"""
-        
-        # Extract basic info
-        client_name = self._safe_get(self.property_row, 'Named Insured', 'Unknown')
-        overall_score = self.output_row.get('Overall_Risk_Score', 0)
-        risk_level = self._safe_get(self.output_row, 'Risk_Level')
-        
-        # Determine color
-        score_color = "#28a745"
-        if overall_score >= 80: score_color = "#dc3545"
-        elif overall_score >= 60: score_color = "#fd7e14"
-        elif overall_score >= 45: score_color = "#ffc107"
-        
-        html_content = f"""
-<!DOCTYPE html>
-<html>
-<head>
-    <meta charset="UTF-8">
-    <title>Claims Analysis - {client_name}</title>
-    <style>
-        body {{ font-family: Arial, sans-serif; max-width: 900px; margin: 0 auto; padding: 40px; }}
-        .header {{ border-bottom: 2px solid #333; padding-bottom: 20px; margin-bottom: 30px; }}
-        .score-box {{ text-align: center; padding: 30px; background: #f8f9fa; border-radius: 8px; margin: 20px 0; }}
-        .score {{ font-size: 48px; font-weight: bold; color: {score_color}; }}
-    </style>
-</head>
-<body>
-    <div class="header">
-        <h1>Claims Likelihood Analysis</h1>
-        <p>Generated: {datetime.now().strftime('%B %d, %Y %H:%M')}</p>
-    </div>
-    
-    <div class="score-box">
-        <h2>{client_name}</h2>
-        <div class="score">{self._format_percentage(overall_score)}</div>
-        <div style="font-size: 24px; margin-top: 10px;">{risk_level}</div>
-    </div>
-</body>
-</html>
-"""
-        
-        if output_path:
-            with open(output_path, 'w', encoding='utf-8') as f:
-                f.write(html_content)
-        
-        return html_content
 
 
 def main():

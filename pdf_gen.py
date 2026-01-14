@@ -91,15 +91,28 @@ class ClaimsLikelihoodReportGenerator:
         
         return lines
     
-    def get_filename(self):
-        """Generate filename for the report"""
-        timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-        client_name = self._safe_get(self.property_row, 'Named Insured', 'Property')
-        safe_name = client_name.replace(' ', '_').replace('/', '_').replace('\\', '_')
+    def get_filename(self, input_pdf_name: str = None):
+        """Generate filename for the report
         
+        Args:
+            input_pdf_name: Optional name of the input PDF file to base the output name on
+        """
         save_dir = "./reports"
         os.makedirs(save_dir, exist_ok=True)
-        output_path = os.path.join(save_dir, f"Underwriting_Report_{safe_name}_{timestamp}.pdf")
+        
+        if input_pdf_name:
+            # Remove .pdf extension and add _report.pdf
+            base_name = input_pdf_name
+            if base_name.lower().endswith('.pdf'):
+                base_name = base_name[:-4]
+            output_path = os.path.join(save_dir, f"{base_name}_report.pdf")
+        else:
+            # Fallback to original naming
+            timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+            client_name = self._safe_get(self.property_row, 'Named Insured', 'Property')
+            safe_name = client_name.replace(' ', '_').replace('/', '_').replace('\\', '_')
+            output_path = os.path.join(save_dir, f"Underwriting_Report_{safe_name}_{timestamp}.pdf")
+        
         return output_path
     
     def _draw_header(self, c, width, height):
@@ -389,10 +402,15 @@ class ClaimsLikelihoodReportGenerator:
         else:
             return "This property presents significant risk concerns. Recommend decline or referral to specialized underwriting team for enhanced terms evaluation."
     
-    def generate_pdf(self, output_path: str = None):
-        """Generate the complete PDF report"""
+    def generate_pdf(self, output_path: str = None, input_pdf_name: str = None):
+        """Generate the complete PDF report
+        
+        Args:
+            output_path: Optional custom output path
+            input_pdf_name: Optional input PDF filename to base output name on
+        """
         if output_path is None:
-            output_path = self.get_filename()
+            output_path = self.get_filename(input_pdf_name)
         
         # Create canvas
         c = canvas.Canvas(output_path, pagesize=A4)
@@ -556,7 +574,7 @@ class ClaimsLikelihoodReportGenerator:
 
 
 # Standalone function for easy import
-def generate_claims_likelihood_report(input_df, claims_df, output_df, output_path=None, logo_path=None):
+def generate_claims_likelihood_report(input_df, claims_df, output_df, output_path=None, logo_path=None, input_pdf_name=None):
     """
     Generate a claims likelihood analysis PDF report
     
@@ -566,6 +584,7 @@ def generate_claims_likelihood_report(input_df, claims_df, output_df, output_pat
         output_df: Analyzed output DataFrame with risk scores
         output_path: Optional custom output path
         logo_path: Optional path to company logo
+        input_pdf_name: Optional input PDF filename to base output name on
     
     Returns:
         str: Path to generated PDF file
@@ -583,4 +602,4 @@ def generate_claims_likelihood_report(input_df, claims_df, output_df, output_pat
         claims_df = pd.DataFrame()
     logo_path = "./public/golden_bear.png"
     generator = ClaimsLikelihoodReportGenerator(input_df, claims_df, output_df, logo_path)
-    return generator.generate_pdf(output_path)
+    return generator.generate_pdf(output_path, input_pdf_name)
