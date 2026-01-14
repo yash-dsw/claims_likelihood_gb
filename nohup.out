@@ -1,0 +1,3134 @@
+Starting OneDrive Claims Processor at 2026-01-07 10:59:28.433902
+Python unbuffered output enabled for logging
+
+======================================================================
+INITIALIZING ONEDRIVE CLAIMS PROCESSOR
+======================================================================
+✓ Input folder: Input_attachments
+✓ Output folder: Output_attachments
+✓ File filter: Files starting with 'acord_'
+✓ Poll interval: 10 seconds
+
+======================================================================
+WATCHER ACTIVE
+======================================================================
+Monitoring: Input_attachments
+Processing: Files starting with 'acord_'
+Outputs to: Output_attachments
+
+Press Ctrl+C to stop...
+
+
+→ Found matching file #1: acord_jetwire.pdf
+
+======================================================================
+PROCESSING: acord_jetwire.pdf
+======================================================================
+[1/6] Downloading from OneDrive...
+   ✓ Downloaded: ./temp_input/acord_jetwire.pdf
+[2/6] Extracting data from PDF...
+[1/4] Extracting data from PDF: ./temp_input/acord_jetwire.pdf
+incorrect startxref pointer(3)
+parsing for Object Streams
+   ✓ Successfully extracted 29 fields
+[3/6] Preparing data...
+[2/4] Preparing data for analysis
+   ✓ Property data prepared: 1 property
+   ✓ Claims data prepared: 0 claims
+[4/6] Performing risk analysis...
+[3/4] Performing risk analysis
+   ✓ Risk analysis complete
+   ✓ Overall Risk Score: 47.8% (MEDIUM)
+   ✓ Recommendation: STANDARD REVIEW
+[5/6] Generating reports...
+[4/4] Generating PDF report
+Warning: No claims data provided. Report will be generated without claims history.
+   ✓ PDF report generated: ./temp_output/reports/Underwriting_Report_Jetwire_20260107_105930.pdf
+    ✓ HTML Report generated: ./temp_output/Report_Jetwire_20260107_105930.html
+[6/6] Uploading to OneDrive output folder...
+   ✓ Found existing output folder: Output_attachments
+   ✓ Uploaded to OneDrive: Report_Jetwire_20260107_105930.html
+
+✓ PROCESSING COMPLETE
+   HTML: Report_Jetwire_20260107_105930.html
+   Risk Score: 47.8%
+   Risk Level: MEDIUM
+
+→ Found matching file #2: acord_karan.pdf
+
+======================================================================
+PROCESSING: acord_karan.pdf
+======================================================================
+[1/6] Downloading from OneDrive...
+   ✓ Downloaded: ./temp_input/acord_karan.pdf
+[2/6] Extracting data from PDF...
+[1/4] Extracting data from PDF: ./temp_input/acord_karan.pdf
+incorrect startxref pointer(1)
+parsing for Object Streams
+   ✓ Successfully extracted 30 fields
+[3/6] Preparing data...
+[2/4] Preparing data for analysis
+   ✓ Property data prepared: 1 property
+   ✓ Claims data prepared: 2 claims
+[4/6] Performing risk analysis...
+[3/4] Performing risk analysis
+   ✓ Risk analysis complete
+   ✓ Overall Risk Score: 22.3% (LOW)
+   ✓ Recommendation: AUTO-BIND ELIGIBLE
+[5/6] Generating reports...
+[4/4] Generating PDF report
+   ✓ PDF report generated: ./temp_output/reports/Underwriting_Report_Quickbites_20260107_105931.pdf
+    ✓ HTML Report generated: ./temp_output/Report_Quickbites_20260107_105931.html
+[6/6] Uploading to OneDrive output folder...
+   ✓ Found existing output folder: Output_attachments
+   ✓ Uploaded to OneDrive: Report_Quickbites_20260107_105931.html
+
+✓ PROCESSING COMPLETE
+   HTML: Report_Quickbites_20260107_105931.html
+   Risk Score: 22.3%
+   Risk Level: LOW
+
+→ Found matching file #3: acord_mudo.pdf
+
+======================================================================
+PROCESSING: acord_mudo.pdf
+======================================================================
+[1/6] Downloading from OneDrive...
+   ✓ Downloaded: ./temp_input/acord_mudo.pdf
+[2/6] Extracting data from PDF...
+[1/4] Extracting data from PDF: ./temp_input/acord_mudo.pdf
+   ✓ Successfully extracted 30 fields
+[3/6] Preparing data...
+[2/4] Preparing data for analysis
+   ✓ Property data prepared: 1 property
+   ✓ Claims data prepared: 3 claims
+[4/6] Performing risk analysis...
+[3/4] Performing risk analysis
+   ✓ Risk analysis complete
+   ✓ Overall Risk Score: 66.7% (HIGH)
+   ✓ Recommendation: REFER TO SENIOR UNDERWRITER
+[5/6] Generating reports...
+[4/4] Generating PDF report
+   ✓ PDF report generated: ./temp_output/reports/Underwriting_Report_Mudo_20260107_105932.pdf
+    ✓ HTML Report generated: ./temp_output/Report_Mudo_20260107_105932.html
+[6/6] Uploading to OneDrive output folder...
+   ✓ Found existing output folder: Output_attachments
+   ✓ Uploaded to OneDrive: Report_Mudo_20260107_105932.html
+
+✓ PROCESSING COMPLETE
+   HTML: Report_Mudo_20260107_105932.html
+   Risk Score: 66.7%
+   Risk Level: HIGH
+
+[!] REMOTE RESET DETECTED: Clearing processed_cache...
+✓ Cache cleared. Re-scanning all files in folder.
+
+
+→ Found matching file #4: acord_jetwire.pdf
+
+======================================================================
+PROCESSING: acord_jetwire.pdf
+======================================================================
+[1/6] Downloading from OneDrive...
+   ✓ Downloaded: ./temp_input/acord_jetwire.pdf
+[2/6] Extracting data from PDF...
+[1/4] Extracting data from PDF: ./temp_input/acord_jetwire.pdf
+incorrect startxref pointer(3)
+parsing for Object Streams
+   ✓ Successfully extracted 29 fields
+[3/6] Preparing data...
+[2/4] Preparing data for analysis
+   ✓ Property data prepared: 1 property
+   ✓ Claims data prepared: 0 claims
+[4/6] Performing risk analysis...
+[3/4] Performing risk analysis
+   ✓ Risk analysis complete
+   ✓ Overall Risk Score: 47.8% (MEDIUM)
+   ✓ Recommendation: STANDARD REVIEW
+[5/6] Generating reports...
+[4/4] Generating PDF report
+Warning: No claims data provided. Report will be generated without claims history.
+   ✓ PDF report generated: ./temp_output/reports/Underwriting_Report_Jetwire_20260107_110006.pdf
+    ✓ HTML Report generated: ./temp_output/Report_Jetwire_20260107_110006.html
+[6/6] Uploading to OneDrive output folder...
+   ✓ Found existing output folder: Output_attachments
+   ✓ Uploaded to OneDrive: Report_Jetwire_20260107_110006.html
+
+✓ PROCESSING COMPLETE
+   HTML: Report_Jetwire_20260107_110006.html
+   Risk Score: 47.8%
+   Risk Level: MEDIUM
+
+→ Found matching file #5: acord_karan.pdf
+
+======================================================================
+PROCESSING: acord_karan.pdf
+======================================================================
+[1/6] Downloading from OneDrive...
+   ✓ Downloaded: ./temp_input/acord_karan.pdf
+[2/6] Extracting data from PDF...
+[1/4] Extracting data from PDF: ./temp_input/acord_karan.pdf
+incorrect startxref pointer(1)
+parsing for Object Streams
+   ✓ Successfully extracted 30 fields
+[3/6] Preparing data...
+[2/4] Preparing data for analysis
+   ✓ Property data prepared: 1 property
+   ✓ Claims data prepared: 2 claims
+[4/6] Performing risk analysis...
+[3/4] Performing risk analysis
+   ✓ Risk analysis complete
+   ✓ Overall Risk Score: 22.3% (LOW)
+   ✓ Recommendation: AUTO-BIND ELIGIBLE
+[5/6] Generating reports...
+[4/4] Generating PDF report
+   ✓ PDF report generated: ./temp_output/reports/Underwriting_Report_Quickbites_20260107_110007.pdf
+    ✓ HTML Report generated: ./temp_output/Report_Quickbites_20260107_110007.html
+[6/6] Uploading to OneDrive output folder...
+   ✓ Found existing output folder: Output_attachments
+   ✓ Uploaded to OneDrive: Report_Quickbites_20260107_110007.html
+
+✓ PROCESSING COMPLETE
+   HTML: Report_Quickbites_20260107_110007.html
+   Risk Score: 22.3%
+   Risk Level: LOW
+
+→ Found matching file #6: acord_mudo.pdf
+
+======================================================================
+PROCESSING: acord_mudo.pdf
+======================================================================
+[1/6] Downloading from OneDrive...
+   ✓ Downloaded: ./temp_input/acord_mudo.pdf
+[2/6] Extracting data from PDF...
+[1/4] Extracting data from PDF: ./temp_input/acord_mudo.pdf
+   ✓ Successfully extracted 30 fields
+[3/6] Preparing data...
+[2/4] Preparing data for analysis
+   ✓ Property data prepared: 1 property
+   ✓ Claims data prepared: 3 claims
+[4/6] Performing risk analysis...
+[3/4] Performing risk analysis
+   ✓ Risk analysis complete
+   ✓ Overall Risk Score: 66.7% (HIGH)
+   ✓ Recommendation: REFER TO SENIOR UNDERWRITER
+[5/6] Generating reports...
+[4/4] Generating PDF report
+   ✓ PDF report generated: ./temp_output/reports/Underwriting_Report_Mudo_20260107_110008.pdf
+    ✓ HTML Report generated: ./temp_output/Report_Mudo_20260107_110008.html
+[6/6] Uploading to OneDrive output folder...
+   ✓ Found existing output folder: Output_attachments
+   ✓ Uploaded to OneDrive: Report_Mudo_20260107_110008.html
+
+✓ PROCESSING COMPLETE
+   HTML: Report_Mudo_20260107_110008.html
+   Risk Score: 66.7%
+   Risk Level: HIGH
+
+[!] REMOTE RESET DETECTED: Clearing processed_cache...
+✓ Cache cleared. Re-scanning all files in folder.
+
+
+→ Found matching file #7: acord_jetwire.pdf
+
+======================================================================
+PROCESSING: acord_jetwire.pdf
+======================================================================
+[1/6] Downloading from OneDrive...
+   ✓ Downloaded: ./temp_input/acord_jetwire.pdf
+[2/6] Extracting data from PDF...
+[1/4] Extracting data from PDF: ./temp_input/acord_jetwire.pdf
+incorrect startxref pointer(3)
+parsing for Object Streams
+   ✓ Successfully extracted 29 fields
+[3/6] Preparing data...
+[2/4] Preparing data for analysis
+   ✓ Property data prepared: 1 property
+   ✓ Claims data prepared: 0 claims
+[4/6] Performing risk analysis...
+[3/4] Performing risk analysis
+   ✓ Risk analysis complete
+   ✓ Overall Risk Score: 47.8% (MEDIUM)
+   ✓ Recommendation: STANDARD REVIEW
+[5/6] Generating reports...
+[4/4] Generating PDF report
+Warning: No claims data provided. Report will be generated without claims history.
+   ✓ PDF report generated: ./temp_output/reports/Underwriting_Report_Jetwire_20260107_110020.pdf
+    ✓ HTML Report generated: ./temp_output/Report_Jetwire_20260107_110020.html
+[6/6] Uploading to OneDrive output folder...
+   ✓ Found existing output folder: Output_attachments
+   ✓ Uploaded to OneDrive: Report_Jetwire_20260107_110020.html
+
+✓ PROCESSING COMPLETE
+   HTML: Report_Jetwire_20260107_110020.html
+   Risk Score: 47.8%
+   Risk Level: MEDIUM
+
+→ Found matching file #8: acord_karan.pdf
+
+======================================================================
+PROCESSING: acord_karan.pdf
+======================================================================
+[1/6] Downloading from OneDrive...
+   ✓ Downloaded: ./temp_input/acord_karan.pdf
+[2/6] Extracting data from PDF...
+[1/4] Extracting data from PDF: ./temp_input/acord_karan.pdf
+incorrect startxref pointer(1)
+parsing for Object Streams
+   ✓ Successfully extracted 30 fields
+[3/6] Preparing data...
+[2/4] Preparing data for analysis
+   ✓ Property data prepared: 1 property
+   ✓ Claims data prepared: 2 claims
+[4/6] Performing risk analysis...
+[3/4] Performing risk analysis
+   ✓ Risk analysis complete
+   ✓ Overall Risk Score: 22.3% (LOW)
+   ✓ Recommendation: AUTO-BIND ELIGIBLE
+[5/6] Generating reports...
+[4/4] Generating PDF report
+   ✓ PDF report generated: ./temp_output/reports/Underwriting_Report_Quickbites_20260107_110022.pdf
+    ✓ HTML Report generated: ./temp_output/Report_Quickbites_20260107_110022.html
+[6/6] Uploading to OneDrive output folder...
+   ✓ Found existing output folder: Output_attachments
+   ✓ Uploaded to OneDrive: Report_Quickbites_20260107_110022.html
+
+✓ PROCESSING COMPLETE
+   HTML: Report_Quickbites_20260107_110022.html
+   Risk Score: 22.3%
+   Risk Level: LOW
+
+→ Found matching file #9: acord_mudo.pdf
+
+======================================================================
+PROCESSING: acord_mudo.pdf
+======================================================================
+[1/6] Downloading from OneDrive...
+   ✓ Downloaded: ./temp_input/acord_mudo.pdf
+[2/6] Extracting data from PDF...
+[1/4] Extracting data from PDF: ./temp_input/acord_mudo.pdf
+   ✓ Successfully extracted 30 fields
+[3/6] Preparing data...
+[2/4] Preparing data for analysis
+   ✓ Property data prepared: 1 property
+   ✓ Claims data prepared: 3 claims
+[4/6] Performing risk analysis...
+[3/4] Performing risk analysis
+   ✓ Risk analysis complete
+   ✓ Overall Risk Score: 66.7% (HIGH)
+   ✓ Recommendation: REFER TO SENIOR UNDERWRITER
+[5/6] Generating reports...
+[4/4] Generating PDF report
+   ✓ PDF report generated: ./temp_output/reports/Underwriting_Report_Mudo_20260107_110023.pdf
+    ✓ HTML Report generated: ./temp_output/Report_Mudo_20260107_110023.html
+[6/6] Uploading to OneDrive output folder...
+   ✓ Found existing output folder: Output_attachments
+   ✓ Uploaded to OneDrive: Report_Mudo_20260107_110023.html
+
+✓ PROCESSING COMPLETE
+   HTML: Report_Mudo_20260107_110023.html
+   Risk Score: 66.7%
+   Risk Level: HIGH
+
+[!] REMOTE RESET DETECTED: Clearing processed_cache...
+✓ Cache cleared. Re-scanning all files in folder.
+
+
+→ Found matching file #10: acord_karan.pdf
+
+======================================================================
+PROCESSING: acord_karan.pdf
+======================================================================
+[1/6] Downloading from OneDrive...
+   ✓ Downloaded: ./temp_input/acord_karan.pdf
+[2/6] Extracting data from PDF...
+[1/4] Extracting data from PDF: ./temp_input/acord_karan.pdf
+incorrect startxref pointer(1)
+parsing for Object Streams
+   ✓ Successfully extracted 30 fields
+[3/6] Preparing data...
+[2/4] Preparing data for analysis
+   ✓ Property data prepared: 1 property
+   ✓ Claims data prepared: 2 claims
+[4/6] Performing risk analysis...
+[3/4] Performing risk analysis
+   ✓ Risk analysis complete
+   ✓ Overall Risk Score: 22.3% (LOW)
+   ✓ Recommendation: AUTO-BIND ELIGIBLE
+[5/6] Generating reports...
+[4/4] Generating PDF report
+   ✓ PDF report generated: ./temp_output/reports/Underwriting_Report_Quickbites_20260107_111149.pdf
+    ✓ HTML Report generated: ./temp_output/Report_Quickbites_20260107_111149.html
+[6/6] Uploading to OneDrive output folder...
+   ✓ Found existing output folder: Output_attachments
+   ✓ Uploaded to OneDrive: Report_Quickbites_20260107_111149.html
+
+✓ PROCESSING COMPLETE
+   HTML: Report_Quickbites_20260107_111149.html
+   Risk Score: 22.3%
+   Risk Level: LOW
+
+[!] REMOTE RESET DETECTED: Clearing processed_cache...
+✓ Cache cleared. Re-scanning all files in folder.
+
+
+→ Found matching file #11: acord_karan.pdf
+
+======================================================================
+PROCESSING: acord_karan.pdf
+======================================================================
+[1/6] Downloading from OneDrive...
+   ✓ Downloaded: ./temp_input/acord_karan.pdf
+[2/6] Extracting data from PDF...
+[1/4] Extracting data from PDF: ./temp_input/acord_karan.pdf
+incorrect startxref pointer(1)
+parsing for Object Streams
+   ✓ Successfully extracted 30 fields
+[3/6] Preparing data...
+[2/4] Preparing data for analysis
+   ✓ Property data prepared: 1 property
+   ✓ Claims data prepared: 2 claims
+[4/6] Performing risk analysis...
+[3/4] Performing risk analysis
+   ✓ Risk analysis complete
+   ✓ Overall Risk Score: 22.3% (LOW)
+   ✓ Recommendation: AUTO-BIND ELIGIBLE
+[5/6] Generating reports...
+[4/4] Generating PDF report
+   ✓ PDF report generated: ./temp_output/reports/Underwriting_Report_Quickbites_20260107_115402.pdf
+    ✓ HTML Report generated: ./temp_output/Report_Quickbites_20260107_115402.html
+[6/6] Uploading to OneDrive output folder...
+   ✓ Found existing output folder: Output_attachments
+   ✓ Uploaded to OneDrive: Report_Quickbites_20260107_115402.html
+
+✓ PROCESSING COMPLETE
+   HTML: Report_Quickbites_20260107_115402.html
+   Risk Score: 22.3%
+   Risk Level: LOW
+
+[!] REMOTE RESET DETECTED: Clearing processed_cache...
+✓ Cache cleared. Re-scanning all files in folder.
+
+
+→ Found matching file #12: acord_karan.pdf
+
+======================================================================
+PROCESSING: acord_karan.pdf
+======================================================================
+[1/6] Downloading from OneDrive...
+   ✓ Downloaded: ./temp_input/acord_karan.pdf
+[2/6] Extracting data from PDF...
+[1/4] Extracting data from PDF: ./temp_input/acord_karan.pdf
+incorrect startxref pointer(1)
+parsing for Object Streams
+   ✓ Successfully extracted 30 fields
+[3/6] Preparing data...
+[2/4] Preparing data for analysis
+   ✓ Property data prepared: 1 property
+   ✓ Claims data prepared: 2 claims
+[4/6] Performing risk analysis...
+[3/4] Performing risk analysis
+   ✓ Risk analysis complete
+   ✓ Overall Risk Score: 22.3% (LOW)
+   ✓ Recommendation: AUTO-BIND ELIGIBLE
+[5/6] Generating reports...
+[4/4] Generating PDF report
+   ✓ PDF report generated: ./temp_output/reports/Underwriting_Report_Quickbites_20260107_115414.pdf
+    ✓ HTML Report generated: ./temp_output/Report_Quickbites_20260107_115414.html
+[6/6] Uploading to OneDrive output folder...
+   ✓ Found existing output folder: Output_attachments
+   ✓ Uploaded to OneDrive: Report_Quickbites_20260107_115414.html
+
+✓ PROCESSING COMPLETE
+   HTML: Report_Quickbites_20260107_115414.html
+   Risk Score: 22.3%
+   Risk Level: LOW
+
+[!] REMOTE RESET DETECTED: Clearing processed_cache...
+✓ Cache cleared. Re-scanning all files in folder.
+
+
+→ Found matching file #13: acord_karan.pdf
+
+======================================================================
+PROCESSING: acord_karan.pdf
+======================================================================
+[1/6] Downloading from OneDrive...
+   ✓ Downloaded: ./temp_input/acord_karan.pdf
+[2/6] Extracting data from PDF...
+[1/4] Extracting data from PDF: ./temp_input/acord_karan.pdf
+incorrect startxref pointer(1)
+parsing for Object Streams
+   ✓ Successfully extracted 30 fields
+[3/6] Preparing data...
+[2/4] Preparing data for analysis
+   ✓ Property data prepared: 1 property
+   ✓ Claims data prepared: 2 claims
+[4/6] Performing risk analysis...
+[3/4] Performing risk analysis
+   ✓ Risk analysis complete
+   ✓ Overall Risk Score: 22.3% (LOW)
+   ✓ Recommendation: AUTO-BIND ELIGIBLE
+[5/6] Generating reports...
+[4/4] Generating PDF report
+   ✓ PDF report generated: ./temp_output/reports/Underwriting_Report_Quickbites_20260107_115426.pdf
+    ✓ HTML Report generated: ./temp_output/Report_Quickbites_20260107_115426.html
+[6/6] Uploading to OneDrive output folder...
+   ✓ Found existing output folder: Output_attachments
+   ✓ Uploaded to OneDrive: Report_Quickbites_20260107_115426.html
+
+✓ PROCESSING COMPLETE
+   HTML: Report_Quickbites_20260107_115426.html
+   Risk Score: 22.3%
+   Risk Level: LOW
+
+[!] REMOTE RESET DETECTED: Clearing processed_cache...
+✓ Cache cleared. Re-scanning all files in folder.
+
+
+→ Found matching file #14: acord_karan.pdf
+
+======================================================================
+PROCESSING: acord_karan.pdf
+======================================================================
+[1/6] Downloading from OneDrive...
+   ✓ Downloaded: ./temp_input/acord_karan.pdf
+[2/6] Extracting data from PDF...
+[1/4] Extracting data from PDF: ./temp_input/acord_karan.pdf
+incorrect startxref pointer(1)
+parsing for Object Streams
+   ✓ Successfully extracted 30 fields
+[3/6] Preparing data...
+[2/4] Preparing data for analysis
+   ✓ Property data prepared: 1 property
+   ✓ Claims data prepared: 2 claims
+[4/6] Performing risk analysis...
+[3/4] Performing risk analysis
+   ✓ Risk analysis complete
+   ✓ Overall Risk Score: 22.3% (LOW)
+   ✓ Recommendation: AUTO-BIND ELIGIBLE
+[5/6] Generating reports...
+[4/4] Generating PDF report
+   ✓ PDF report generated: ./temp_output/reports/Underwriting_Report_Quickbites_20260107_115438.pdf
+    ✓ HTML Report generated: ./temp_output/Report_Quickbites_20260107_115438.html
+[6/6] Uploading to OneDrive output folder...
+   ✓ Found existing output folder: Output_attachments
+   ✓ Uploaded to OneDrive: Report_Quickbites_20260107_115438.html
+
+✓ PROCESSING COMPLETE
+   HTML: Report_Quickbites_20260107_115438.html
+   Risk Score: 22.3%
+   Risk Level: LOW
+
+[!] REMOTE RESET DETECTED: Clearing processed_cache...
+✓ Cache cleared. Re-scanning all files in folder.
+
+
+→ Found matching file #15: acord_karan.pdf
+
+======================================================================
+PROCESSING: acord_karan.pdf
+======================================================================
+[1/6] Downloading from OneDrive...
+   ✓ Downloaded: ./temp_input/acord_karan.pdf
+[2/6] Extracting data from PDF...
+[1/4] Extracting data from PDF: ./temp_input/acord_karan.pdf
+incorrect startxref pointer(1)
+parsing for Object Streams
+   ✓ Successfully extracted 30 fields
+[3/6] Preparing data...
+[2/4] Preparing data for analysis
+   ✓ Property data prepared: 1 property
+   ✓ Claims data prepared: 2 claims
+[4/6] Performing risk analysis...
+[3/4] Performing risk analysis
+   ✓ Risk analysis complete
+   ✓ Overall Risk Score: 22.3% (LOW)
+   ✓ Recommendation: AUTO-BIND ELIGIBLE
+[5/6] Generating reports...
+[4/4] Generating PDF report
+   ✓ PDF report generated: ./temp_output/reports/Underwriting_Report_Quickbites_20260107_115451.pdf
+    ✓ HTML Report generated: ./temp_output/Report_Quickbites_20260107_115451.html
+[6/6] Uploading to OneDrive output folder...
+   ✓ Found existing output folder: Output_attachments
+   ✓ Uploaded to OneDrive: Report_Quickbites_20260107_115451.html
+
+✓ PROCESSING COMPLETE
+   HTML: Report_Quickbites_20260107_115451.html
+   Risk Score: 22.3%
+   Risk Level: LOW
+
+[!] REMOTE RESET DETECTED: Clearing processed_cache...
+✓ Cache cleared. Re-scanning all files in folder.
+
+
+→ Found matching file #16: acord_karan.pdf
+
+======================================================================
+PROCESSING: acord_karan.pdf
+======================================================================
+[1/6] Downloading from OneDrive...
+   ✓ Downloaded: ./temp_input/acord_karan.pdf
+[2/6] Extracting data from PDF...
+[1/4] Extracting data from PDF: ./temp_input/acord_karan.pdf
+incorrect startxref pointer(1)
+parsing for Object Streams
+   ✓ Successfully extracted 30 fields
+[3/6] Preparing data...
+[2/4] Preparing data for analysis
+   ✓ Property data prepared: 1 property
+   ✓ Claims data prepared: 2 claims
+[4/6] Performing risk analysis...
+[3/4] Performing risk analysis
+   ✓ Risk analysis complete
+   ✓ Overall Risk Score: 22.3% (LOW)
+   ✓ Recommendation: AUTO-BIND ELIGIBLE
+[5/6] Generating reports...
+[4/4] Generating PDF report
+   ✓ PDF report generated: ./temp_output/reports/Underwriting_Report_Quickbites_20260107_115503.pdf
+    ✓ HTML Report generated: ./temp_output/Report_Quickbites_20260107_115503.html
+[6/6] Uploading to OneDrive output folder...
+   ✓ Found existing output folder: Output_attachments
+   ✓ Uploaded to OneDrive: Report_Quickbites_20260107_115503.html
+
+✓ PROCESSING COMPLETE
+   HTML: Report_Quickbites_20260107_115503.html
+   Risk Score: 22.3%
+   Risk Level: LOW
+
+[!] REMOTE RESET DETECTED: Clearing processed_cache...
+✓ Cache cleared. Re-scanning all files in folder.
+
+
+→ Found matching file #17: acord_karan.pdf
+
+======================================================================
+PROCESSING: acord_karan.pdf
+======================================================================
+[1/6] Downloading from OneDrive...
+   ✓ Downloaded: ./temp_input/acord_karan.pdf
+[2/6] Extracting data from PDF...
+[1/4] Extracting data from PDF: ./temp_input/acord_karan.pdf
+incorrect startxref pointer(1)
+parsing for Object Streams
+   ✓ Successfully extracted 30 fields
+[3/6] Preparing data...
+[2/4] Preparing data for analysis
+   ✓ Property data prepared: 1 property
+   ✓ Claims data prepared: 2 claims
+[4/6] Performing risk analysis...
+[3/4] Performing risk analysis
+   ✓ Risk analysis complete
+   ✓ Overall Risk Score: 22.3% (LOW)
+   ✓ Recommendation: AUTO-BIND ELIGIBLE
+[5/6] Generating reports...
+[4/4] Generating PDF report
+   ✓ PDF report generated: ./temp_output/reports/Underwriting_Report_Quickbites_20260107_115515.pdf
+    ✓ HTML Report generated: ./temp_output/Report_Quickbites_20260107_115515.html
+[6/6] Uploading to OneDrive output folder...
+   ✓ Found existing output folder: Output_attachments
+   ✓ Uploaded to OneDrive: Report_Quickbites_20260107_115515.html
+
+✓ PROCESSING COMPLETE
+   HTML: Report_Quickbites_20260107_115515.html
+   Risk Score: 22.3%
+   Risk Level: LOW
+
+[!] REMOTE RESET DETECTED: Clearing processed_cache...
+✓ Cache cleared. Re-scanning all files in folder.
+
+
+→ Found matching file #18: acord_karan.pdf
+
+======================================================================
+PROCESSING: acord_karan.pdf
+======================================================================
+[1/6] Downloading from OneDrive...
+   ✓ Downloaded: ./temp_input/acord_karan.pdf
+[2/6] Extracting data from PDF...
+[1/4] Extracting data from PDF: ./temp_input/acord_karan.pdf
+incorrect startxref pointer(1)
+parsing for Object Streams
+   ✓ Successfully extracted 30 fields
+[3/6] Preparing data...
+[2/4] Preparing data for analysis
+   ✓ Property data prepared: 1 property
+   ✓ Claims data prepared: 2 claims
+[4/6] Performing risk analysis...
+[3/4] Performing risk analysis
+   ✓ Risk analysis complete
+   ✓ Overall Risk Score: 22.3% (LOW)
+   ✓ Recommendation: AUTO-BIND ELIGIBLE
+[5/6] Generating reports...
+[4/4] Generating PDF report
+   ✓ PDF report generated: ./temp_output/reports/Underwriting_Report_Quickbites_20260107_115527.pdf
+    ✓ HTML Report generated: ./temp_output/Report_Quickbites_20260107_115527.html
+[6/6] Uploading to OneDrive output folder...
+   ✓ Found existing output folder: Output_attachments
+   ✓ Uploaded to OneDrive: Report_Quickbites_20260107_115527.html
+
+✓ PROCESSING COMPLETE
+   HTML: Report_Quickbites_20260107_115527.html
+   Risk Score: 22.3%
+   Risk Level: LOW
+
+[!] REMOTE RESET DETECTED: Clearing processed_cache...
+✓ Cache cleared. Re-scanning all files in folder.
+
+
+→ Found matching file #19: acord_karan.pdf
+
+======================================================================
+PROCESSING: acord_karan.pdf
+======================================================================
+[1/6] Downloading from OneDrive...
+   ✓ Downloaded: ./temp_input/acord_karan.pdf
+[2/6] Extracting data from PDF...
+[1/4] Extracting data from PDF: ./temp_input/acord_karan.pdf
+incorrect startxref pointer(1)
+parsing for Object Streams
+   ✓ Successfully extracted 30 fields
+[3/6] Preparing data...
+[2/4] Preparing data for analysis
+   ✓ Property data prepared: 1 property
+   ✓ Claims data prepared: 2 claims
+[4/6] Performing risk analysis...
+[3/4] Performing risk analysis
+   ✓ Risk analysis complete
+   ✓ Overall Risk Score: 22.3% (LOW)
+   ✓ Recommendation: AUTO-BIND ELIGIBLE
+[5/6] Generating reports...
+[4/4] Generating PDF report
+   ✓ PDF report generated: ./temp_output/reports/Underwriting_Report_Quickbites_20260107_115538.pdf
+    ✓ HTML Report generated: ./temp_output/Report_Quickbites_20260107_115538.html
+[6/6] Uploading to OneDrive output folder...
+   ✓ Found existing output folder: Output_attachments
+   ✓ Uploaded to OneDrive: Report_Quickbites_20260107_115538.html
+
+✓ PROCESSING COMPLETE
+   HTML: Report_Quickbites_20260107_115538.html
+   Risk Score: 22.3%
+   Risk Level: LOW
+
+[!] REMOTE RESET DETECTED: Clearing processed_cache...
+✓ Cache cleared. Re-scanning all files in folder.
+
+
+→ Found matching file #20: acord_karan.pdf
+
+======================================================================
+PROCESSING: acord_karan.pdf
+======================================================================
+[1/6] Downloading from OneDrive...
+   ✓ Downloaded: ./temp_input/acord_karan.pdf
+[2/6] Extracting data from PDF...
+[1/4] Extracting data from PDF: ./temp_input/acord_karan.pdf
+incorrect startxref pointer(1)
+parsing for Object Streams
+   ✓ Successfully extracted 30 fields
+[3/6] Preparing data...
+[2/4] Preparing data for analysis
+   ✓ Property data prepared: 1 property
+   ✓ Claims data prepared: 2 claims
+[4/6] Performing risk analysis...
+[3/4] Performing risk analysis
+   ✓ Risk analysis complete
+   ✓ Overall Risk Score: 22.3% (LOW)
+   ✓ Recommendation: AUTO-BIND ELIGIBLE
+[5/6] Generating reports...
+[4/4] Generating PDF report
+   ✓ PDF report generated: ./temp_output/reports/Underwriting_Report_Quickbites_20260107_115551.pdf
+    ✓ HTML Report generated: ./temp_output/Report_Quickbites_20260107_115551.html
+[6/6] Uploading to OneDrive output folder...
+   ✓ Found existing output folder: Output_attachments
+   ✓ Uploaded to OneDrive: Report_Quickbites_20260107_115551.html
+
+✓ PROCESSING COMPLETE
+   HTML: Report_Quickbites_20260107_115551.html
+   Risk Score: 22.3%
+   Risk Level: LOW
+
+[!] REMOTE RESET DETECTED: Clearing processed_cache...
+✓ Cache cleared. Re-scanning all files in folder.
+
+
+→ Found matching file #21: acord_karan.pdf
+
+======================================================================
+PROCESSING: acord_karan.pdf
+======================================================================
+[1/6] Downloading from OneDrive...
+   ✓ Downloaded: ./temp_input/acord_karan.pdf
+[2/6] Extracting data from PDF...
+[1/4] Extracting data from PDF: ./temp_input/acord_karan.pdf
+incorrect startxref pointer(1)
+parsing for Object Streams
+   ✓ Successfully extracted 30 fields
+[3/6] Preparing data...
+[2/4] Preparing data for analysis
+   ✓ Property data prepared: 1 property
+   ✓ Claims data prepared: 2 claims
+[4/6] Performing risk analysis...
+[3/4] Performing risk analysis
+   ✓ Risk analysis complete
+   ✓ Overall Risk Score: 22.3% (LOW)
+   ✓ Recommendation: AUTO-BIND ELIGIBLE
+[5/6] Generating reports...
+[4/4] Generating PDF report
+   ✓ PDF report generated: ./temp_output/reports/Underwriting_Report_Quickbites_20260107_115603.pdf
+    ✓ HTML Report generated: ./temp_output/Report_Quickbites_20260107_115603.html
+[6/6] Uploading to OneDrive output folder...
+   ✓ Found existing output folder: Output_attachments
+   ✓ Uploaded to OneDrive: Report_Quickbites_20260107_115603.html
+
+✓ PROCESSING COMPLETE
+   HTML: Report_Quickbites_20260107_115603.html
+   Risk Score: 22.3%
+   Risk Level: LOW
+
+[!] REMOTE RESET DETECTED: Clearing processed_cache...
+✓ Cache cleared. Re-scanning all files in folder.
+
+
+→ Found matching file #22: acord_karan.pdf
+
+======================================================================
+PROCESSING: acord_karan.pdf
+======================================================================
+[1/6] Downloading from OneDrive...
+   ✓ Downloaded: ./temp_input/acord_karan.pdf
+[2/6] Extracting data from PDF...
+[1/4] Extracting data from PDF: ./temp_input/acord_karan.pdf
+incorrect startxref pointer(1)
+parsing for Object Streams
+   ✓ Successfully extracted 30 fields
+[3/6] Preparing data...
+[2/4] Preparing data for analysis
+   ✓ Property data prepared: 1 property
+   ✓ Claims data prepared: 2 claims
+[4/6] Performing risk analysis...
+[3/4] Performing risk analysis
+   ✓ Risk analysis complete
+   ✓ Overall Risk Score: 22.3% (LOW)
+   ✓ Recommendation: AUTO-BIND ELIGIBLE
+[5/6] Generating reports...
+[4/4] Generating PDF report
+   ✓ PDF report generated: ./temp_output/reports/Underwriting_Report_Quickbites_20260107_115615.pdf
+    ✓ HTML Report generated: ./temp_output/Report_Quickbites_20260107_115615.html
+[6/6] Uploading to OneDrive output folder...
+   ✓ Found existing output folder: Output_attachments
+   ✓ Uploaded to OneDrive: Report_Quickbites_20260107_115615.html
+
+✓ PROCESSING COMPLETE
+   HTML: Report_Quickbites_20260107_115615.html
+   Risk Score: 22.3%
+   Risk Level: LOW
+
+[!] REMOTE RESET DETECTED: Clearing processed_cache...
+✓ Cache cleared. Re-scanning all files in folder.
+
+
+→ Found matching file #23: acord_karan.pdf
+
+======================================================================
+PROCESSING: acord_karan.pdf
+======================================================================
+[1/6] Downloading from OneDrive...
+   ✓ Downloaded: ./temp_input/acord_karan.pdf
+[2/6] Extracting data from PDF...
+[1/4] Extracting data from PDF: ./temp_input/acord_karan.pdf
+incorrect startxref pointer(1)
+parsing for Object Streams
+   ✓ Successfully extracted 30 fields
+[3/6] Preparing data...
+[2/4] Preparing data for analysis
+   ✓ Property data prepared: 1 property
+   ✓ Claims data prepared: 2 claims
+[4/6] Performing risk analysis...
+[3/4] Performing risk analysis
+   ✓ Risk analysis complete
+   ✓ Overall Risk Score: 22.3% (LOW)
+   ✓ Recommendation: AUTO-BIND ELIGIBLE
+[5/6] Generating reports...
+[4/4] Generating PDF report
+   ✓ PDF report generated: ./temp_output/reports/Underwriting_Report_Quickbites_20260107_115627.pdf
+    ✓ HTML Report generated: ./temp_output/Report_Quickbites_20260107_115627.html
+[6/6] Uploading to OneDrive output folder...
+   ✓ Found existing output folder: Output_attachments
+   ✓ Uploaded to OneDrive: Report_Quickbites_20260107_115627.html
+
+✓ PROCESSING COMPLETE
+   HTML: Report_Quickbites_20260107_115627.html
+   Risk Score: 22.3%
+   Risk Level: LOW
+
+[!] REMOTE RESET DETECTED: Clearing processed_cache...
+✓ Cache cleared. Re-scanning all files in folder.
+
+
+→ Found matching file #24: acord_karan.pdf
+
+======================================================================
+PROCESSING: acord_karan.pdf
+======================================================================
+[1/6] Downloading from OneDrive...
+   ✓ Downloaded: ./temp_input/acord_karan.pdf
+[2/6] Extracting data from PDF...
+[1/4] Extracting data from PDF: ./temp_input/acord_karan.pdf
+incorrect startxref pointer(1)
+parsing for Object Streams
+   ✓ Successfully extracted 30 fields
+[3/6] Preparing data...
+[2/4] Preparing data for analysis
+   ✓ Property data prepared: 1 property
+   ✓ Claims data prepared: 2 claims
+[4/6] Performing risk analysis...
+[3/4] Performing risk analysis
+   ✓ Risk analysis complete
+   ✓ Overall Risk Score: 22.3% (LOW)
+   ✓ Recommendation: AUTO-BIND ELIGIBLE
+[5/6] Generating reports...
+[4/4] Generating PDF report
+   ✓ PDF report generated: ./temp_output/reports/Underwriting_Report_Quickbites_20260107_115639.pdf
+    ✓ HTML Report generated: ./temp_output/Report_Quickbites_20260107_115639.html
+[6/6] Uploading to OneDrive output folder...
+   ✓ Found existing output folder: Output_attachments
+   ✓ Uploaded to OneDrive: Report_Quickbites_20260107_115639.html
+
+✓ PROCESSING COMPLETE
+   HTML: Report_Quickbites_20260107_115639.html
+   Risk Score: 22.3%
+   Risk Level: LOW
+
+[!] REMOTE RESET DETECTED: Clearing processed_cache...
+✓ Cache cleared. Re-scanning all files in folder.
+
+
+→ Found matching file #25: acord_karan.pdf
+
+======================================================================
+PROCESSING: acord_karan.pdf
+======================================================================
+[1/6] Downloading from OneDrive...
+   ✓ Downloaded: ./temp_input/acord_karan.pdf
+[2/6] Extracting data from PDF...
+[1/4] Extracting data from PDF: ./temp_input/acord_karan.pdf
+incorrect startxref pointer(1)
+parsing for Object Streams
+   ✓ Successfully extracted 30 fields
+[3/6] Preparing data...
+[2/4] Preparing data for analysis
+   ✓ Property data prepared: 1 property
+   ✓ Claims data prepared: 2 claims
+[4/6] Performing risk analysis...
+[3/4] Performing risk analysis
+   ✓ Risk analysis complete
+   ✓ Overall Risk Score: 22.3% (LOW)
+   ✓ Recommendation: AUTO-BIND ELIGIBLE
+[5/6] Generating reports...
+[4/4] Generating PDF report
+   ✓ PDF report generated: ./temp_output/reports/Underwriting_Report_Quickbites_20260107_115651.pdf
+    ✓ HTML Report generated: ./temp_output/Report_Quickbites_20260107_115651.html
+[6/6] Uploading to OneDrive output folder...
+   ✓ Found existing output folder: Output_attachments
+   ✓ Uploaded to OneDrive: Report_Quickbites_20260107_115651.html
+
+✓ PROCESSING COMPLETE
+   HTML: Report_Quickbites_20260107_115651.html
+   Risk Score: 22.3%
+   Risk Level: LOW
+
+[!] REMOTE RESET DETECTED: Clearing processed_cache...
+✓ Cache cleared. Re-scanning all files in folder.
+
+
+→ Found matching file #26: acord_karan.pdf
+
+======================================================================
+PROCESSING: acord_karan.pdf
+======================================================================
+[1/6] Downloading from OneDrive...
+   ✓ Downloaded: ./temp_input/acord_karan.pdf
+[2/6] Extracting data from PDF...
+[1/4] Extracting data from PDF: ./temp_input/acord_karan.pdf
+incorrect startxref pointer(1)
+parsing for Object Streams
+   ✓ Successfully extracted 30 fields
+[3/6] Preparing data...
+[2/4] Preparing data for analysis
+   ✓ Property data prepared: 1 property
+   ✓ Claims data prepared: 2 claims
+[4/6] Performing risk analysis...
+[3/4] Performing risk analysis
+   ✓ Risk analysis complete
+   ✓ Overall Risk Score: 22.3% (LOW)
+   ✓ Recommendation: AUTO-BIND ELIGIBLE
+[5/6] Generating reports...
+[4/4] Generating PDF report
+   ✓ PDF report generated: ./temp_output/reports/Underwriting_Report_Quickbites_20260107_115703.pdf
+    ✓ HTML Report generated: ./temp_output/Report_Quickbites_20260107_115703.html
+[6/6] Uploading to OneDrive output folder...
+   ✓ Found existing output folder: Output_attachments
+   ✓ Uploaded to OneDrive: Report_Quickbites_20260107_115703.html
+
+✓ PROCESSING COMPLETE
+   HTML: Report_Quickbites_20260107_115703.html
+   Risk Score: 22.3%
+   Risk Level: LOW
+
+[!] REMOTE RESET DETECTED: Clearing processed_cache...
+✓ Cache cleared. Re-scanning all files in folder.
+
+
+→ Found matching file #27: acord_karan.pdf
+
+======================================================================
+PROCESSING: acord_karan.pdf
+======================================================================
+[1/6] Downloading from OneDrive...
+   ✓ Downloaded: ./temp_input/acord_karan.pdf
+[2/6] Extracting data from PDF...
+[1/4] Extracting data from PDF: ./temp_input/acord_karan.pdf
+incorrect startxref pointer(1)
+parsing for Object Streams
+   ✓ Successfully extracted 30 fields
+[3/6] Preparing data...
+[2/4] Preparing data for analysis
+   ✓ Property data prepared: 1 property
+   ✓ Claims data prepared: 2 claims
+[4/6] Performing risk analysis...
+[3/4] Performing risk analysis
+   ✓ Risk analysis complete
+   ✓ Overall Risk Score: 22.3% (LOW)
+   ✓ Recommendation: AUTO-BIND ELIGIBLE
+[5/6] Generating reports...
+[4/4] Generating PDF report
+   ✓ PDF report generated: ./temp_output/reports/Underwriting_Report_Quickbites_20260107_115715.pdf
+    ✓ HTML Report generated: ./temp_output/Report_Quickbites_20260107_115715.html
+[6/6] Uploading to OneDrive output folder...
+   ✓ Found existing output folder: Output_attachments
+   ✓ Uploaded to OneDrive: Report_Quickbites_20260107_115715.html
+
+✓ PROCESSING COMPLETE
+   HTML: Report_Quickbites_20260107_115715.html
+   Risk Score: 22.3%
+   Risk Level: LOW
+
+[!] REMOTE RESET DETECTED: Clearing processed_cache...
+✓ Cache cleared. Re-scanning all files in folder.
+
+
+→ Found matching file #28: acord_karan.pdf
+
+======================================================================
+PROCESSING: acord_karan.pdf
+======================================================================
+[1/6] Downloading from OneDrive...
+   ✓ Downloaded: ./temp_input/acord_karan.pdf
+[2/6] Extracting data from PDF...
+[1/4] Extracting data from PDF: ./temp_input/acord_karan.pdf
+incorrect startxref pointer(1)
+parsing for Object Streams
+   ✓ Successfully extracted 30 fields
+[3/6] Preparing data...
+[2/4] Preparing data for analysis
+   ✓ Property data prepared: 1 property
+   ✓ Claims data prepared: 2 claims
+[4/6] Performing risk analysis...
+[3/4] Performing risk analysis
+   ✓ Risk analysis complete
+   ✓ Overall Risk Score: 22.3% (LOW)
+   ✓ Recommendation: AUTO-BIND ELIGIBLE
+[5/6] Generating reports...
+[4/4] Generating PDF report
+   ✓ PDF report generated: ./temp_output/reports/Underwriting_Report_Quickbites_20260107_115727.pdf
+    ✓ HTML Report generated: ./temp_output/Report_Quickbites_20260107_115727.html
+[6/6] Uploading to OneDrive output folder...
+   ✓ Found existing output folder: Output_attachments
+   ✓ Uploaded to OneDrive: Report_Quickbites_20260107_115727.html
+
+✓ PROCESSING COMPLETE
+   HTML: Report_Quickbites_20260107_115727.html
+   Risk Score: 22.3%
+   Risk Level: LOW
+
+[!] REMOTE RESET DETECTED: Clearing processed_cache...
+✓ Cache cleared. Re-scanning all files in folder.
+
+
+→ Found matching file #29: acord_karan.pdf
+
+======================================================================
+PROCESSING: acord_karan.pdf
+======================================================================
+[1/6] Downloading from OneDrive...
+   ✓ Downloaded: ./temp_input/acord_karan.pdf
+[2/6] Extracting data from PDF...
+[1/4] Extracting data from PDF: ./temp_input/acord_karan.pdf
+incorrect startxref pointer(1)
+parsing for Object Streams
+   ✓ Successfully extracted 30 fields
+[3/6] Preparing data...
+[2/4] Preparing data for analysis
+   ✓ Property data prepared: 1 property
+   ✓ Claims data prepared: 2 claims
+[4/6] Performing risk analysis...
+[3/4] Performing risk analysis
+   ✓ Risk analysis complete
+   ✓ Overall Risk Score: 22.3% (LOW)
+   ✓ Recommendation: AUTO-BIND ELIGIBLE
+[5/6] Generating reports...
+[4/4] Generating PDF report
+   ✓ PDF report generated: ./temp_output/reports/Underwriting_Report_Quickbites_20260107_115739.pdf
+    ✓ HTML Report generated: ./temp_output/Report_Quickbites_20260107_115739.html
+[6/6] Uploading to OneDrive output folder...
+   ✓ Found existing output folder: Output_attachments
+   ✓ Uploaded to OneDrive: Report_Quickbites_20260107_115739.html
+
+✓ PROCESSING COMPLETE
+   HTML: Report_Quickbites_20260107_115739.html
+   Risk Score: 22.3%
+   Risk Level: LOW
+
+[!] REMOTE RESET DETECTED: Clearing processed_cache...
+✓ Cache cleared. Re-scanning all files in folder.
+
+
+→ Found matching file #30: acord_karan.pdf
+
+======================================================================
+PROCESSING: acord_karan.pdf
+======================================================================
+[1/6] Downloading from OneDrive...
+   ✓ Downloaded: ./temp_input/acord_karan.pdf
+[2/6] Extracting data from PDF...
+[1/4] Extracting data from PDF: ./temp_input/acord_karan.pdf
+incorrect startxref pointer(1)
+parsing for Object Streams
+   ✓ Successfully extracted 30 fields
+[3/6] Preparing data...
+[2/4] Preparing data for analysis
+   ✓ Property data prepared: 1 property
+   ✓ Claims data prepared: 2 claims
+[4/6] Performing risk analysis...
+[3/4] Performing risk analysis
+   ✓ Risk analysis complete
+   ✓ Overall Risk Score: 22.3% (LOW)
+   ✓ Recommendation: AUTO-BIND ELIGIBLE
+[5/6] Generating reports...
+[4/4] Generating PDF report
+   ✓ PDF report generated: ./temp_output/reports/Underwriting_Report_Quickbites_20260107_115751.pdf
+    ✓ HTML Report generated: ./temp_output/Report_Quickbites_20260107_115751.html
+[6/6] Uploading to OneDrive output folder...
+   ✓ Found existing output folder: Output_attachments
+   ✓ Uploaded to OneDrive: Report_Quickbites_20260107_115751.html
+
+✓ PROCESSING COMPLETE
+   HTML: Report_Quickbites_20260107_115751.html
+   Risk Score: 22.3%
+   Risk Level: LOW
+
+[!] REMOTE RESET DETECTED: Clearing processed_cache...
+✓ Cache cleared. Re-scanning all files in folder.
+
+
+→ Found matching file #31: acord_karan.pdf
+
+======================================================================
+PROCESSING: acord_karan.pdf
+======================================================================
+[1/6] Downloading from OneDrive...
+   ✓ Downloaded: ./temp_input/acord_karan.pdf
+[2/6] Extracting data from PDF...
+[1/4] Extracting data from PDF: ./temp_input/acord_karan.pdf
+incorrect startxref pointer(1)
+parsing for Object Streams
+   ✓ Successfully extracted 30 fields
+[3/6] Preparing data...
+[2/4] Preparing data for analysis
+   ✓ Property data prepared: 1 property
+   ✓ Claims data prepared: 2 claims
+[4/6] Performing risk analysis...
+[3/4] Performing risk analysis
+   ✓ Risk analysis complete
+   ✓ Overall Risk Score: 22.3% (LOW)
+   ✓ Recommendation: AUTO-BIND ELIGIBLE
+[5/6] Generating reports...
+[4/4] Generating PDF report
+   ✓ PDF report generated: ./temp_output/reports/Underwriting_Report_Quickbites_20260107_115803.pdf
+    ✓ HTML Report generated: ./temp_output/Report_Quickbites_20260107_115803.html
+[6/6] Uploading to OneDrive output folder...
+   ✓ Found existing output folder: Output_attachments
+   ✓ Uploaded to OneDrive: Report_Quickbites_20260107_115803.html
+
+✓ PROCESSING COMPLETE
+   HTML: Report_Quickbites_20260107_115803.html
+   Risk Score: 22.3%
+   Risk Level: LOW
+
+[!] REMOTE RESET DETECTED: Clearing processed_cache...
+✓ Cache cleared. Re-scanning all files in folder.
+
+
+→ Found matching file #32: acord_karan.pdf
+
+======================================================================
+PROCESSING: acord_karan.pdf
+======================================================================
+[1/6] Downloading from OneDrive...
+   ✓ Downloaded: ./temp_input/acord_karan.pdf
+[2/6] Extracting data from PDF...
+[1/4] Extracting data from PDF: ./temp_input/acord_karan.pdf
+incorrect startxref pointer(1)
+parsing for Object Streams
+   ✓ Successfully extracted 30 fields
+[3/6] Preparing data...
+[2/4] Preparing data for analysis
+   ✓ Property data prepared: 1 property
+   ✓ Claims data prepared: 2 claims
+[4/6] Performing risk analysis...
+[3/4] Performing risk analysis
+   ✓ Risk analysis complete
+   ✓ Overall Risk Score: 22.3% (LOW)
+   ✓ Recommendation: AUTO-BIND ELIGIBLE
+[5/6] Generating reports...
+[4/4] Generating PDF report
+   ✓ PDF report generated: ./temp_output/reports/Underwriting_Report_Quickbites_20260107_115815.pdf
+    ✓ HTML Report generated: ./temp_output/Report_Quickbites_20260107_115815.html
+[6/6] Uploading to OneDrive output folder...
+   ✓ Found existing output folder: Output_attachments
+   ✓ Uploaded to OneDrive: Report_Quickbites_20260107_115815.html
+
+✓ PROCESSING COMPLETE
+   HTML: Report_Quickbites_20260107_115815.html
+   Risk Score: 22.3%
+   Risk Level: LOW
+
+[!] REMOTE RESET DETECTED: Clearing processed_cache...
+✓ Cache cleared. Re-scanning all files in folder.
+
+
+→ Found matching file #33: acord_karan.pdf
+
+======================================================================
+PROCESSING: acord_karan.pdf
+======================================================================
+[1/6] Downloading from OneDrive...
+   ✓ Downloaded: ./temp_input/acord_karan.pdf
+[2/6] Extracting data from PDF...
+[1/4] Extracting data from PDF: ./temp_input/acord_karan.pdf
+incorrect startxref pointer(1)
+parsing for Object Streams
+   ✓ Successfully extracted 30 fields
+[3/6] Preparing data...
+[2/4] Preparing data for analysis
+   ✓ Property data prepared: 1 property
+   ✓ Claims data prepared: 2 claims
+[4/6] Performing risk analysis...
+[3/4] Performing risk analysis
+   ✓ Risk analysis complete
+   ✓ Overall Risk Score: 22.3% (LOW)
+   ✓ Recommendation: AUTO-BIND ELIGIBLE
+[5/6] Generating reports...
+[4/4] Generating PDF report
+   ✓ PDF report generated: ./temp_output/reports/Underwriting_Report_Quickbites_20260107_115827.pdf
+    ✓ HTML Report generated: ./temp_output/Report_Quickbites_20260107_115827.html
+[6/6] Uploading to OneDrive output folder...
+   ✓ Found existing output folder: Output_attachments
+   ✓ Uploaded to OneDrive: Report_Quickbites_20260107_115827.html
+
+✓ PROCESSING COMPLETE
+   HTML: Report_Quickbites_20260107_115827.html
+   Risk Score: 22.3%
+   Risk Level: LOW
+
+[!] REMOTE RESET DETECTED: Clearing processed_cache...
+✓ Cache cleared. Re-scanning all files in folder.
+
+
+→ Found matching file #34: acord_karan.pdf
+
+======================================================================
+PROCESSING: acord_karan.pdf
+======================================================================
+[1/6] Downloading from OneDrive...
+   ✓ Downloaded: ./temp_input/acord_karan.pdf
+[2/6] Extracting data from PDF...
+[1/4] Extracting data from PDF: ./temp_input/acord_karan.pdf
+incorrect startxref pointer(1)
+parsing for Object Streams
+   ✓ Successfully extracted 30 fields
+[3/6] Preparing data...
+[2/4] Preparing data for analysis
+   ✓ Property data prepared: 1 property
+   ✓ Claims data prepared: 2 claims
+[4/6] Performing risk analysis...
+[3/4] Performing risk analysis
+   ✓ Risk analysis complete
+   ✓ Overall Risk Score: 22.3% (LOW)
+   ✓ Recommendation: AUTO-BIND ELIGIBLE
+[5/6] Generating reports...
+[4/4] Generating PDF report
+   ✓ PDF report generated: ./temp_output/reports/Underwriting_Report_Quickbites_20260107_115839.pdf
+    ✓ HTML Report generated: ./temp_output/Report_Quickbites_20260107_115839.html
+[6/6] Uploading to OneDrive output folder...
+   ✓ Found existing output folder: Output_attachments
+   ✓ Uploaded to OneDrive: Report_Quickbites_20260107_115839.html
+
+✓ PROCESSING COMPLETE
+   HTML: Report_Quickbites_20260107_115839.html
+   Risk Score: 22.3%
+   Risk Level: LOW
+
+[!] REMOTE RESET DETECTED: Clearing processed_cache...
+✓ Cache cleared. Re-scanning all files in folder.
+
+
+→ Found matching file #35: acord_karan.pdf
+
+======================================================================
+PROCESSING: acord_karan.pdf
+======================================================================
+[1/6] Downloading from OneDrive...
+   ✓ Downloaded: ./temp_input/acord_karan.pdf
+[2/6] Extracting data from PDF...
+[1/4] Extracting data from PDF: ./temp_input/acord_karan.pdf
+incorrect startxref pointer(1)
+parsing for Object Streams
+   ✓ Successfully extracted 30 fields
+[3/6] Preparing data...
+[2/4] Preparing data for analysis
+   ✓ Property data prepared: 1 property
+   ✓ Claims data prepared: 2 claims
+[4/6] Performing risk analysis...
+[3/4] Performing risk analysis
+   ✓ Risk analysis complete
+   ✓ Overall Risk Score: 22.3% (LOW)
+   ✓ Recommendation: AUTO-BIND ELIGIBLE
+[5/6] Generating reports...
+[4/4] Generating PDF report
+   ✓ PDF report generated: ./temp_output/reports/Underwriting_Report_Quickbites_20260107_115851.pdf
+    ✓ HTML Report generated: ./temp_output/Report_Quickbites_20260107_115851.html
+[6/6] Uploading to OneDrive output folder...
+   ✓ Found existing output folder: Output_attachments
+   ✓ Uploaded to OneDrive: Report_Quickbites_20260107_115851.html
+
+✓ PROCESSING COMPLETE
+   HTML: Report_Quickbites_20260107_115851.html
+   Risk Score: 22.3%
+   Risk Level: LOW
+
+[!] REMOTE RESET DETECTED: Clearing processed_cache...
+✓ Cache cleared. Re-scanning all files in folder.
+
+
+→ Found matching file #36: acord_karan.pdf
+
+======================================================================
+PROCESSING: acord_karan.pdf
+======================================================================
+[1/6] Downloading from OneDrive...
+   ✓ Downloaded: ./temp_input/acord_karan.pdf
+[2/6] Extracting data from PDF...
+[1/4] Extracting data from PDF: ./temp_input/acord_karan.pdf
+incorrect startxref pointer(1)
+parsing for Object Streams
+   ✓ Successfully extracted 30 fields
+[3/6] Preparing data...
+[2/4] Preparing data for analysis
+   ✓ Property data prepared: 1 property
+   ✓ Claims data prepared: 2 claims
+[4/6] Performing risk analysis...
+[3/4] Performing risk analysis
+   ✓ Risk analysis complete
+   ✓ Overall Risk Score: 22.3% (LOW)
+   ✓ Recommendation: AUTO-BIND ELIGIBLE
+[5/6] Generating reports...
+[4/4] Generating PDF report
+   ✓ PDF report generated: ./temp_output/reports/Underwriting_Report_Quickbites_20260107_115903.pdf
+    ✓ HTML Report generated: ./temp_output/Report_Quickbites_20260107_115903.html
+[6/6] Uploading to OneDrive output folder...
+   ✓ Found existing output folder: Output_attachments
+   ✓ Uploaded to OneDrive: Report_Quickbites_20260107_115903.html
+
+✓ PROCESSING COMPLETE
+   HTML: Report_Quickbites_20260107_115903.html
+   Risk Score: 22.3%
+   Risk Level: LOW
+
+[!] REMOTE RESET DETECTED: Clearing processed_cache...
+✓ Cache cleared. Re-scanning all files in folder.
+
+
+→ Found matching file #37: acord_karan.pdf
+
+======================================================================
+PROCESSING: acord_karan.pdf
+======================================================================
+[1/6] Downloading from OneDrive...
+   ✓ Downloaded: ./temp_input/acord_karan.pdf
+[2/6] Extracting data from PDF...
+[1/4] Extracting data from PDF: ./temp_input/acord_karan.pdf
+incorrect startxref pointer(1)
+parsing for Object Streams
+   ✓ Successfully extracted 30 fields
+[3/6] Preparing data...
+[2/4] Preparing data for analysis
+   ✓ Property data prepared: 1 property
+   ✓ Claims data prepared: 2 claims
+[4/6] Performing risk analysis...
+[3/4] Performing risk analysis
+   ✓ Risk analysis complete
+   ✓ Overall Risk Score: 22.3% (LOW)
+   ✓ Recommendation: AUTO-BIND ELIGIBLE
+[5/6] Generating reports...
+[4/4] Generating PDF report
+   ✓ PDF report generated: ./temp_output/reports/Underwriting_Report_Quickbites_20260107_115915.pdf
+    ✓ HTML Report generated: ./temp_output/Report_Quickbites_20260107_115915.html
+[6/6] Uploading to OneDrive output folder...
+   ✓ Found existing output folder: Output_attachments
+   ✓ Uploaded to OneDrive: Report_Quickbites_20260107_115915.html
+
+✓ PROCESSING COMPLETE
+   HTML: Report_Quickbites_20260107_115915.html
+   Risk Score: 22.3%
+   Risk Level: LOW
+
+[!] REMOTE RESET DETECTED: Clearing processed_cache...
+✓ Cache cleared. Re-scanning all files in folder.
+
+
+→ Found matching file #38: acord_karan.pdf
+
+======================================================================
+PROCESSING: acord_karan.pdf
+======================================================================
+[1/6] Downloading from OneDrive...
+   ✓ Downloaded: ./temp_input/acord_karan.pdf
+[2/6] Extracting data from PDF...
+[1/4] Extracting data from PDF: ./temp_input/acord_karan.pdf
+incorrect startxref pointer(1)
+parsing for Object Streams
+   ✓ Successfully extracted 30 fields
+[3/6] Preparing data...
+[2/4] Preparing data for analysis
+   ✓ Property data prepared: 1 property
+   ✓ Claims data prepared: 2 claims
+[4/6] Performing risk analysis...
+[3/4] Performing risk analysis
+   ✓ Risk analysis complete
+   ✓ Overall Risk Score: 22.3% (LOW)
+   ✓ Recommendation: AUTO-BIND ELIGIBLE
+[5/6] Generating reports...
+[4/4] Generating PDF report
+   ✓ PDF report generated: ./temp_output/reports/Underwriting_Report_Quickbites_20260107_115927.pdf
+    ✓ HTML Report generated: ./temp_output/Report_Quickbites_20260107_115927.html
+[6/6] Uploading to OneDrive output folder...
+   ✓ Found existing output folder: Output_attachments
+   ✓ Uploaded to OneDrive: Report_Quickbites_20260107_115927.html
+
+✓ PROCESSING COMPLETE
+   HTML: Report_Quickbites_20260107_115927.html
+   Risk Score: 22.3%
+   Risk Level: LOW
+
+[!] REMOTE RESET DETECTED: Clearing processed_cache...
+✓ Cache cleared. Re-scanning all files in folder.
+
+
+→ Found matching file #39: acord_karan.pdf
+
+======================================================================
+PROCESSING: acord_karan.pdf
+======================================================================
+[1/6] Downloading from OneDrive...
+   ✓ Downloaded: ./temp_input/acord_karan.pdf
+[2/6] Extracting data from PDF...
+[1/4] Extracting data from PDF: ./temp_input/acord_karan.pdf
+incorrect startxref pointer(1)
+parsing for Object Streams
+   ✓ Successfully extracted 30 fields
+[3/6] Preparing data...
+[2/4] Preparing data for analysis
+   ✓ Property data prepared: 1 property
+   ✓ Claims data prepared: 2 claims
+[4/6] Performing risk analysis...
+[3/4] Performing risk analysis
+   ✓ Risk analysis complete
+   ✓ Overall Risk Score: 22.3% (LOW)
+   ✓ Recommendation: AUTO-BIND ELIGIBLE
+[5/6] Generating reports...
+[4/4] Generating PDF report
+   ✓ PDF report generated: ./temp_output/reports/Underwriting_Report_Quickbites_20260107_115939.pdf
+    ✓ HTML Report generated: ./temp_output/Report_Quickbites_20260107_115939.html
+[6/6] Uploading to OneDrive output folder...
+   ✓ Found existing output folder: Output_attachments
+   ✓ Uploaded to OneDrive: Report_Quickbites_20260107_115939.html
+
+✓ PROCESSING COMPLETE
+   HTML: Report_Quickbites_20260107_115939.html
+   Risk Score: 22.3%
+   Risk Level: LOW
+
+[!] REMOTE RESET DETECTED: Clearing processed_cache...
+✓ Cache cleared. Re-scanning all files in folder.
+
+
+→ Found matching file #40: acord_karan.pdf
+
+======================================================================
+PROCESSING: acord_karan.pdf
+======================================================================
+[1/6] Downloading from OneDrive...
+   ✓ Downloaded: ./temp_input/acord_karan.pdf
+[2/6] Extracting data from PDF...
+[1/4] Extracting data from PDF: ./temp_input/acord_karan.pdf
+incorrect startxref pointer(1)
+parsing for Object Streams
+   ✓ Successfully extracted 30 fields
+[3/6] Preparing data...
+[2/4] Preparing data for analysis
+   ✓ Property data prepared: 1 property
+   ✓ Claims data prepared: 2 claims
+[4/6] Performing risk analysis...
+[3/4] Performing risk analysis
+   ✓ Risk analysis complete
+   ✓ Overall Risk Score: 22.3% (LOW)
+   ✓ Recommendation: AUTO-BIND ELIGIBLE
+[5/6] Generating reports...
+[4/4] Generating PDF report
+   ✓ PDF report generated: ./temp_output/reports/Underwriting_Report_Quickbites_20260107_115951.pdf
+    ✓ HTML Report generated: ./temp_output/Report_Quickbites_20260107_115951.html
+[6/6] Uploading to OneDrive output folder...
+   ✓ Found existing output folder: Output_attachments
+   ✓ Uploaded to OneDrive: Report_Quickbites_20260107_115951.html
+
+✓ PROCESSING COMPLETE
+   HTML: Report_Quickbites_20260107_115951.html
+   Risk Score: 22.3%
+   Risk Level: LOW
+
+[!] REMOTE RESET DETECTED: Clearing processed_cache...
+✓ Cache cleared. Re-scanning all files in folder.
+
+
+→ Found matching file #41: acord_karan.pdf
+
+======================================================================
+PROCESSING: acord_karan.pdf
+======================================================================
+[1/6] Downloading from OneDrive...
+   ✓ Downloaded: ./temp_input/acord_karan.pdf
+[2/6] Extracting data from PDF...
+[1/4] Extracting data from PDF: ./temp_input/acord_karan.pdf
+incorrect startxref pointer(1)
+parsing for Object Streams
+   ✓ Successfully extracted 30 fields
+[3/6] Preparing data...
+[2/4] Preparing data for analysis
+   ✓ Property data prepared: 1 property
+   ✓ Claims data prepared: 2 claims
+[4/6] Performing risk analysis...
+[3/4] Performing risk analysis
+   ✓ Risk analysis complete
+   ✓ Overall Risk Score: 22.3% (LOW)
+   ✓ Recommendation: AUTO-BIND ELIGIBLE
+[5/6] Generating reports...
+[4/4] Generating PDF report
+   ✓ PDF report generated: ./temp_output/reports/Underwriting_Report_Quickbites_20260107_120004.pdf
+    ✓ HTML Report generated: ./temp_output/Report_Quickbites_20260107_120004.html
+[6/6] Uploading to OneDrive output folder...
+   ✓ Found existing output folder: Output_attachments
+   ✓ Uploaded to OneDrive: Report_Quickbites_20260107_120004.html
+
+✓ PROCESSING COMPLETE
+   HTML: Report_Quickbites_20260107_120004.html
+   Risk Score: 22.3%
+   Risk Level: LOW
+
+[!] REMOTE RESET DETECTED: Clearing processed_cache...
+✓ Cache cleared. Re-scanning all files in folder.
+
+
+→ Found matching file #42: acord_karan.pdf
+
+======================================================================
+PROCESSING: acord_karan.pdf
+======================================================================
+[1/6] Downloading from OneDrive...
+   ✓ Downloaded: ./temp_input/acord_karan.pdf
+[2/6] Extracting data from PDF...
+[1/4] Extracting data from PDF: ./temp_input/acord_karan.pdf
+incorrect startxref pointer(1)
+parsing for Object Streams
+   ✓ Successfully extracted 30 fields
+[3/6] Preparing data...
+[2/4] Preparing data for analysis
+   ✓ Property data prepared: 1 property
+   ✓ Claims data prepared: 2 claims
+[4/6] Performing risk analysis...
+[3/4] Performing risk analysis
+   ✓ Risk analysis complete
+   ✓ Overall Risk Score: 22.3% (LOW)
+   ✓ Recommendation: AUTO-BIND ELIGIBLE
+[5/6] Generating reports...
+[4/4] Generating PDF report
+   ✓ PDF report generated: ./temp_output/reports/Underwriting_Report_Quickbites_20260107_120016.pdf
+    ✓ HTML Report generated: ./temp_output/Report_Quickbites_20260107_120016.html
+[6/6] Uploading to OneDrive output folder...
+   ✓ Found existing output folder: Output_attachments
+   ✓ Uploaded to OneDrive: Report_Quickbites_20260107_120016.html
+
+✓ PROCESSING COMPLETE
+   HTML: Report_Quickbites_20260107_120016.html
+   Risk Score: 22.3%
+   Risk Level: LOW
+
+[!] REMOTE RESET DETECTED: Clearing processed_cache...
+✓ Cache cleared. Re-scanning all files in folder.
+
+
+→ Found matching file #43: acord_karan.pdf
+
+======================================================================
+PROCESSING: acord_karan.pdf
+======================================================================
+[1/6] Downloading from OneDrive...
+   ✓ Downloaded: ./temp_input/acord_karan.pdf
+[2/6] Extracting data from PDF...
+[1/4] Extracting data from PDF: ./temp_input/acord_karan.pdf
+incorrect startxref pointer(1)
+parsing for Object Streams
+   ✓ Successfully extracted 30 fields
+[3/6] Preparing data...
+[2/4] Preparing data for analysis
+   ✓ Property data prepared: 1 property
+   ✓ Claims data prepared: 2 claims
+[4/6] Performing risk analysis...
+[3/4] Performing risk analysis
+   ✓ Risk analysis complete
+   ✓ Overall Risk Score: 22.3% (LOW)
+   ✓ Recommendation: AUTO-BIND ELIGIBLE
+[5/6] Generating reports...
+[4/4] Generating PDF report
+   ✓ PDF report generated: ./temp_output/reports/Underwriting_Report_Quickbites_20260107_120028.pdf
+    ✓ HTML Report generated: ./temp_output/Report_Quickbites_20260107_120028.html
+[6/6] Uploading to OneDrive output folder...
+   ✓ Found existing output folder: Output_attachments
+   ✓ Uploaded to OneDrive: Report_Quickbites_20260107_120028.html
+
+✓ PROCESSING COMPLETE
+   HTML: Report_Quickbites_20260107_120028.html
+   Risk Score: 22.3%
+   Risk Level: LOW
+⊘ Skipped (no 'acord_' prefix): C3_HansZane_Quickbites.pdf
+
+✗ Watcher error: Failed to list files: 500 Server Error: Internal Server Error for url: https://graph.microsoft.com/v1.0/users/karan.panchal@datasciencewizards.ai/drive/root/search(q='Input_attachments')
+Traceback (most recent call last):
+  File "/external-volume/goldenbear_outlook/claims_likelihood/onedrive_client_app.py", line 77, in list_files
+    response.raise_for_status()
+    ~~~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "/home/jrspy/miniconda3/envs/quote/lib/python3.13/site-packages/requests/models.py", line 1026, in raise_for_status
+    raise HTTPError(http_error_msg, response=self)
+requests.exceptions.HTTPError: 500 Server Error: Internal Server Error for url: https://graph.microsoft.com/v1.0/users/karan.panchal@datasciencewizards.ai/drive/root/search(q='Input_attachments')
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/external-volume/goldenbear_outlook/claims_likelihood/main_od.py", line 361, in watch_and_process
+    files = self.input_client.list_files()
+  File "/external-volume/goldenbear_outlook/claims_likelihood/onedrive_client_app.py", line 116, in list_files
+    raise Exception(f"Failed to list files: {str(e)}")
+Exception: Failed to list files: 500 Server Error: Internal Server Error for url: https://graph.microsoft.com/v1.0/users/karan.panchal@datasciencewizards.ai/drive/root/search(q='Input_attachments')
+
+✗ Watcher error: Failed to list files: 500 Server Error: Internal Server Error for url: https://graph.microsoft.com/v1.0/users/karan.panchal@datasciencewizards.ai/drive/root/search(q='Input_attachments')
+Traceback (most recent call last):
+  File "/external-volume/goldenbear_outlook/claims_likelihood/onedrive_client_app.py", line 77, in list_files
+    response.raise_for_status()
+    ~~~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "/home/jrspy/miniconda3/envs/quote/lib/python3.13/site-packages/requests/models.py", line 1026, in raise_for_status
+    raise HTTPError(http_error_msg, response=self)
+requests.exceptions.HTTPError: 500 Server Error: Internal Server Error for url: https://graph.microsoft.com/v1.0/users/karan.panchal@datasciencewizards.ai/drive/root/search(q='Input_attachments')
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/external-volume/goldenbear_outlook/claims_likelihood/main_od.py", line 361, in watch_and_process
+    files = self.input_client.list_files()
+  File "/external-volume/goldenbear_outlook/claims_likelihood/onedrive_client_app.py", line 116, in list_files
+    raise Exception(f"Failed to list files: {str(e)}")
+Exception: Failed to list files: 500 Server Error: Internal Server Error for url: https://graph.microsoft.com/v1.0/users/karan.panchal@datasciencewizards.ai/drive/root/search(q='Input_attachments')
+
+→ Found matching file #44: acord_mudo (1).pdf
+
+======================================================================
+PROCESSING: acord_mudo (1).pdf
+======================================================================
+[1/6] Downloading from OneDrive...
+   ✓ Downloaded: ./temp_input/acord_mudo (1).pdf
+[2/6] Extracting data from PDF...
+[1/4] Extracting data from PDF: ./temp_input/acord_mudo (1).pdf
+incorrect startxref pointer(3)
+parsing for Object Streams
+   ✓ Successfully extracted 30 fields
+[3/6] Preparing data...
+[2/4] Preparing data for analysis
+   ✓ Property data prepared: 1 property
+   ✓ Claims data prepared: 3 claims
+[4/6] Performing risk analysis...
+[3/4] Performing risk analysis
+   ✓ Risk analysis complete
+   ✓ Overall Risk Score: 66.7% (HIGH)
+   ✓ Recommendation: REFER TO SENIOR UNDERWRITER
+[5/6] Generating reports...
+[4/4] Generating PDF report
+   ✓ PDF report generated: ./temp_output/reports/Underwriting_Report_Mudo_20260108_055130.pdf
+    ✓ HTML Report generated: ./temp_output/Report_Mudo_20260108_055130.html
+[6/6] Uploading to OneDrive output folder...
+   ✓ Found existing output folder: Output_attachments
+   ✓ Uploaded to OneDrive: Report_Mudo_20260108_055130.html
+
+✓ PROCESSING COMPLETE
+   HTML: Report_Mudo_20260108_055130.html
+   Risk Score: 66.7%
+   Risk Level: HIGH
+
+→ Found matching file #45: acord_quickbites 2 - Copy (3).pdf
+
+======================================================================
+PROCESSING: acord_quickbites 2 - Copy (3).pdf
+======================================================================
+[1/6] Downloading from OneDrive...
+   ✓ Downloaded: ./temp_input/acord_quickbites 2 - Copy (3).pdf
+[2/6] Extracting data from PDF...
+[1/4] Extracting data from PDF: ./temp_input/acord_quickbites 2 - Copy (3).pdf
+   ✓ Successfully extracted 30 fields
+[3/6] Preparing data...
+[2/4] Preparing data for analysis
+   ✓ Property data prepared: 1 property
+   ✓ Claims data prepared: 2 claims
+[4/6] Performing risk analysis...
+[3/4] Performing risk analysis
+   ✓ Risk analysis complete
+   ✓ Overall Risk Score: 22.3% (LOW)
+   ✓ Recommendation: AUTO-BIND ELIGIBLE
+[5/6] Generating reports...
+[4/4] Generating PDF report
+   ✓ PDF report generated: ./temp_output/reports/Underwriting_Report_Quickbites_20260108_060828.pdf
+    ✓ HTML Report generated: ./temp_output/Report_Quickbites_20260108_060828.html
+[6/6] Uploading to OneDrive output folder...
+   ✓ Found existing output folder: Output_attachments
+   ✓ Uploaded to OneDrive: Report_Quickbites_20260108_060828.html
+
+✓ PROCESSING COMPLETE
+   HTML: Report_Quickbites_20260108_060828.html
+   Risk Score: 22.3%
+   Risk Level: LOW
+
+[!] REMOTE RESET DETECTED: Clearing processed_cache...
+✓ Cache cleared. Re-scanning all files in folder.
+
+⊘ Skipped (no 'acord_' prefix): C3_HansZane_Quickbites.pdf
+
+→ Found matching file #46: acord_mudo (1).pdf
+
+======================================================================
+PROCESSING: acord_mudo (1).pdf
+======================================================================
+[1/6] Downloading from OneDrive...
+   ✓ Downloaded: ./temp_input/acord_mudo (1).pdf
+[2/6] Extracting data from PDF...
+[1/4] Extracting data from PDF: ./temp_input/acord_mudo (1).pdf
+incorrect startxref pointer(3)
+parsing for Object Streams
+   ✓ Successfully extracted 30 fields
+[3/6] Preparing data...
+[2/4] Preparing data for analysis
+   ✓ Property data prepared: 1 property
+   ✓ Claims data prepared: 3 claims
+[4/6] Performing risk analysis...
+[3/4] Performing risk analysis
+   ✓ Risk analysis complete
+   ✓ Overall Risk Score: 66.7% (HIGH)
+   ✓ Recommendation: REFER TO SENIOR UNDERWRITER
+[5/6] Generating reports...
+[4/4] Generating PDF report
+   ✓ PDF report generated: ./temp_output/reports/Underwriting_Report_Mudo_20260108_061659.pdf
+    ✓ HTML Report generated: ./temp_output/Report_Mudo_20260108_061659.html
+[6/6] Uploading to OneDrive output folder...
+   ✓ Found existing output folder: Output_attachments
+   ✓ Uploaded to OneDrive: Report_Mudo_20260108_061659.html
+
+✓ PROCESSING COMPLETE
+   HTML: Report_Mudo_20260108_061659.html
+   Risk Score: 66.7%
+   Risk Level: HIGH
+
+→ Found matching file #47: acord_quickbites 2 - Copy (3).pdf
+
+======================================================================
+PROCESSING: acord_quickbites 2 - Copy (3).pdf
+======================================================================
+[1/6] Downloading from OneDrive...
+   ✓ Downloaded: ./temp_input/acord_quickbites 2 - Copy (3).pdf
+[2/6] Extracting data from PDF...
+[1/4] Extracting data from PDF: ./temp_input/acord_quickbites 2 - Copy (3).pdf
+   ✓ Successfully extracted 30 fields
+[3/6] Preparing data...
+[2/4] Preparing data for analysis
+   ✓ Property data prepared: 1 property
+   ✓ Claims data prepared: 2 claims
+[4/6] Performing risk analysis...
+[3/4] Performing risk analysis
+   ✓ Risk analysis complete
+   ✓ Overall Risk Score: 22.3% (LOW)
+   ✓ Recommendation: AUTO-BIND ELIGIBLE
+[5/6] Generating reports...
+[4/4] Generating PDF report
+   ✓ PDF report generated: ./temp_output/reports/Underwriting_Report_Quickbites_20260108_061700.pdf
+    ✓ HTML Report generated: ./temp_output/Report_Quickbites_20260108_061700.html
+[6/6] Uploading to OneDrive output folder...
+   ✓ Found existing output folder: Output_attachments
+   ✓ Uploaded to OneDrive: Report_Quickbites_20260108_061700.html
+
+✓ PROCESSING COMPLETE
+   HTML: Report_Quickbites_20260108_061700.html
+   Risk Score: 22.3%
+   Risk Level: LOW
+
+[!] REMOTE RESET DETECTED: Clearing processed_cache...
+✓ Cache cleared. Re-scanning all files in folder.
+
+
+[!] REMOTE RESET DETECTED: Clearing processed_cache...
+✓ Cache cleared. Re-scanning all files in folder.
+
+
+→ Found matching file #48: acord_jetwire 1 - Copy (2).pdf
+
+======================================================================
+PROCESSING: acord_jetwire 1 - Copy (2).pdf
+======================================================================
+[1/6] Downloading from OneDrive...
+   ✓ Downloaded: ./temp_input/acord_jetwire 1 - Copy (2).pdf
+[2/6] Extracting data from PDF...
+[1/4] Extracting data from PDF: ./temp_input/acord_jetwire 1 - Copy (2).pdf
+incorrect startxref pointer(3)
+parsing for Object Streams
+   ✓ Successfully extracted 29 fields
+[3/6] Preparing data...
+[2/4] Preparing data for analysis
+   ✓ Property data prepared: 1 property
+   ✓ Claims data prepared: 0 claims
+[4/6] Performing risk analysis...
+[3/4] Performing risk analysis
+   ✓ Risk analysis complete
+   ✓ Overall Risk Score: 47.8% (MEDIUM)
+   ✓ Recommendation: STANDARD REVIEW
+[5/6] Generating reports...
+[4/4] Generating PDF report
+Warning: No claims data provided. Report will be generated without claims history.
+   ✓ PDF report generated: ./temp_output/reports/Underwriting_Report_Jetwire_20260108_100419.pdf
+    ✓ HTML Report generated: ./temp_output/Report_Jetwire_20260108_100419.html
+[6/6] Uploading to OneDrive output folder...
+   ✓ Found existing output folder: Output_attachments
+   ✓ Uploaded to OneDrive: Report_Jetwire_20260108_100419.html
+
+✓ PROCESSING COMPLETE
+   HTML: Report_Jetwire_20260108_100419.html
+   Risk Score: 47.8%
+   Risk Level: MEDIUM
+
+[!] REMOTE RESET DETECTED: Clearing processed_cache...
+✓ Cache cleared. Re-scanning all files in folder.
+
+
+→ Found matching file #49: acord_jetwire 1 - Copy (2).pdf
+
+======================================================================
+PROCESSING: acord_jetwire 1 - Copy (2).pdf
+======================================================================
+[1/6] Downloading from OneDrive...
+   ✓ Downloaded: ./temp_input/acord_jetwire 1 - Copy (2).pdf
+[2/6] Extracting data from PDF...
+[1/4] Extracting data from PDF: ./temp_input/acord_jetwire 1 - Copy (2).pdf
+incorrect startxref pointer(3)
+parsing for Object Streams
+   ✓ Successfully extracted 29 fields
+[3/6] Preparing data...
+[2/4] Preparing data for analysis
+   ✓ Property data prepared: 1 property
+   ✓ Claims data prepared: 0 claims
+[4/6] Performing risk analysis...
+[3/4] Performing risk analysis
+   ✓ Risk analysis complete
+   ✓ Overall Risk Score: 47.8% (MEDIUM)
+   ✓ Recommendation: STANDARD REVIEW
+[5/6] Generating reports...
+[4/4] Generating PDF report
+Warning: No claims data provided. Report will be generated without claims history.
+   ✓ PDF report generated: ./temp_output/reports/Underwriting_Report_Jetwire_20260108_101959.pdf
+    ✓ HTML Report generated: ./temp_output/Report_Jetwire_20260108_101959.html
+[6/6] Uploading to OneDrive output folder...
+   ✓ Found existing output folder: Output_attachments
+   ✓ Uploaded to OneDrive: Report_Jetwire_20260108_101959.html
+
+✓ PROCESSING COMPLETE
+   HTML: Report_Jetwire_20260108_101959.html
+   Risk Score: 47.8%
+   Risk Level: MEDIUM
+⊘ Skipped (no 'acord_' prefix): C3_HansZane_Quickbites.pdf
+
+→ Found matching file #50: acord_karan.pdf
+
+======================================================================
+PROCESSING: acord_karan.pdf
+======================================================================
+[1/6] Downloading from OneDrive...
+   ✓ Downloaded: ./temp_input/acord_karan.pdf
+[2/6] Extracting data from PDF...
+[1/4] Extracting data from PDF: ./temp_input/acord_karan.pdf
+incorrect startxref pointer(1)
+parsing for Object Streams
+   ✓ Successfully extracted 30 fields
+[3/6] Preparing data...
+[2/4] Preparing data for analysis
+   ✓ Property data prepared: 1 property
+   ✓ Claims data prepared: 2 claims
+[4/6] Performing risk analysis...
+[3/4] Performing risk analysis
+   ✓ Risk analysis complete
+   ✓ Overall Risk Score: 22.3% (LOW)
+   ✓ Recommendation: AUTO-BIND ELIGIBLE
+[5/6] Generating reports...
+[4/4] Generating PDF report
+   ✓ PDF report generated: ./temp_output/reports/Underwriting_Report_Quickbites_20260108_102128.pdf
+    ✓ HTML Report generated: ./temp_output/Report_Quickbites_20260108_102128.html
+[6/6] Uploading to OneDrive output folder...
+   ✓ Found existing output folder: Output_attachments
+   ✓ Uploaded to OneDrive: Report_Quickbites_20260108_102128.html
+
+✓ PROCESSING COMPLETE
+   HTML: Report_Quickbites_20260108_102128.html
+   Risk Score: 22.3%
+   Risk Level: LOW
+
+[!] REMOTE RESET DETECTED: Clearing processed_cache...
+✓ Cache cleared. Re-scanning all files in folder.
+
+⊘ Skipped (no 'acord_' prefix): C3_HansZane_Quickbites.pdf
+
+→ Found matching file #51: acord_jetwire 1 - Copy (2).pdf
+
+======================================================================
+PROCESSING: acord_jetwire 1 - Copy (2).pdf
+======================================================================
+[1/6] Downloading from OneDrive...
+   ✓ Downloaded: ./temp_input/acord_jetwire 1 - Copy (2).pdf
+[2/6] Extracting data from PDF...
+[1/4] Extracting data from PDF: ./temp_input/acord_jetwire 1 - Copy (2).pdf
+incorrect startxref pointer(3)
+parsing for Object Streams
+   ✓ Successfully extracted 29 fields
+[3/6] Preparing data...
+[2/4] Preparing data for analysis
+   ✓ Property data prepared: 1 property
+   ✓ Claims data prepared: 0 claims
+[4/6] Performing risk analysis...
+[3/4] Performing risk analysis
+   ✓ Risk analysis complete
+   ✓ Overall Risk Score: 47.8% (MEDIUM)
+   ✓ Recommendation: STANDARD REVIEW
+[5/6] Generating reports...
+[4/4] Generating PDF report
+Warning: No claims data provided. Report will be generated without claims history.
+   ✓ PDF report generated: ./temp_output/reports/Underwriting_Report_Jetwire_20260108_103838.pdf
+    ✓ HTML Report generated: ./temp_output/Report_Jetwire_20260108_103838.html
+[6/6] Uploading to OneDrive output folder...
+   ✓ Found existing output folder: Output_attachments
+   ✓ Uploaded to OneDrive: Report_Jetwire_20260108_103838.html
+
+✓ PROCESSING COMPLETE
+   HTML: Report_Jetwire_20260108_103838.html
+   Risk Score: 47.8%
+   Risk Level: MEDIUM
+
+→ Found matching file #52: acord_karan.pdf
+
+======================================================================
+PROCESSING: acord_karan.pdf
+======================================================================
+[1/6] Downloading from OneDrive...
+   ✓ Downloaded: ./temp_input/acord_karan.pdf
+[2/6] Extracting data from PDF...
+[1/4] Extracting data from PDF: ./temp_input/acord_karan.pdf
+incorrect startxref pointer(1)
+parsing for Object Streams
+   ✓ Successfully extracted 30 fields
+[3/6] Preparing data...
+[2/4] Preparing data for analysis
+   ✓ Property data prepared: 1 property
+   ✓ Claims data prepared: 2 claims
+[4/6] Performing risk analysis...
+[3/4] Performing risk analysis
+   ✓ Risk analysis complete
+   ✓ Overall Risk Score: 22.3% (LOW)
+   ✓ Recommendation: AUTO-BIND ELIGIBLE
+[5/6] Generating reports...
+[4/4] Generating PDF report
+   ✓ PDF report generated: ./temp_output/reports/Underwriting_Report_Quickbites_20260108_103839.pdf
+    ✓ HTML Report generated: ./temp_output/Report_Quickbites_20260108_103839.html
+[6/6] Uploading to OneDrive output folder...
+   ✓ Found existing output folder: Output_attachments
+   ✓ Uploaded to OneDrive: Report_Quickbites_20260108_103839.html
+
+✓ PROCESSING COMPLETE
+   HTML: Report_Quickbites_20260108_103839.html
+   Risk Score: 22.3%
+   Risk Level: LOW
+
+[!] REMOTE RESET DETECTED: Clearing processed_cache...
+✓ Cache cleared. Re-scanning all files in folder.
+
+
+→ Found matching file #53: acord_jetwire 1 - Copy (2).pdf
+
+======================================================================
+PROCESSING: acord_jetwire 1 - Copy (2).pdf
+======================================================================
+[1/6] Downloading from OneDrive...
+   ✓ Downloaded: ./temp_input/acord_jetwire 1 - Copy (2).pdf
+[2/6] Extracting data from PDF...
+[1/4] Extracting data from PDF: ./temp_input/acord_jetwire 1 - Copy (2).pdf
+incorrect startxref pointer(3)
+parsing for Object Streams
+   ✓ Successfully extracted 29 fields
+[3/6] Preparing data...
+[2/4] Preparing data for analysis
+   ✓ Property data prepared: 1 property
+   ✓ Claims data prepared: 0 claims
+[4/6] Performing risk analysis...
+[3/4] Performing risk analysis
+   ✓ Risk analysis complete
+   ✓ Overall Risk Score: 47.8% (MEDIUM)
+   ✓ Recommendation: STANDARD REVIEW
+[5/6] Generating reports...
+[4/4] Generating PDF report
+Warning: No claims data provided. Report will be generated without claims history.
+   ✓ PDF report generated: ./temp_output/reports/Underwriting_Report_Jetwire_20260108_104519.pdf
+    ✓ HTML Report generated: ./temp_output/Report_Jetwire_20260108_104519.html
+[6/6] Uploading to OneDrive output folder...
+   ✓ Found existing output folder: Output_attachments
+   ✓ Uploaded to OneDrive: Report_Jetwire_20260108_104519.html
+
+✓ PROCESSING COMPLETE
+   HTML: Report_Jetwire_20260108_104519.html
+   Risk Score: 47.8%
+   Risk Level: MEDIUM
+
+[!] REMOTE RESET DETECTED: Clearing processed_cache...
+✓ Cache cleared. Re-scanning all files in folder.
+
+
+→ Found matching file #54: acord_jetwire 1 - Copy (2).pdf
+
+======================================================================
+PROCESSING: acord_jetwire 1 - Copy (2).pdf
+======================================================================
+[1/6] Downloading from OneDrive...
+   ✓ Downloaded: ./temp_input/acord_jetwire 1 - Copy (2).pdf
+[2/6] Extracting data from PDF...
+[1/4] Extracting data from PDF: ./temp_input/acord_jetwire 1 - Copy (2).pdf
+incorrect startxref pointer(3)
+parsing for Object Streams
+   ✓ Successfully extracted 29 fields
+[3/6] Preparing data...
+[2/4] Preparing data for analysis
+   ✓ Property data prepared: 1 property
+   ✓ Claims data prepared: 0 claims
+[4/6] Performing risk analysis...
+[3/4] Performing risk analysis
+   ✓ Risk analysis complete
+   ✓ Overall Risk Score: 47.8% (MEDIUM)
+   ✓ Recommendation: STANDARD REVIEW
+[5/6] Generating reports...
+[4/4] Generating PDF report
+Warning: No claims data provided. Report will be generated without claims history.
+   ✓ PDF report generated: ./temp_output/reports/Underwriting_Report_Jetwire_20260108_104823.pdf
+    ✓ HTML Report generated: ./temp_output/Report_Jetwire_20260108_104823.html
+[6/6] Uploading to OneDrive output folder...
+   ✓ Found existing output folder: Output_attachments
+   ✓ Uploaded to OneDrive: Report_Jetwire_20260108_104823.html
+
+✓ PROCESSING COMPLETE
+   HTML: Report_Jetwire_20260108_104823.html
+   Risk Score: 47.8%
+   Risk Level: MEDIUM
+⊘ Skipped (no 'acord_' prefix): C3_HansZane_Quickbites.pdf
+
+→ Found matching file #55: acord_karan.pdf
+
+======================================================================
+PROCESSING: acord_karan.pdf
+======================================================================
+[1/6] Downloading from OneDrive...
+   ✓ Downloaded: ./temp_input/acord_karan.pdf
+[2/6] Extracting data from PDF...
+[1/4] Extracting data from PDF: ./temp_input/acord_karan.pdf
+incorrect startxref pointer(1)
+parsing for Object Streams
+   ✓ Successfully extracted 30 fields
+[3/6] Preparing data...
+[2/4] Preparing data for analysis
+   ✓ Property data prepared: 1 property
+   ✓ Claims data prepared: 2 claims
+[4/6] Performing risk analysis...
+[3/4] Performing risk analysis
+   ✓ Risk analysis complete
+   ✓ Overall Risk Score: 22.3% (LOW)
+   ✓ Recommendation: AUTO-BIND ELIGIBLE
+[5/6] Generating reports...
+[4/4] Generating PDF report
+   ✓ PDF report generated: ./temp_output/reports/Underwriting_Report_Quickbites_20260108_105023.pdf
+    ✓ HTML Report generated: ./temp_output/Report_Quickbites_20260108_105023.html
+[6/6] Uploading to OneDrive output folder...
+   ✓ Found existing output folder: Output_attachments
+   ✓ Uploaded to OneDrive: Report_Quickbites_20260108_105023.html
+
+✓ PROCESSING COMPLETE
+   HTML: Report_Quickbites_20260108_105023.html
+   Risk Score: 22.3%
+   Risk Level: LOW
+
+→ Found matching file #56: acord_mudo - Copy.pdf
+
+======================================================================
+PROCESSING: acord_mudo - Copy.pdf
+======================================================================
+[1/6] Downloading from OneDrive...
+   ✓ Downloaded: ./temp_input/acord_mudo - Copy.pdf
+[2/6] Extracting data from PDF...
+[1/4] Extracting data from PDF: ./temp_input/acord_mudo - Copy.pdf
+   ✓ Successfully extracted 30 fields
+[3/6] Preparing data...
+[2/4] Preparing data for analysis
+   ✓ Property data prepared: 1 property
+   ✓ Claims data prepared: 3 claims
+[4/6] Performing risk analysis...
+[3/4] Performing risk analysis
+   ✓ Risk analysis complete
+   ✓ Overall Risk Score: 66.7% (HIGH)
+   ✓ Recommendation: REFER TO SENIOR UNDERWRITER
+[5/6] Generating reports...
+[4/4] Generating PDF report
+   ✓ PDF report generated: ./temp_output/reports/Underwriting_Report_Mudo_20260108_105201.pdf
+    ✓ HTML Report generated: ./temp_output/Report_Mudo_20260108_105201.html
+[6/6] Uploading to OneDrive output folder...
+   ✓ Found existing output folder: Output_attachments
+   ✓ Uploaded to OneDrive: Report_Mudo_20260108_105201.html
+
+✓ PROCESSING COMPLETE
+   HTML: Report_Mudo_20260108_105201.html
+   Risk Score: 66.7%
+   Risk Level: HIGH
+
+→ Found matching file #57: acord_mudow.pdf
+
+======================================================================
+PROCESSING: acord_mudow.pdf
+======================================================================
+[1/6] Downloading from OneDrive...
+   ✓ Downloaded: ./temp_input/acord_mudow.pdf
+[2/6] Extracting data from PDF...
+[1/4] Extracting data from PDF: ./temp_input/acord_mudow.pdf
+   ✓ Successfully extracted 30 fields
+[3/6] Preparing data...
+[2/4] Preparing data for analysis
+   ✓ Property data prepared: 1 property
+   ✓ Claims data prepared: 3 claims
+[4/6] Performing risk analysis...
+[3/4] Performing risk analysis
+   ✓ Risk analysis complete
+   ✓ Overall Risk Score: 66.7% (HIGH)
+   ✓ Recommendation: REFER TO SENIOR UNDERWRITER
+[5/6] Generating reports...
+[4/4] Generating PDF report
+   ✓ PDF report generated: ./temp_output/reports/Underwriting_Report_Mudo_20260108_105433.pdf
+    ✓ HTML Report generated: ./temp_output/Report_Mudo_20260108_105433.html
+[6/6] Uploading to OneDrive output folder...
+   ✓ Found existing output folder: Output_attachments
+   ✓ Uploaded to OneDrive: Report_Mudo_20260108_105433.html
+
+✓ PROCESSING COMPLETE
+   HTML: Report_Mudo_20260108_105433.html
+   Risk Score: 66.7%
+   Risk Level: HIGH
+
+[!] REMOTE RESET DETECTED: Clearing processed_cache...
+✓ Cache cleared. Re-scanning all files in folder.
+
+⊘ Skipped (no 'acord_' prefix): C3_HansZane_Quickbites.pdf
+
+→ Found matching file #58: acord_quickbites 2 - Copy (3).pdf
+
+======================================================================
+PROCESSING: acord_quickbites 2 - Copy (3).pdf
+======================================================================
+[1/6] Downloading from OneDrive...
+   ✓ Downloaded: ./temp_input/acord_quickbites 2 - Copy (3).pdf
+[2/6] Extracting data from PDF...
+[1/4] Extracting data from PDF: ./temp_input/acord_quickbites 2 - Copy (3).pdf
+   ✓ Successfully extracted 30 fields
+[3/6] Preparing data...
+[2/4] Preparing data for analysis
+   ✓ Property data prepared: 1 property
+   ✓ Claims data prepared: 2 claims
+[4/6] Performing risk analysis...
+[3/4] Performing risk analysis
+   ✓ Risk analysis complete
+   ✓ Overall Risk Score: 22.3% (LOW)
+   ✓ Recommendation: AUTO-BIND ELIGIBLE
+[5/6] Generating reports...
+[4/4] Generating PDF report
+   ✓ PDF report generated: ./temp_output/reports/Underwriting_Report_Quickbites_20260108_110009.pdf
+    ✓ HTML Report generated: ./temp_output/Report_Quickbites_20260108_110009.html
+[6/6] Uploading to OneDrive output folder...
+   ✓ Found existing output folder: Output_attachments
+   ✓ Uploaded to OneDrive: Report_Quickbites_20260108_110009.html
+
+✓ PROCESSING COMPLETE
+   HTML: Report_Quickbites_20260108_110009.html
+   Risk Score: 22.3%
+   Risk Level: LOW
+
+[!] REMOTE RESET DETECTED: Clearing processed_cache...
+✓ Cache cleared. Re-scanning all files in folder.
+
+
+→ Found matching file #59: acord_quickbites 2 - Copy (3).pdf
+
+======================================================================
+PROCESSING: acord_quickbites 2 - Copy (3).pdf
+======================================================================
+[1/6] Downloading from OneDrive...
+   ✓ Downloaded: ./temp_input/acord_quickbites 2 - Copy (3).pdf
+[2/6] Extracting data from PDF...
+[1/4] Extracting data from PDF: ./temp_input/acord_quickbites 2 - Copy (3).pdf
+   ✓ Successfully extracted 30 fields
+[3/6] Preparing data...
+[2/4] Preparing data for analysis
+   ✓ Property data prepared: 1 property
+   ✓ Claims data prepared: 2 claims
+[4/6] Performing risk analysis...
+[3/4] Performing risk analysis
+   ✓ Risk analysis complete
+   ✓ Overall Risk Score: 22.3% (LOW)
+   ✓ Recommendation: AUTO-BIND ELIGIBLE
+[5/6] Generating reports...
+[4/4] Generating PDF report
+   ✓ PDF report generated: ./temp_output/reports/Underwriting_Report_Quickbites_20260108_110503.pdf
+    ✓ HTML Report generated: ./temp_output/Report_Quickbites_20260108_110503.html
+[6/6] Uploading to OneDrive output folder...
+   ✓ Found existing output folder: Output_attachments
+   ✓ Uploaded to OneDrive: Report_Quickbites_20260108_110503.html
+
+✓ PROCESSING COMPLETE
+   HTML: Report_Quickbites_20260108_110503.html
+   Risk Score: 22.3%
+   Risk Level: LOW
+
+[!] REMOTE RESET DETECTED: Clearing processed_cache...
+✓ Cache cleared. Re-scanning all files in folder.
+
+
+→ Found matching file #60: acord_quickbites 2 - Copy (3).pdf
+
+======================================================================
+PROCESSING: acord_quickbites 2 - Copy (3).pdf
+======================================================================
+[1/6] Downloading from OneDrive...
+   ✓ Downloaded: ./temp_input/acord_quickbites 2 - Copy (3).pdf
+[2/6] Extracting data from PDF...
+[1/4] Extracting data from PDF: ./temp_input/acord_quickbites 2 - Copy (3).pdf
+   ✓ Successfully extracted 30 fields
+[3/6] Preparing data...
+[2/4] Preparing data for analysis
+   ✓ Property data prepared: 1 property
+   ✓ Claims data prepared: 2 claims
+[4/6] Performing risk analysis...
+[3/4] Performing risk analysis
+   ✓ Risk analysis complete
+   ✓ Overall Risk Score: 22.3% (LOW)
+   ✓ Recommendation: AUTO-BIND ELIGIBLE
+[5/6] Generating reports...
+[4/4] Generating PDF report
+   ✓ PDF report generated: ./temp_output/reports/Underwriting_Report_Quickbites_20260108_111050.pdf
+    ✓ HTML Report generated: ./temp_output/Report_Quickbites_20260108_111050.html
+[6/6] Uploading to OneDrive output folder...
+   ✓ Found existing output folder: Output_attachments
+   ✓ Uploaded to OneDrive: Report_Quickbites_20260108_111050.html
+
+✓ PROCESSING COMPLETE
+   HTML: Report_Quickbites_20260108_111050.html
+   Risk Score: 22.3%
+   Risk Level: LOW
+
+[!] REMOTE RESET DETECTED: Clearing processed_cache...
+✓ Cache cleared. Re-scanning all files in folder.
+
+
+[!] REMOTE RESET DETECTED: Clearing processed_cache...
+✓ Cache cleared. Re-scanning all files in folder.
+
+⊘ Skipped (no 'acord_' prefix): HansZane_Claim_Form_pdf.pdf
+
+→ Found matching file #61: acord_jetwire.pdf
+
+======================================================================
+PROCESSING: acord_jetwire.pdf
+======================================================================
+[1/6] Downloading from OneDrive...
+   ✓ Downloaded: ./temp_input/acord_jetwire.pdf
+[2/6] Extracting data from PDF...
+[1/4] Extracting data from PDF: ./temp_input/acord_jetwire.pdf
+incorrect startxref pointer(3)
+parsing for Object Streams
+   ✓ Successfully extracted 29 fields
+[3/6] Preparing data...
+[2/4] Preparing data for analysis
+   ✓ Property data prepared: 1 property
+   ✓ Claims data prepared: 0 claims
+[4/6] Performing risk analysis...
+[3/4] Performing risk analysis
+   ✓ Risk analysis complete
+   ✓ Overall Risk Score: 47.8% (MEDIUM)
+   ✓ Recommendation: STANDARD REVIEW
+[5/6] Generating reports...
+[4/4] Generating PDF report
+Warning: No claims data provided. Report will be generated without claims history.
+   ✓ PDF report generated: ./temp_output/reports/Underwriting_Report_Jetwire_20260108_115434.pdf
+    ✓ HTML Report generated: ./temp_output/Report_Jetwire_20260108_115434.html
+[6/6] Uploading to OneDrive output folder...
+   ✓ Found existing output folder: Output_attachments
+   ✓ Uploaded to OneDrive: Report_Jetwire_20260108_115434.html
+
+✓ PROCESSING COMPLETE
+   HTML: Report_Jetwire_20260108_115434.html
+   Risk Score: 47.8%
+   Risk Level: MEDIUM
+
+✗ Watcher error: Failed to list files: 500 Server Error: Internal Server Error for url: https://graph.microsoft.com/v1.0/users/karan.panchal@datasciencewizards.ai/drive/root/search(q='Input_attachments')
+Traceback (most recent call last):
+  File "/external-volume/goldenbear_outlook/claims_likelihood/onedrive_client_app.py", line 77, in list_files
+    response.raise_for_status()
+    ~~~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "/home/jrspy/miniconda3/envs/quote/lib/python3.13/site-packages/requests/models.py", line 1026, in raise_for_status
+    raise HTTPError(http_error_msg, response=self)
+requests.exceptions.HTTPError: 500 Server Error: Internal Server Error for url: https://graph.microsoft.com/v1.0/users/karan.panchal@datasciencewizards.ai/drive/root/search(q='Input_attachments')
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/external-volume/goldenbear_outlook/claims_likelihood/main_od.py", line 361, in watch_and_process
+    files = self.input_client.list_files()
+  File "/external-volume/goldenbear_outlook/claims_likelihood/onedrive_client_app.py", line 116, in list_files
+    raise Exception(f"Failed to list files: {str(e)}")
+Exception: Failed to list files: 500 Server Error: Internal Server Error for url: https://graph.microsoft.com/v1.0/users/karan.panchal@datasciencewizards.ai/drive/root/search(q='Input_attachments')
+
+✗ Watcher error: Failed to list files: 500 Server Error: Internal Server Error for url: https://graph.microsoft.com/v1.0/users/karan.panchal@datasciencewizards.ai/drive/root/search(q='Input_attachments')
+Traceback (most recent call last):
+  File "/external-volume/goldenbear_outlook/claims_likelihood/onedrive_client_app.py", line 77, in list_files
+    response.raise_for_status()
+    ~~~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "/home/jrspy/miniconda3/envs/quote/lib/python3.13/site-packages/requests/models.py", line 1026, in raise_for_status
+    raise HTTPError(http_error_msg, response=self)
+requests.exceptions.HTTPError: 500 Server Error: Internal Server Error for url: https://graph.microsoft.com/v1.0/users/karan.panchal@datasciencewizards.ai/drive/root/search(q='Input_attachments')
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/external-volume/goldenbear_outlook/claims_likelihood/main_od.py", line 361, in watch_and_process
+    files = self.input_client.list_files()
+  File "/external-volume/goldenbear_outlook/claims_likelihood/onedrive_client_app.py", line 116, in list_files
+    raise Exception(f"Failed to list files: {str(e)}")
+Exception: Failed to list files: 500 Server Error: Internal Server Error for url: https://graph.microsoft.com/v1.0/users/karan.panchal@datasciencewizards.ai/drive/root/search(q='Input_attachments')
+
+→ Found matching file #62: acord_quickbites 2 - Copy (3).pdf
+
+======================================================================
+PROCESSING: acord_quickbites 2 - Copy (3).pdf
+======================================================================
+[1/6] Downloading from OneDrive...
+   ✓ Downloaded: ./temp_input/acord_quickbites 2 - Copy (3).pdf
+[2/6] Extracting data from PDF...
+[1/4] Extracting data from PDF: ./temp_input/acord_quickbites 2 - Copy (3).pdf
+   ✓ Successfully extracted 30 fields
+[3/6] Preparing data...
+[2/4] Preparing data for analysis
+   ✓ Property data prepared: 1 property
+   ✓ Claims data prepared: 2 claims
+[4/6] Performing risk analysis...
+[3/4] Performing risk analysis
+   ✓ Risk analysis complete
+   ✓ Overall Risk Score: 22.3% (LOW)
+   ✓ Recommendation: AUTO-BIND ELIGIBLE
+[5/6] Generating reports...
+[4/4] Generating PDF report
+   ✓ PDF report generated: ./temp_output/reports/Underwriting_Report_Quickbites_20260108_122307.pdf
+    ✓ HTML Report generated: ./temp_output/Report_Quickbites_20260108_122307.html
+[6/6] Uploading to OneDrive output folder...
+   ✓ Found existing output folder: Output_attachments
+   ✓ Uploaded to OneDrive: Report_Quickbites_20260108_122307.html
+
+✓ PROCESSING COMPLETE
+   HTML: Report_Quickbites_20260108_122307.html
+   Risk Score: 22.3%
+   Risk Level: LOW
+⊘ Skipped (no 'acord_' prefix): C3_HansZane_Quickbites.pdf
+
+→ Found matching file #63: acord_quickbites 3.pdf
+
+======================================================================
+PROCESSING: acord_quickbites 3.pdf
+======================================================================
+[1/6] Downloading from OneDrive...
+   ✓ Downloaded: ./temp_input/acord_quickbites 3.pdf
+[2/6] Extracting data from PDF...
+[1/4] Extracting data from PDF: ./temp_input/acord_quickbites 3.pdf
+incorrect startxref pointer(1)
+parsing for Object Streams
+   ✓ Successfully extracted 30 fields
+[3/6] Preparing data...
+[2/4] Preparing data for analysis
+   ✓ Property data prepared: 1 property
+   ✓ Claims data prepared: 2 claims
+[4/6] Performing risk analysis...
+[3/4] Performing risk analysis
+   ✓ Risk analysis complete
+   ✓ Overall Risk Score: 22.3% (LOW)
+   ✓ Recommendation: AUTO-BIND ELIGIBLE
+[5/6] Generating reports...
+[4/4] Generating PDF report
+   ✓ PDF report generated: ./temp_output/reports/Underwriting_Report_Quickbites_20260108_123947.pdf
+    ✓ HTML Report generated: ./temp_output/Report_Quickbites_20260108_123947.html
+[6/6] Uploading to OneDrive output folder...
+   ✓ Found existing output folder: Output_attachments
+   ✓ Uploaded to OneDrive: Report_Quickbites_20260108_123947.html
+
+✓ PROCESSING COMPLETE
+   HTML: Report_Quickbites_20260108_123947.html
+   Risk Score: 22.3%
+   Risk Level: LOW
+
+→ Found matching file #64: acord_jetwire 1 - Copy (2).pdf
+
+======================================================================
+PROCESSING: acord_jetwire 1 - Copy (2).pdf
+======================================================================
+[1/6] Downloading from OneDrive...
+   ✓ Downloaded: ./temp_input/acord_jetwire 1 - Copy (2).pdf
+[2/6] Extracting data from PDF...
+[1/4] Extracting data from PDF: ./temp_input/acord_jetwire 1 - Copy (2).pdf
+incorrect startxref pointer(3)
+parsing for Object Streams
+   ✓ Successfully extracted 29 fields
+[3/6] Preparing data...
+[2/4] Preparing data for analysis
+   ✓ Property data prepared: 1 property
+   ✓ Claims data prepared: 0 claims
+[4/6] Performing risk analysis...
+[3/4] Performing risk analysis
+   ✓ Risk analysis complete
+   ✓ Overall Risk Score: 47.8% (MEDIUM)
+   ✓ Recommendation: STANDARD REVIEW
+[5/6] Generating reports...
+[4/4] Generating PDF report
+Warning: No claims data provided. Report will be generated without claims history.
+   ✓ PDF report generated: ./temp_output/reports/Underwriting_Report_Jetwire_20260108_125548.pdf
+    ✓ HTML Report generated: ./temp_output/Report_Jetwire_20260108_125548.html
+[6/6] Uploading to OneDrive output folder...
+   ✓ Found existing output folder: Output_attachments
+   ✓ Uploaded to OneDrive: Report_Jetwire_20260108_125548.html
+
+✓ PROCESSING COMPLETE
+   HTML: Report_Jetwire_20260108_125548.html
+   Risk Score: 47.8%
+   Risk Level: MEDIUM
+
+→ Found matching file #65: acord_mudow.pdf
+
+======================================================================
+PROCESSING: acord_mudow.pdf
+======================================================================
+[1/6] Downloading from OneDrive...
+   ✓ Downloaded: ./temp_input/acord_mudow.pdf
+[2/6] Extracting data from PDF...
+[1/4] Extracting data from PDF: ./temp_input/acord_mudow.pdf
+   ✓ Successfully extracted 30 fields
+[3/6] Preparing data...
+[2/4] Preparing data for analysis
+   ✓ Property data prepared: 1 property
+   ✓ Claims data prepared: 3 claims
+[4/6] Performing risk analysis...
+[3/4] Performing risk analysis
+   ✓ Risk analysis complete
+   ✓ Overall Risk Score: 66.7% (HIGH)
+   ✓ Recommendation: REFER TO SENIOR UNDERWRITER
+[5/6] Generating reports...
+[4/4] Generating PDF report
+   ✓ PDF report generated: ./temp_output/reports/Underwriting_Report_Mudo_20260108_131334.pdf
+    ✓ HTML Report generated: ./temp_output/Report_Mudo_20260108_131334.html
+[6/6] Uploading to OneDrive output folder...
+   ✓ Found existing output folder: Output_attachments
+   ✓ Uploaded to OneDrive: Report_Mudo_20260108_131334.html
+
+✓ PROCESSING COMPLETE
+   HTML: Report_Mudo_20260108_131334.html
+   Risk Score: 66.7%
+   Risk Level: HIGH
+
+[!] REMOTE RESET DETECTED: Clearing processed_cache...
+✓ Cache cleared. Re-scanning all files in folder.
+
+
+→ Found matching file #66: acord_mudow.pdf
+
+======================================================================
+PROCESSING: acord_mudow.pdf
+======================================================================
+[1/6] Downloading from OneDrive...
+   ✓ Downloaded: ./temp_input/acord_mudow.pdf
+[2/6] Extracting data from PDF...
+[1/4] Extracting data from PDF: ./temp_input/acord_mudow.pdf
+   ✓ Successfully extracted 30 fields
+[3/6] Preparing data...
+[2/4] Preparing data for analysis
+   ✓ Property data prepared: 1 property
+   ✓ Claims data prepared: 3 claims
+[4/6] Performing risk analysis...
+[3/4] Performing risk analysis
+   ✓ Risk analysis complete
+   ✓ Overall Risk Score: 66.7% (HIGH)
+   ✓ Recommendation: REFER TO SENIOR UNDERWRITER
+[5/6] Generating reports...
+[4/4] Generating PDF report
+   ✓ PDF report generated: ./temp_output/reports/Underwriting_Report_Mudo_20260108_163643.pdf
+    ✓ HTML Report generated: ./temp_output/Report_Mudo_20260108_163643.html
+[6/6] Uploading to OneDrive output folder...
+   ✓ Found existing output folder: Output_attachments
+   ✓ Uploaded to OneDrive: Report_Mudo_20260108_163643.html
+
+✓ PROCESSING COMPLETE
+   HTML: Report_Mudo_20260108_163643.html
+   Risk Score: 66.7%
+   Risk Level: HIGH
+⊘ Skipped (no 'acord_' prefix): C3_HansZane_Quickbites.pdf
+
+✗ Watcher error: Failed to list files: 500 Server Error: Internal Server Error for url: https://graph.microsoft.com/v1.0/users/karan.panchal@datasciencewizards.ai/drive/root/search(q='Input_attachments')
+Traceback (most recent call last):
+  File "/external-volume/goldenbear_outlook/claims_likelihood/onedrive_client_app.py", line 77, in list_files
+    response.raise_for_status()
+    ~~~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "/home/jrspy/miniconda3/envs/quote/lib/python3.13/site-packages/requests/models.py", line 1026, in raise_for_status
+    raise HTTPError(http_error_msg, response=self)
+requests.exceptions.HTTPError: 500 Server Error: Internal Server Error for url: https://graph.microsoft.com/v1.0/users/karan.panchal@datasciencewizards.ai/drive/root/search(q='Input_attachments')
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/external-volume/goldenbear_outlook/claims_likelihood/main_od.py", line 361, in watch_and_process
+    files = self.input_client.list_files()
+  File "/external-volume/goldenbear_outlook/claims_likelihood/onedrive_client_app.py", line 116, in list_files
+    raise Exception(f"Failed to list files: {str(e)}")
+Exception: Failed to list files: 500 Server Error: Internal Server Error for url: https://graph.microsoft.com/v1.0/users/karan.panchal@datasciencewizards.ai/drive/root/search(q='Input_attachments')
+
+✗ Watcher error: Failed to list files: 500 Server Error: Internal Server Error for url: https://graph.microsoft.com/v1.0/users/karan.panchal@datasciencewizards.ai/drive/root/search(q='Input_attachments')
+Traceback (most recent call last):
+  File "/external-volume/goldenbear_outlook/claims_likelihood/onedrive_client_app.py", line 77, in list_files
+    response.raise_for_status()
+    ~~~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "/home/jrspy/miniconda3/envs/quote/lib/python3.13/site-packages/requests/models.py", line 1026, in raise_for_status
+    raise HTTPError(http_error_msg, response=self)
+requests.exceptions.HTTPError: 500 Server Error: Internal Server Error for url: https://graph.microsoft.com/v1.0/users/karan.panchal@datasciencewizards.ai/drive/root/search(q='Input_attachments')
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/external-volume/goldenbear_outlook/claims_likelihood/main_od.py", line 361, in watch_and_process
+    files = self.input_client.list_files()
+  File "/external-volume/goldenbear_outlook/claims_likelihood/onedrive_client_app.py", line 116, in list_files
+    raise Exception(f"Failed to list files: {str(e)}")
+Exception: Failed to list files: 500 Server Error: Internal Server Error for url: https://graph.microsoft.com/v1.0/users/karan.panchal@datasciencewizards.ai/drive/root/search(q='Input_attachments')
+
+→ Found matching file #67: acord_quickbites 2 - Copy (3).pdf
+
+======================================================================
+PROCESSING: acord_quickbites 2 - Copy (3).pdf
+======================================================================
+[1/6] Downloading from OneDrive...
+   ✓ Downloaded: ./temp_input/acord_quickbites 2 - Copy (3).pdf
+[2/6] Extracting data from PDF...
+[1/4] Extracting data from PDF: ./temp_input/acord_quickbites 2 - Copy (3).pdf
+   ✓ Successfully extracted 30 fields
+[3/6] Preparing data...
+[2/4] Preparing data for analysis
+   ✓ Property data prepared: 1 property
+   ✓ Claims data prepared: 2 claims
+[4/6] Performing risk analysis...
+[3/4] Performing risk analysis
+   ✓ Risk analysis complete
+   ✓ Overall Risk Score: 22.3% (LOW)
+   ✓ Recommendation: AUTO-BIND ELIGIBLE
+[5/6] Generating reports...
+[4/4] Generating PDF report
+   ✓ PDF report generated: ./temp_output/reports/Underwriting_Report_Quickbites_20260109_051502.pdf
+    ✓ HTML Report generated: ./temp_output/Report_Quickbites_20260109_051502.html
+[6/6] Uploading to OneDrive output folder...
+   ✓ Found existing output folder: Output_attachments
+   ✓ Uploaded to OneDrive: Report_Quickbites_20260109_051502.html
+
+✓ PROCESSING COMPLETE
+   HTML: Report_Quickbites_20260109_051502.html
+   Risk Score: 22.3%
+   Risk Level: LOW
+
+[!] REMOTE RESET DETECTED: Clearing processed_cache...
+✓ Cache cleared. Re-scanning all files in folder.
+
+⊘ Skipped (no 'acord_' prefix): jetwire_jhon_Claim_pdf.pdf
+
+→ Found matching file #68: acord_quickbites 3.pdf
+
+======================================================================
+PROCESSING: acord_quickbites 3.pdf
+======================================================================
+[1/6] Downloading from OneDrive...
+   ✓ Downloaded: ./temp_input/acord_quickbites 3.pdf
+[2/6] Extracting data from PDF...
+[1/4] Extracting data from PDF: ./temp_input/acord_quickbites 3.pdf
+incorrect startxref pointer(1)
+parsing for Object Streams
+   ✓ Successfully extracted 30 fields
+[3/6] Preparing data...
+[2/4] Preparing data for analysis
+   ✓ Property data prepared: 1 property
+   ✓ Claims data prepared: 2 claims
+[4/6] Performing risk analysis...
+[3/4] Performing risk analysis
+   ✓ Risk analysis complete
+   ✓ Overall Risk Score: 22.3% (LOW)
+   ✓ Recommendation: AUTO-BIND ELIGIBLE
+[5/6] Generating reports...
+[4/4] Generating PDF report
+   ✓ PDF report generated: ./temp_output/reports/Underwriting_Report_Quickbites_20260109_052624.pdf
+    ✓ HTML Report generated: ./temp_output/Report_Quickbites_20260109_052624.html
+[6/6] Uploading to OneDrive output folder...
+   ✓ Found existing output folder: Output_attachments
+   ✓ Uploaded to OneDrive: Report_Quickbites_20260109_052624.html
+
+✓ PROCESSING COMPLETE
+   HTML: Report_Quickbites_20260109_052624.html
+   Risk Score: 22.3%
+   Risk Level: LOW
+
+[!] REMOTE RESET DETECTED: Clearing processed_cache...
+✓ Cache cleared. Re-scanning all files in folder.
+
+⊘ Skipped (no 'acord_' prefix): jetwire_jhon_Claim_pdf.pdf
+
+→ Found matching file #69: acord_quickbites 2 - Copy (3).pdf
+
+======================================================================
+PROCESSING: acord_quickbites 2 - Copy (3).pdf
+======================================================================
+[1/6] Downloading from OneDrive...
+   ✓ Downloaded: ./temp_input/acord_quickbites 2 - Copy (3).pdf
+[2/6] Extracting data from PDF...
+[1/4] Extracting data from PDF: ./temp_input/acord_quickbites 2 - Copy (3).pdf
+   ✓ Successfully extracted 30 fields
+[3/6] Preparing data...
+[2/4] Preparing data for analysis
+   ✓ Property data prepared: 1 property
+   ✓ Claims data prepared: 2 claims
+[4/6] Performing risk analysis...
+[3/4] Performing risk analysis
+   ✓ Risk analysis complete
+   ✓ Overall Risk Score: 22.3% (LOW)
+   ✓ Recommendation: AUTO-BIND ELIGIBLE
+[5/6] Generating reports...
+[4/4] Generating PDF report
+   ✓ PDF report generated: ./temp_output/reports/Underwriting_Report_Quickbites_20260109_053325.pdf
+    ✓ HTML Report generated: ./temp_output/Report_Quickbites_20260109_053325.html
+[6/6] Uploading to OneDrive output folder...
+   ✓ Found existing output folder: Output_attachments
+   ✓ Uploaded to OneDrive: Report_Quickbites_20260109_053325.html
+
+✓ PROCESSING COMPLETE
+   HTML: Report_Quickbites_20260109_053325.html
+   Risk Score: 22.3%
+   Risk Level: LOW
+⊘ Skipped (no 'acord_' prefix): C3_HansZane_Quickbites (1).pdf
+⊘ Skipped (no 'acord_' prefix): C3_HansZane_Quickbites.pdf
+
+→ Found matching file #70: acord_mudo.pdf
+
+======================================================================
+PROCESSING: acord_mudo.pdf
+======================================================================
+[1/6] Downloading from OneDrive...
+   ✓ Downloaded: ./temp_input/acord_mudo.pdf
+[2/6] Extracting data from PDF...
+[1/4] Extracting data from PDF: ./temp_input/acord_mudo.pdf
+incorrect startxref pointer(3)
+parsing for Object Streams
+   ✓ Successfully extracted 30 fields
+[3/6] Preparing data...
+[2/4] Preparing data for analysis
+   ✓ Property data prepared: 1 property
+   ✓ Claims data prepared: 3 claims
+[4/6] Performing risk analysis...
+[3/4] Performing risk analysis
+   ✓ Risk analysis complete
+   ✓ Overall Risk Score: 66.7% (HIGH)
+   ✓ Recommendation: REFER TO SENIOR UNDERWRITER
+[5/6] Generating reports...
+[4/4] Generating PDF report
+   ✓ PDF report generated: ./temp_output/reports/Underwriting_Report_Mudo_20260109_054707.pdf
+    ✓ HTML Report generated: ./temp_output/Report_Mudo_20260109_054707.html
+[6/6] Uploading to OneDrive output folder...
+   ✓ Found existing output folder: Output_attachments
+   ✓ Uploaded to OneDrive: Report_Mudo_20260109_054707.html
+
+✓ PROCESSING COMPLETE
+   HTML: Report_Mudo_20260109_054707.html
+   Risk Score: 66.7%
+   Risk Level: HIGH
+⊘ Skipped (no 'acord_' prefix): C1_JohnDoe_Jetwire.pdf
+⊘ Skipped (no 'acord_' prefix): C2_JakeDoe_Mudo.pdf
+
+→ Found matching file #71: acord_jetwire_33.pdf
+
+======================================================================
+PROCESSING: acord_jetwire_33.pdf
+======================================================================
+[1/6] Downloading from OneDrive...
+   ✓ Downloaded: ./temp_input/acord_jetwire_33.pdf
+[2/6] Extracting data from PDF...
+[1/4] Extracting data from PDF: ./temp_input/acord_jetwire_33.pdf
+incorrect startxref pointer(3)
+parsing for Object Streams
+   ✓ Successfully extracted 29 fields
+[3/6] Preparing data...
+[2/4] Preparing data for analysis
+   ✓ Property data prepared: 1 property
+   ✓ Claims data prepared: 0 claims
+[4/6] Performing risk analysis...
+[3/4] Performing risk analysis
+   ✓ Risk analysis complete
+   ✓ Overall Risk Score: 47.8% (MEDIUM)
+   ✓ Recommendation: STANDARD REVIEW
+[5/6] Generating reports...
+[4/4] Generating PDF report
+Warning: No claims data provided. Report will be generated without claims history.
+   ✓ PDF report generated: ./temp_output/reports/Underwriting_Report_Jetwire_20260109_061754.pdf
+    ✓ HTML Report generated: ./temp_output/Report_Jetwire_20260109_061754.html
+[6/6] Uploading to OneDrive output folder...
+   ✓ Found existing output folder: Output_attachments
+   ✓ Uploaded to OneDrive: Report_Jetwire_20260109_061754.html
+
+✓ PROCESSING COMPLETE
+   HTML: Report_Jetwire_20260109_061754.html
+   Risk Score: 47.8%
+   Risk Level: MEDIUM
+
+→ Found matching file #72: acord_jetwire.pdf
+
+======================================================================
+PROCESSING: acord_jetwire.pdf
+======================================================================
+[1/6] Downloading from OneDrive...
+   ✓ Downloaded: ./temp_input/acord_jetwire.pdf
+[2/6] Extracting data from PDF...
+[1/4] Extracting data from PDF: ./temp_input/acord_jetwire.pdf
+incorrect startxref pointer(3)
+parsing for Object Streams
+   ✓ Successfully extracted 29 fields
+[3/6] Preparing data...
+[2/4] Preparing data for analysis
+   ✓ Property data prepared: 1 property
+   ✓ Claims data prepared: 0 claims
+[4/6] Performing risk analysis...
+[3/4] Performing risk analysis
+   ✓ Risk analysis complete
+   ✓ Overall Risk Score: 47.8% (MEDIUM)
+   ✓ Recommendation: STANDARD REVIEW
+[5/6] Generating reports...
+[4/4] Generating PDF report
+Warning: No claims data provided. Report will be generated without claims history.
+   ✓ PDF report generated: ./temp_output/reports/Underwriting_Report_Jetwire_20260109_062017.pdf
+    ✓ HTML Report generated: ./temp_output/Report_Jetwire_20260109_062017.html
+[6/6] Uploading to OneDrive output folder...
+   ✓ Found existing output folder: Output_attachments
+   ✓ Uploaded to OneDrive: Report_Jetwire_20260109_062017.html
+
+✓ PROCESSING COMPLETE
+   HTML: Report_Jetwire_20260109_062017.html
+   Risk Score: 47.8%
+   Risk Level: MEDIUM
+
+[!] REMOTE RESET DETECTED: Clearing processed_cache...
+✓ Cache cleared. Re-scanning all files in folder.
+
+⊘ Skipped (no 'acord_' prefix): C1_JohnDoe_Jetwire.pdf
+
+→ Found matching file #73: acord_quickbites 2 - Copy (3).pdf
+
+======================================================================
+PROCESSING: acord_quickbites 2 - Copy (3).pdf
+======================================================================
+[1/6] Downloading from OneDrive...
+   ✓ Downloaded: ./temp_input/acord_quickbites 2 - Copy (3).pdf
+[2/6] Extracting data from PDF...
+[1/4] Extracting data from PDF: ./temp_input/acord_quickbites 2 - Copy (3).pdf
+   ✓ Successfully extracted 30 fields
+[3/6] Preparing data...
+[2/4] Preparing data for analysis
+   ✓ Property data prepared: 1 property
+   ✓ Claims data prepared: 2 claims
+[4/6] Performing risk analysis...
+[3/4] Performing risk analysis
+   ✓ Risk analysis complete
+   ✓ Overall Risk Score: 22.3% (LOW)
+   ✓ Recommendation: AUTO-BIND ELIGIBLE
+[5/6] Generating reports...
+[4/4] Generating PDF report
+   ✓ PDF report generated: ./temp_output/reports/Underwriting_Report_Quickbites_20260109_062753.pdf
+    ✓ HTML Report generated: ./temp_output/Report_Quickbites_20260109_062753.html
+[6/6] Uploading to OneDrive output folder...
+   ✓ Found existing output folder: Output_attachments
+   ✓ Uploaded to OneDrive: Report_Quickbites_20260109_062753.html
+
+✓ PROCESSING COMPLETE
+   HTML: Report_Quickbites_20260109_062753.html
+   Risk Score: 22.3%
+   Risk Level: LOW
+
+[!] REMOTE RESET DETECTED: Clearing processed_cache...
+✓ Cache cleared. Re-scanning all files in folder.
+
+⊘ Skipped (no 'acord_' prefix): C1_JohnDoe_Jetwire.pdf
+
+→ Found matching file #74: acord_quickbites 2 - Copy (3).pdf
+
+======================================================================
+PROCESSING: acord_quickbites 2 - Copy (3).pdf
+======================================================================
+[1/6] Downloading from OneDrive...
+   ✓ Downloaded: ./temp_input/acord_quickbites 2 - Copy (3).pdf
+[2/6] Extracting data from PDF...
+[1/4] Extracting data from PDF: ./temp_input/acord_quickbites 2 - Copy (3).pdf
+   ✓ Successfully extracted 30 fields
+[3/6] Preparing data...
+[2/4] Preparing data for analysis
+   ✓ Property data prepared: 1 property
+   ✓ Claims data prepared: 2 claims
+[4/6] Performing risk analysis...
+[3/4] Performing risk analysis
+   ✓ Risk analysis complete
+   ✓ Overall Risk Score: 22.3% (LOW)
+   ✓ Recommendation: AUTO-BIND ELIGIBLE
+[5/6] Generating reports...
+[4/4] Generating PDF report
+   ✓ PDF report generated: ./temp_output/reports/Underwriting_Report_Quickbites_20260109_062805.pdf
+    ✓ HTML Report generated: ./temp_output/Report_Quickbites_20260109_062805.html
+[6/6] Uploading to OneDrive output folder...
+   ✓ Found existing output folder: Output_attachments
+   ✓ Uploaded to OneDrive: Report_Quickbites_20260109_062805.html
+
+✓ PROCESSING COMPLETE
+   HTML: Report_Quickbites_20260109_062805.html
+   Risk Score: 22.3%
+   Risk Level: LOW
+⊘ Skipped (no 'acord_' prefix): C3_HansZane_Quickbites.pdf
+⊘ Skipped (no 'acord_' prefix): C2_JakeDoe_Mudo.pdf
+
+→ Found matching file #75: acord_mudo.pdf
+
+======================================================================
+PROCESSING: acord_mudo.pdf
+======================================================================
+[1/6] Downloading from OneDrive...
+   ✓ Downloaded: ./temp_input/acord_mudo.pdf
+[2/6] Extracting data from PDF...
+[1/4] Extracting data from PDF: ./temp_input/acord_mudo.pdf
+incorrect startxref pointer(3)
+parsing for Object Streams
+   ✓ Successfully extracted 30 fields
+[3/6] Preparing data...
+[2/4] Preparing data for analysis
+   ✓ Property data prepared: 1 property
+   ✓ Claims data prepared: 3 claims
+[4/6] Performing risk analysis...
+[3/4] Performing risk analysis
+   ✓ Risk analysis complete
+   ✓ Overall Risk Score: 66.7% (HIGH)
+   ✓ Recommendation: REFER TO SENIOR UNDERWRITER
+[5/6] Generating reports...
+[4/4] Generating PDF report
+   ✓ PDF report generated: ./temp_output/reports/Underwriting_Report_Mudo_20260109_071725.pdf
+    ✓ HTML Report generated: ./temp_output/Report_Mudo_20260109_071725.html
+[6/6] Uploading to OneDrive output folder...
+   ✓ Found existing output folder: Output_attachments
+   ✓ Uploaded to OneDrive: Report_Mudo_20260109_071725.html
+
+✓ PROCESSING COMPLETE
+   HTML: Report_Mudo_20260109_071725.html
+   Risk Score: 66.7%
+   Risk Level: HIGH
+
+→ Found matching file #76: acord_mudow.pdf
+
+======================================================================
+PROCESSING: acord_mudow.pdf
+======================================================================
+[1/6] Downloading from OneDrive...
+   ✓ Downloaded: ./temp_input/acord_mudow.pdf
+[2/6] Extracting data from PDF...
+[1/4] Extracting data from PDF: ./temp_input/acord_mudow.pdf
+   ✓ Successfully extracted 30 fields
+[3/6] Preparing data...
+[2/4] Preparing data for analysis
+   ✓ Property data prepared: 1 property
+   ✓ Claims data prepared: 3 claims
+[4/6] Performing risk analysis...
+[3/4] Performing risk analysis
+   ✓ Risk analysis complete
+   ✓ Overall Risk Score: 66.7% (HIGH)
+   ✓ Recommendation: REFER TO SENIOR UNDERWRITER
+[5/6] Generating reports...
+[4/4] Generating PDF report
+   ✓ PDF report generated: ./temp_output/reports/Underwriting_Report_Mudo_20260109_071809.pdf
+    ✓ HTML Report generated: ./temp_output/Report_Mudo_20260109_071809.html
+[6/6] Uploading to OneDrive output folder...
+   ✓ Found existing output folder: Output_attachments
+   ✓ Uploaded to OneDrive: Report_Mudo_20260109_071809.html
+
+✓ PROCESSING COMPLETE
+   HTML: Report_Mudo_20260109_071809.html
+   Risk Score: 66.7%
+   Risk Level: HIGH
+
+[!] REMOTE RESET DETECTED: Clearing processed_cache...
+✓ Cache cleared. Re-scanning all files in folder.
+
+
+[!] REMOTE RESET DETECTED: Clearing processed_cache...
+✓ Cache cleared. Re-scanning all files in folder.
+
+
+→ Found matching file #77: acord_mudow.pdf
+
+======================================================================
+PROCESSING: acord_mudow.pdf
+======================================================================
+[1/6] Downloading from OneDrive...
+   ✓ Downloaded: ./temp_input/acord_mudow.pdf
+[2/6] Extracting data from PDF...
+[1/4] Extracting data from PDF: ./temp_input/acord_mudow.pdf
+   ✓ Successfully extracted 30 fields
+[3/6] Preparing data...
+[2/4] Preparing data for analysis
+   ✓ Property data prepared: 1 property
+   ✓ Claims data prepared: 3 claims
+[4/6] Performing risk analysis...
+[3/4] Performing risk analysis
+   ✓ Risk analysis complete
+   ✓ Overall Risk Score: 66.7% (HIGH)
+   ✓ Recommendation: REFER TO SENIOR UNDERWRITER
+[5/6] Generating reports...
+[4/4] Generating PDF report
+   ✓ PDF report generated: ./temp_output/reports/Underwriting_Report_Mudo_20260109_073233.pdf
+    ✓ HTML Report generated: ./temp_output/Report_Mudo_20260109_073233.html
+[6/6] Uploading to OneDrive output folder...
+   ✓ Found existing output folder: Output_attachments
+   ✓ Uploaded to OneDrive: Report_Mudo_20260109_073233.html
+
+✓ PROCESSING COMPLETE
+   HTML: Report_Mudo_20260109_073233.html
+   Risk Score: 66.7%
+   Risk Level: HIGH
+
+[!] REMOTE RESET DETECTED: Clearing processed_cache...
+✓ Cache cleared. Re-scanning all files in folder.
+
+
+→ Found matching file #78: acord_mudow.pdf
+
+======================================================================
+PROCESSING: acord_mudow.pdf
+======================================================================
+[1/6] Downloading from OneDrive...
+   ✓ Downloaded: ./temp_input/acord_mudow.pdf
+[2/6] Extracting data from PDF...
+[1/4] Extracting data from PDF: ./temp_input/acord_mudow.pdf
+   ✓ Successfully extracted 30 fields
+[3/6] Preparing data...
+[2/4] Preparing data for analysis
+   ✓ Property data prepared: 1 property
+   ✓ Claims data prepared: 3 claims
+[4/6] Performing risk analysis...
+[3/4] Performing risk analysis
+   ✓ Risk analysis complete
+   ✓ Overall Risk Score: 66.7% (HIGH)
+   ✓ Recommendation: REFER TO SENIOR UNDERWRITER
+[5/6] Generating reports...
+[4/4] Generating PDF report
+   ✓ PDF report generated: ./temp_output/reports/Underwriting_Report_Mudo_20260109_075042.pdf
+    ✓ HTML Report generated: ./temp_output/Report_Mudo_20260109_075042.html
+[6/6] Uploading to OneDrive output folder...
+   ✓ Found existing output folder: Output_attachments
+   ✓ Uploaded to OneDrive: Report_Mudo_20260109_075042.html
+
+✓ PROCESSING COMPLETE
+   HTML: Report_Mudo_20260109_075042.html
+   Risk Score: 66.7%
+   Risk Level: HIGH
+
+[!] REMOTE RESET DETECTED: Clearing processed_cache...
+✓ Cache cleared. Re-scanning all files in folder.
+
+
+→ Found matching file #79: acord_mudow.pdf
+
+======================================================================
+PROCESSING: acord_mudow.pdf
+======================================================================
+[1/6] Downloading from OneDrive...
+   ✓ Downloaded: ./temp_input/acord_mudow.pdf
+[2/6] Extracting data from PDF...
+[1/4] Extracting data from PDF: ./temp_input/acord_mudow.pdf
+   ✓ Successfully extracted 30 fields
+[3/6] Preparing data...
+[2/4] Preparing data for analysis
+   ✓ Property data prepared: 1 property
+   ✓ Claims data prepared: 3 claims
+[4/6] Performing risk analysis...
+[3/4] Performing risk analysis
+   ✓ Risk analysis complete
+   ✓ Overall Risk Score: 66.7% (HIGH)
+   ✓ Recommendation: REFER TO SENIOR UNDERWRITER
+[5/6] Generating reports...
+[4/4] Generating PDF report
+   ✓ PDF report generated: ./temp_output/reports/Underwriting_Report_Mudo_20260109_075054.pdf
+    ✓ HTML Report generated: ./temp_output/Report_Mudo_20260109_075054.html
+[6/6] Uploading to OneDrive output folder...
+   ✓ Found existing output folder: Output_attachments
+   ✓ Uploaded to OneDrive: Report_Mudo_20260109_075054.html
+
+✓ PROCESSING COMPLETE
+   HTML: Report_Mudo_20260109_075054.html
+   Risk Score: 66.7%
+   Risk Level: HIGH
+
+[!] REMOTE RESET DETECTED: Clearing processed_cache...
+✓ Cache cleared. Re-scanning all files in folder.
+
+
+→ Found matching file #80: acord_mudo.pdf
+
+======================================================================
+PROCESSING: acord_mudo.pdf
+======================================================================
+[1/6] Downloading from OneDrive...
+   ✓ Downloaded: ./temp_input/acord_mudo.pdf
+[2/6] Extracting data from PDF...
+[1/4] Extracting data from PDF: ./temp_input/acord_mudo.pdf
+   ✓ Successfully extracted 30 fields
+[3/6] Preparing data...
+[2/4] Preparing data for analysis
+   ✓ Property data prepared: 1 property
+   ✓ Claims data prepared: 3 claims
+[4/6] Performing risk analysis...
+[3/4] Performing risk analysis
+   ✓ Risk analysis complete
+   ✓ Overall Risk Score: 66.7% (HIGH)
+   ✓ Recommendation: REFER TO SENIOR UNDERWRITER
+[5/6] Generating reports...
+[4/4] Generating PDF report
+   ✓ PDF report generated: ./temp_output/reports/Underwriting_Report_Mudo_20260109_075128.pdf
+    ✓ HTML Report generated: ./temp_output/Report_Mudo_20260109_075128.html
+[6/6] Uploading to OneDrive output folder...
+   ✓ Found existing output folder: Output_attachments
+   ✓ Uploaded to OneDrive: Report_Mudo_20260109_075128.html
+
+✓ PROCESSING COMPLETE
+   HTML: Report_Mudo_20260109_075128.html
+   Risk Score: 66.7%
+   Risk Level: HIGH
+
+→ Found matching file #81: acord_jetwire.pdf
+
+======================================================================
+PROCESSING: acord_jetwire.pdf
+======================================================================
+[1/6] Downloading from OneDrive...
+   ✓ Downloaded: ./temp_input/acord_jetwire.pdf
+[2/6] Extracting data from PDF...
+[1/4] Extracting data from PDF: ./temp_input/acord_jetwire.pdf
+incorrect startxref pointer(3)
+parsing for Object Streams
+   ✓ Successfully extracted 29 fields
+[3/6] Preparing data...
+[2/4] Preparing data for analysis
+   ✓ Property data prepared: 1 property
+   ✓ Claims data prepared: 0 claims
+[4/6] Performing risk analysis...
+[3/4] Performing risk analysis
+   ✓ Risk analysis complete
+   ✓ Overall Risk Score: 47.8% (MEDIUM)
+   ✓ Recommendation: STANDARD REVIEW
+[5/6] Generating reports...
+[4/4] Generating PDF report
+Warning: No claims data provided. Report will be generated without claims history.
+   ✓ PDF report generated: ./temp_output/reports/Underwriting_Report_Jetwire_20260109_075505.pdf
+    ✓ HTML Report generated: ./temp_output/Report_Jetwire_20260109_075505.html
+[6/6] Uploading to OneDrive output folder...
+   ✓ Found existing output folder: Output_attachments
+   ✓ Uploaded to OneDrive: Report_Jetwire_20260109_075505.html
+
+✓ PROCESSING COMPLETE
+   HTML: Report_Jetwire_20260109_075505.html
+   Risk Score: 47.8%
+   Risk Level: MEDIUM
+
+→ Found matching file #82: acord_quickbites 2.pdf
+
+======================================================================
+PROCESSING: acord_quickbites 2.pdf
+======================================================================
+[1/6] Downloading from OneDrive...
+   ✓ Downloaded: ./temp_input/acord_quickbites 2.pdf
+[2/6] Extracting data from PDF...
+[1/4] Extracting data from PDF: ./temp_input/acord_quickbites 2.pdf
+   ✓ Successfully extracted 30 fields
+[3/6] Preparing data...
+[2/4] Preparing data for analysis
+   ✓ Property data prepared: 1 property
+   ✓ Claims data prepared: 2 claims
+[4/6] Performing risk analysis...
+[3/4] Performing risk analysis
+   ✓ Risk analysis complete
+   ✓ Overall Risk Score: 22.3% (LOW)
+   ✓ Recommendation: AUTO-BIND ELIGIBLE
+[5/6] Generating reports...
+[4/4] Generating PDF report
+   ✓ PDF report generated: ./temp_output/reports/Underwriting_Report_Quickbites_20260109_080228.pdf
+    ✓ HTML Report generated: ./temp_output/Report_Quickbites_20260109_080228.html
+[6/6] Uploading to OneDrive output folder...
+   ✓ Found existing output folder: Output_attachments
+   ✓ Uploaded to OneDrive: Report_Quickbites_20260109_080228.html
+
+✓ PROCESSING COMPLETE
+   HTML: Report_Quickbites_20260109_080228.html
+   Risk Score: 22.3%
+   Risk Level: LOW
