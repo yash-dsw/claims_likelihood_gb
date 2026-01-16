@@ -204,7 +204,7 @@ class EmailSender:
             return False
     
     def send_claims_report_email(self, to_email, email_metadata, html_report, 
-                                  input_pdf_path=None, output_pdf_path=None):
+                                  input_pdf_path=None, output_pdf_path=None, report_web_url=None, output_folder_url=None):
         """
         Send an underwriting report email using the provided template.
         
@@ -214,6 +214,8 @@ class EmailSender:
             html_report: The generated HTML claims report content
             input_pdf_path: Optional path to the original input PDF to attach
             output_pdf_path: Optional path to the generated report PDF to attach
+            report_web_url: Optional URL to view the report online
+            output_folder_url: Optional URL to open the outputs folder
             
         Returns:
             True if successful, False otherwise
@@ -228,6 +230,36 @@ class EmailSender:
         if len(body_preview) > 250:
             body_preview = body_preview[:250]
         
+        
+        # Build quick access links section
+        quick_links_html = ""
+        if report_web_url or output_folder_url:
+            quick_links_html = '<div style="background:#e8f4fd; border:1px solid #2f80ed; border-radius:6px; padding:16px; margin-bottom:24px;">'
+            quick_links_html += '<div style="display:flex; flex-direction:row; flex-wrap:wrap;">'
+            
+            if report_web_url:
+                quick_links_html += f'''
+                <div style="display:flex; align-items:center; margin-right:40px;">
+                    <span style="color:#333; font-size:14px; margin-right:8px;">📄</span>
+                    <a href="{report_web_url}" style="color:#2f80ed; text-decoration:none; font-size:14px; font-weight:500;" target="_blank">
+                        View Report Online
+                    </a>
+                </div>
+                '''
+            
+            if output_folder_url:
+                quick_links_html += f'''
+                <div style="display:flex; align-items:center;">
+                    <span style="color:#333; font-size:14px; margin-right:8px;">📁</span>
+                    <a href="{output_folder_url}" style="color:#2f80ed; text-decoration:none; font-size:14px; font-weight:500;" target="_blank">
+                        Open Outputs Folder
+                    </a>
+                </div>
+                '''
+            
+            quick_links_html += '</div></div>'
+        
+
         # Build the email body
         email_body = f'''
 <div style="font-family:Segoe UI, Arial, sans-serif; background-color:#f5f7fa; padding:24px;">
@@ -235,15 +267,14 @@ class EmailSender:
 <!-- Card Container -->
 <div style="max-width:800px; margin:0 auto; background:#ffffff; border-radius:6px; box-shadow:0 2px 6px rgba(0,0,0,0.08); padding:28px;">
 
+{quick_links_html}
+
 <!-- Intro Section -->
 <p style="font-size:14.5px; color:#333333; line-height:1.6;">
 This email was received from
 <strong>{from_email}</strong>
 on <strong>{received_dt}</strong>
-</p>
-
-<p style="font-size:14.5px; color:#333333; line-height:1.6;">
-Based on the content of the email:
+with the body preview:
 </p>
 
 <!-- Message Preview Box -->

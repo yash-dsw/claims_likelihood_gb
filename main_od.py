@@ -180,8 +180,12 @@ class OneDriveProcessor:
             print(f"   ⚠ Warning: HTML generation failed: {str(e)}")
             return None
     
-    def _upload_to_onedrive(self, local_file_path: str) -> bool:
-        """Upload a file to OneDrive output folder"""
+    def _upload_to_onedrive(self, local_file_path: str) -> dict:
+        """Upload a file to OneDrive output folder
+        
+        Returns:
+            Upload result dict with 'name', 'web_url', etc. or None if failed
+        """
         try:
             upload_result = self.output_client.upload_file(
                 local_file_path, 
@@ -190,13 +194,15 @@ class OneDriveProcessor:
             
             if upload_result:
                 print(f"   ✓ Uploaded to OneDrive: {os.path.basename(local_file_path)}")
-                return True
+                if upload_result.get('web_url'):
+                    print(f"     View online: {upload_result['web_url']}")
+                return upload_result
             else:
-                return False
+                return None
             
         except Exception as e:
             print(f"   ✗ Upload failed for {local_file_path}: {str(e)}")
-            return False
+            return None
     
     def _move_to_processed(self, file_id: str, filename: str) -> bool:
         """Move a file from input folder to processed folder on OneDrive"""
@@ -283,15 +289,31 @@ class OneDriveProcessor:
                 property_df, claims_df, scored_df, client_name, input_pdf_name=filename
             )
             
+
             # Step 6: Upload to OneDrive
             print(f"[6/7] Uploading to OneDrive output folder...")
             
-            html_uploaded = False
-            if html_path and os.path.exists(html_path):
-                html_uploaded = self._upload_to_onedrive(html_path)
+            report_web_url = None
+            output_folder_url = None
             
+            # Upload HTML
+            if html_path and os.path.exists(html_path):
+                html_upload_result = self._upload_to_onedrive(html_path)
+            
+            # Upload PDF and capture its web URL for the report link
             if pdf_path and os.path.exists(pdf_path):
-                self._upload_to_onedrive(pdf_path)
+                pdf_upload_result = self._upload_to_onedrive(pdf_path)
+                if pdf_upload_result and pdf_upload_result.get('web_url'):
+                    report_web_url = pdf_upload_result['web_url']
+            
+            # Get the output folder URL
+            try:
+                folder_info = self.output_client.get_folder_info(CONFIG['OUTPUT_FOLDER'])
+                if folder_info and folder_info.get('web_url'):
+                    output_folder_url = folder_info['web_url']
+                    print(f"   📁 Output folder: {output_folder_url}")
+            except Exception as e:
+                pass  # Folder URL is optional
             
             # Step 7: Send email notification
             if email_metadata and self.email_sender:
@@ -311,7 +333,9 @@ class OneDriveProcessor:
                         email_metadata=email_metadata,
                         html_report=html_content,
                         input_pdf_path=local_pdf_path,
-                        output_pdf_path=pdf_path
+                        output_pdf_path=pdf_path,
+                        report_web_url=report_web_url,
+                        output_folder_url=output_folder_url
                     ):
                         print(f"   ✓ Email sent successfully to {recipient}")
                     else:
