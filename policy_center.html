@@ -20,13 +20,13 @@
 
         /* Top Navigation */
         .top-nav {
-            background: #2c3e50;
+            background: #2a1c55;
             color: white;
             padding: 0 30px;
             height: 80px;
             display: flex;
             align-items: center;
-            justify-content: space-between;
+            justify-content: center;
             box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
         }
 
@@ -43,6 +43,7 @@
             height: 40px;
             display: flex;
             align-items: center;
+            justify-content: center;
         }
 
         .nav-logo img {
@@ -169,8 +170,17 @@
             right: 15px;
             top: 50%;
             transform: translateY(-50%);
-            color: #6b7280;
-            font-size: 18px;
+            width: 20px;
+            height: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .search-icon img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
         }
 
         /* Buttons */
@@ -189,13 +199,14 @@
         }
 
         .btn-primary {
-            background: linear-gradient(135deg, #b8860b 0%, #daa520 100%);
+            background: #ffbf3c;
             color: white;
         }
 
         .btn-primary:hover {
+            background: #2a1c55;
             transform: translateY(-1px);
-            box-shadow: 0 4px 12px rgba(184, 134, 11, 0.3);
+            box-shadow: 0 4px 12px rgba(42, 28, 85, 0.3);
         }
 
         /* Results Card */
@@ -364,14 +375,14 @@
         <div class="breadcrumb">
             <a href="#">Admin</a>
             <span class="breadcrumb-separator">›</span>
-            <span>Policy Transactions</span>
+            <span>Policy Center</span>
         </div>
     </div>
 
     <!-- Page Content -->
     <div class="page-content">
         <div class="page-header">
-            <h1 class="page-title">Policy Transactions</h1>
+            <h1 class="page-title">Policy Center</h1>
             <p class="page-subtitle">View and manage all insurance policies</p>
         </div>
 
@@ -380,7 +391,7 @@
             <div class="search-box">
                 <input type="text" class="search-input" id="searchInput"
                     placeholder="Search policies by policy number, name, beneficiary...">
-                <span class="search-icon">🔍</span>
+                <span class="search-icon"><img src="/icons8-magnifying-glass.svg" alt="Search"></span>
             </div>
             <button class="btn btn-primary" onclick="window.location.href='/policy-new'">+ New Policy</button>
         </div>
