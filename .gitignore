@@ -32,3 +32,6 @@ output/
 test_output/
 temp_output/
 temp_input/
+
+ngrok1.yml
+like_env
