@@ -819,10 +819,20 @@
                         console.log(`[DEBUG] File ${index}:`, file);
                         if (!existingRows.includes(file.name)) {
                             console.log(`[DEBUG] Adding file to table: ${file.name}`);
+
+                            // Determine file type based on filename
+                            let fileType = 'Original Input';
+                            const fileName = file.name.toLowerCase();
+                            if (fileName.endsWith('_report.pdf')) {
+                                fileType = 'Report';
+                            } else if (fileName.endsWith('.eml')) {
+                                fileType = 'Email';
+                            }
+
                             tbody.insertAdjacentHTML('afterbegin', `
                                 <tr>
                                     <td><a href="${file.web_url}" target="_blank" style="color: #b8860b; text-decoration: none; font-weight: 500;">${file.name}</a></td>
-                                    <td>Original Input</td>
+                                    <td>${fileType}</td>
                                     <td>${new Date().toLocaleDateString()}</td>
                                 </tr>
                             `);
@@ -904,7 +914,7 @@
         async function handleFiles(files) {
             if (!files || files.length === 0) return;
             const file = files[0];
-            
+
             // Show uploading state
             dropzone.innerHTML = `<div class="spinner" style="width: 24px; height: 24px; border-width: 2px;"></div> Uploading ${file.name}...`;
 
@@ -924,10 +934,10 @@
                     const tbody = document.getElementById('documentsTableBody');
                     const noRow = document.getElementById('noDocumentsRow');
                     if (noRow) noRow.style.display = 'none';
-                    
+
                     const fileName = resJson.name || file.name;
                     const fileUrl = resJson.url || '#';
-                    
+
                     tbody.insertAdjacentHTML('afterbegin', `
                         <tr>
                             <td><a href="${fileUrl}" target="_blank" style="color: #b8860b; text-decoration: none; font-weight: 500;">${fileName}</a></td>
@@ -935,12 +945,12 @@
                             <td>${new Date().toLocaleDateString()}</td>
                         </tr>
                     `);
-                    
+
                     // Reset dropzone text
                     dropzone.textContent = "Drag & drop files here, or click to select";
                     dropzone.style.color = "#065f46"; // Success color hint
                     setTimeout(() => { dropzone.style.color = ""; }, 3000);
-                    
+
                 } else {
                     const errData = await uploadRes.json();
                     throw new Error(errData.error || 'Upload failed');
@@ -951,7 +961,7 @@
                 setTimeout(() => {
                     dropzone.textContent = "Drag & drop files here, or click to select";
                 }, 5000);
-                
+
                 // Fallback: show local row with warning
                 const tbody = document.getElementById('documentsTableBody');
                 const noRow = document.getElementById('noDocumentsRow');
