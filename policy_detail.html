@@ -866,6 +866,7 @@
         }
 
         // Drag and drop / upload handlers
+        // Drag and drop / upload handlers
         const dropzone = document.getElementById('dropzone');
         const addDocumentBtn = document.getElementById('addDocumentBtn');
 
@@ -881,22 +882,24 @@
             handleFiles(files);
         });
 
-        dropzone.addEventListener('click', () => {
+        function triggerFileSelect() {
             const inp = document.createElement('input');
             inp.type = 'file';
             inp.onchange = () => handleFiles(inp.files);
             inp.click();
-        });
+        }
 
-        addDocumentBtn.addEventListener('click', () => {
-            dropzone.click();
-        });
+        dropzone.addEventListener('click', triggerFileSelect);
+        addDocumentBtn.addEventListener('click', triggerFileSelect);
 
         async function handleFiles(files) {
             if (!files || files.length === 0) return;
             const file = files[0];
+            
+            // Show uploading state
+            dropzone.innerHTML = `<div class="spinner" style="width: 24px; height: 24px; border-width: 2px;"></div> Uploading ${file.name}...`;
 
-            // Try to upload to backend endpoint (may not exist) - endpoint: POST /api/policies/{policyId}/documents
+            // Try to upload to backend endpoint
             try {
                 const fd = new FormData();
                 fd.append('file', file);
@@ -912,28 +915,45 @@
                     const tbody = document.getElementById('documentsTableBody');
                     const noRow = document.getElementById('noDocumentsRow');
                     if (noRow) noRow.style.display = 'none';
+                    
+                    const fileName = resJson.name || file.name;
+                    const fileUrl = resJson.url || '#';
+                    
                     tbody.insertAdjacentHTML('afterbegin', `
                         <tr>
-                            <td><a href="${resJson.url || '#'}" target="_blank" style="color: #b8860b; text-decoration: none; font-weight: 500;">${file.name}</a></td>
+                            <td><a href="${fileUrl}" target="_blank" style="color: #b8860b; text-decoration: none; font-weight: 500;">${fileName}</a></td>
                             <td>${file.type || 'Document'}</td>
                             <td>${new Date().toLocaleDateString()}</td>
                         </tr>
                     `);
+                    
+                    // Reset dropzone text
+                    dropzone.textContent = "Drag & drop files here, or click to select";
+                    dropzone.style.color = "#065f46"; // Success color hint
+                    setTimeout(() => { dropzone.style.color = ""; }, 3000);
+                    
                 } else {
-                    // Fallback: show local row (not uploaded)
-                    const tbody = document.getElementById('documentsTableBody');
-                    const noRow = document.getElementById('noDocumentsRow');
-                    if (noRow) noRow.style.display = 'none';
-                    tbody.insertAdjacentHTML('afterbegin', `
-                        <tr>
-                            <td>${file.name}</td>
-                            <td>${file.type || 'Document'}</td>
-                            <td>${new Date().toLocaleDateString()}</td>
-                        </tr>
-                    `);
+                    const errData = await uploadRes.json();
+                    throw new Error(errData.error || 'Upload failed');
                 }
             } catch (err) {
                 console.error('Upload failed:', err);
+                dropzone.innerHTML = `<span style="color: red;">Upload failed: ${err.message}</span>`;
+                setTimeout(() => {
+                    dropzone.textContent = "Drag & drop files here, or click to select";
+                }, 5000);
+                
+                // Fallback: show local row with warning
+                const tbody = document.getElementById('documentsTableBody');
+                const noRow = document.getElementById('noDocumentsRow');
+                if (noRow) noRow.style.display = 'none';
+                tbody.insertAdjacentHTML('afterbegin', `
+                    <tr style="background-color: #fff1f2;">
+                        <td>${file.name} <span style="font-size: 11px; color: red;">(Upload Failed)</span></td>
+                        <td>${file.type || 'Document'}</td>
+                        <td>${new Date().toLocaleDateString()}</td>
+                    </tr>
+                `);
             }
         }
     </script>
