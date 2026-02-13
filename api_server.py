@@ -2224,6 +2224,10 @@ def serve_logo_cropped():
     """Serve Corporate logo SVG"""
     return send_from_directory('.', 'logo-cropped.svg')
 
+@app.route('/Golden_Bear_White.svg')
+def serve_golden_bear_logo():
+    """Serve Golden Bear White logo SVG"""
+    return send_from_directory('.', 'Golden_Bear_white.svg')
 
 @app.route('/policy-detail/<policy_id>')
 def serve_policy_detail(policy_id):
