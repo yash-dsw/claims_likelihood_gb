@@ -63,7 +63,7 @@ def run_api_server():
     # Import and run API server
     from api_server import app
     
-    port = int(os.getenv('PORT', 5001))
+    port = int(os.getenv('PORT', 5003))
     debug = os.getenv('FLASK_DEBUG', 'False').lower() == 'true'
     
     print(f"\nAPI Server starting on http://127.0.0.1:{port}")
@@ -116,7 +116,7 @@ def main():
     parser = argparse.ArgumentParser(description='Unified Claims Processing Server')
     parser.add_argument('--api-only', action='store_true', help='Run API server only (no watcher)')
     parser.add_argument('--watcher-only', action='store_true', help='Run watcher only (no API)')
-    parser.add_argument('--port', type=int, default=5001, help='API server port (default: 5000)')
+    parser.add_argument('--port', type=int, default=5003, help='API server port (default: 5003)')
     
     args = parser.parse_args()
     

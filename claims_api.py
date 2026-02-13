@@ -170,7 +170,7 @@ if __name__ == '__main__':
     # Start the Flask API
     # Run on 0.0.0.0 to accept connections from any IP
     # Use a port like 5000 or 8080
-    port = int(os.getenv('API_PORT', 5001))
+    port = int(os.getenv('API_PORT', 5003))
     
     print(f"\n{'='*70}")
     print(f"STARTING CLAIMS PROCESSOR API")

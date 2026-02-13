@@ -2232,7 +2232,7 @@ if __name__ == '__main__':
     print("\n" + "="*70 + "\n")
     
     # Run Flask app
-    port = int(os.getenv('PORT', 5000))
+    port = int(os.getenv('PORT', 5003))
     debug = os.getenv('FLASK_DEBUG', 'False').lower() == 'true'
     
     print(f"\nAPI Server starting on http://127.0.0.1:{port}")
