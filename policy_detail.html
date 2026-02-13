@@ -20,13 +20,13 @@
 
         /* Top Navigation */
         .top-nav {
-            background: #2c3e50;
+            background: #2a1c55;
             color: white;
             padding: 0 30px;
             height: 80px;
             display: flex;
             align-items: center;
-            justify-content: space-between;
+            justify-content: center;
             box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
         }
 
@@ -43,6 +43,7 @@
             height: 40px;
             display: flex;
             align-items: center;
+            justify-content: center;
         }
 
         .nav-logo img {
@@ -232,8 +233,14 @@
         }
 
         .btn-primary {
-            background: linear-gradient(135deg, #b8860b 0%, #daa520 100%);
+            background: #ffbf3c;
             color: white;
+        }
+
+        .btn-primary:hover {
+            background: #2a1c55;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(42, 28, 85, 0.3);
         }
 
         .btn-secondary {
@@ -381,9 +388,11 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            width: 32px;
-            height: 32px;
+            width: 40px;
+            height: 40px;
+            border-radius: 6px;
             transition: transform 0.2s;
+            background: white;
         }
 
         .sharepoint-link:hover {
@@ -391,21 +400,21 @@
         }
 
         .sharepoint-logo {
-            width: 24px;
-            height: 24px;
+            width: 28px;
+            height: 28px;
         }
 
         .btn-icon {
-            width: 32px;
-            height: 32px;
+            width: 40px;
+            height: 40px;
             padding: 0;
             display: flex;
             align-items: center;
             justify-content: center;
             border-radius: 6px;
-            background: #f3f4f6;
-            color: #374151;
-            border: 1px solid #d1d5db;
+            background: white;
+            color: #2a1c55;
+            border: 2px solid #2a1c55;
             cursor: pointer;
             transition: all 0.2s;
             font-size: 20px;
@@ -413,8 +422,8 @@
         }
 
         .btn-icon:hover {
-            background: #e5e7eb;
-            color: #111827;
+            background: #2a1c55;
+            color: white;
         }
 
         /* Loading */

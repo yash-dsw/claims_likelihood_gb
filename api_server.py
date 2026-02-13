@@ -2277,6 +2277,11 @@ def serve_golden_bear_logo():
     """Serve Golden Bear White logo SVG"""
     return send_from_directory('.', 'Golden_Bear_white.svg')
 
+@app.route('/icons8-magnifying-glass.svg')
+def serve_magnifying_glass_icon():
+    """Serve magnifying glass icon SVG"""
+    return send_from_directory('.', 'icons8-magnifying-glass.svg')
+
 @app.route('/policy-detail/<policy_id>')
 def serve_policy_detail(policy_id):
     """Serve policy detail page"""
