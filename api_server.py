@@ -2120,10 +2120,14 @@ def api_get_policy_detail(policy_id):
     """Get detailed policy info"""
     policy = get_policy_by_id(policy_id)
     if policy:
-        # Also fetch underwriting data to get the loss history list
+        # Also fetch underwriting data to get the loss history list and company name
         underwriting_data = get_underwriting_data_by_policy(policy_id)
-        if underwriting_data and 'loss_history' in underwriting_data:
-            policy['loss_history'] = underwriting_data['loss_history']
+        if underwriting_data:
+            if 'loss_history' in underwriting_data:
+                policy['loss_history'] = underwriting_data['loss_history']
+            # Add company name (named_insured) to policy object
+            if 'named_insured' in underwriting_data:
+                policy['company_name'] = underwriting_data['named_insured']
         
         return jsonify({'success': True, 'policy': policy})
     return jsonify({'success': False, 'error': 'Policy not found'}), 404
@@ -2165,8 +2169,6 @@ def api_get_policy_input_attachment(policy_id):
         'success': False, 
         'error': 'Input attachment not found for this policy'
     }), 404
-
-
 # ============================================================================
 # SERVE HTML PAGES
 # ============================================================================

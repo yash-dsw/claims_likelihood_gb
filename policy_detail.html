@@ -508,7 +508,7 @@
                 <h2 class="section-title">Account Summary</h2>
             </div>
             <div class="section-body">
-                <div class="account-summary" id="accountSummary">
+                <div id="accountSummary">
                     <!-- Content will be loaded here -->
                 </div>
             </div>
@@ -743,13 +743,15 @@
 
             // Account Summary
             document.getElementById('accountSummary').innerHTML = `
-                <h2 class="account-summary-title">Account Summary: ${policy.policy_beneficiary || 'Unnamed Insured'}</h2>
-                <div class="summary-grid">
-                    <div class="summary-item"><div class="summary-label">Policy #</div><div class="summary-value">${policy.policy_id}</div></div>
-                    <div class="summary-item"><div class="summary-label">Product</div><div class="summary-value">${policy.policy_name || '—'}</div></div>
-                    <div class="summary-item"><div class="summary-label">Effective Period</div><div class="summary-value">${formatDate(policy.policy_start_date)} - ${formatDate(policy.policy_end_date)}</div></div>
-                    <div class="summary-item"><div class="summary-label">Sum Insured</div><div class="summary-value">${formatCurrency(policy.sum_insured)}</div></div>
-                    <div class="summary-item"><div class="summary-label">Underwriter</div><div class="summary-value">${policy.underwriter_name || '—'}</div></div>
+                <div class="info-grid">
+                    <div class="info-item"><div class="info-label">Beneficiary</div><div class="info-value" style="font-weight: 700;">${policy.policy_beneficiary || 'Unnamed Insured'}</div></div>
+                    <div class="info-item"><div class="info-label">Company</div><div class="info-value" style="font-weight: 700;">${policy.company_name || '—'}</div></div>
+                    <div class="info-item"><div class="info-label">Policy #</div><div class="info-value">${policy.policy_id}</div></div>
+                    <div class="info-item"><div class="info-label">Product</div><div class="info-value">${policy.policy_name || '—'}</div></div>
+                    
+                    <div class="info-item"><div class="info-label">Effective Period</div><div class="info-value">${formatDate(policy.policy_start_date)} - ${formatDate(policy.policy_end_date)}</div></div>
+                    <div class="info-item"><div class="info-label">Sum Insured</div><div class="info-value">${formatCurrency(policy.sum_insured)}</div></div>
+                    <div class="info-item"><div class="info-label">Underwriter</div><div class="info-value">${policy.underwriter_name || '—'}</div></div>
                 </div>
             `;
 
