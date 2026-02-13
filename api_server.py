@@ -424,7 +424,7 @@ def get_underwriting_data_by_policy(policy_id):
 
 
 def get_policy_input_attachment(policy_id):
-    """Retrieve the original input PDF URL from the policy's OneDrive folder"""
+    """Retrieve the original input files (PDF, report PDF, EML) from the policy's OneDrive folder"""
     try:
         # Predictable folder path
         folder_path = f"Underwriting/PN_{policy_id}"
@@ -455,18 +455,42 @@ def get_policy_input_attachment(policy_id):
         
         children = response.json().get('value', [])
         
-        # Find acord_*.pdf
+        print(f"   [DEBUG] Found {len(children)} items in folder")
+        
+        # Find all relevant files: acord_*.pdf, acord_*_report.pdf, acord_*.eml
+        files = []
         for item in children:
             name = item.get('name', '').lower()
-            if name.startswith('acord_') and name.endswith('.pdf'):
-                return {
-                    'name': item.get('name'),
+            actual_name = item.get('name')
+            print(f"   [DEBUG] Checking file: {actual_name}")
+            # Match acord_*.pdf (original), acord_*_report.pdf (report), or acord_*.eml (email)
+            if name.startswith('acord_') and (name.endswith('.pdf') or name.endswith('.eml')):
+                print(f"   [DEBUG] ✓ Match! Adding: {actual_name}")
+                files.append({
+                    'name': actual_name,
                     'web_url': item.get('webUrl'),
-                    'id': item.get('id'),
-                    'folder_url': folder_web_url
-                }
+                    'id': item.get('id')
+                })
+            else:
+                print(f"   [DEBUG] ✗ No match: {actual_name}")
+        
+        print(f"   [DEBUG] Total files matched: {len(files)}")
+        for f in files:
+            print(f"   [DEBUG]   - {f['name']}")
+        
+        if files:
+            # Return all files found
+            result = {
+                'files': files,
+                'folder_url': folder_web_url,
+                # For backward compatibility, also return the first file as 'attachment'
+                'attachment': files[0] if files else None
+            }
+            print(f"   [DEBUG] Returning {len(files)} files")
+            return result
                 
-        # If no ACORD PDF found, still return the folder URL if folder exists
+        # If no files found, still return the folder URL if folder exists
+        print(f"   [DEBUG] No files found, returning folder URL only")
         return {
             'folder_url': folder_web_url
         }
@@ -2158,12 +2182,14 @@ def api_get_underwriting_data(policy_id):
 
 @app.route('/api/policies/<policy_id>/input-attachment', methods=['GET'])
 def api_get_policy_input_attachment(policy_id):
-    """Get the original input PDF for a policy"""
-    attachment = get_policy_input_attachment(policy_id)
-    if attachment:
+    """Get the original input files (PDF, report PDF, EML) for a policy"""
+    result = get_policy_input_attachment(policy_id)
+    if result:
         return jsonify({
-            'success': True, 
-            'attachment': attachment
+            'success': True,
+            'files': result.get('files', []),
+            'attachment': result.get('attachment'),  # For backward compatibility
+            'folder_url': result.get('folder_url')
         })
     return jsonify({
         'success': False, 

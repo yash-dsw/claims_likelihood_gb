@@ -782,35 +782,48 @@
                 const response = await fetch(`/api/policies/${pid}/input-attachment`);
                 const data = await response.json();
 
-                if (data.success && data.attachment) {
-                    const att = data.attachment;
+                console.log('[DEBUG] API Response:', data);
+                console.log('[DEBUG] Files array:', data.files);
+                console.log('[DEBUG] Files length:', data.files ? data.files.length : 0);
+
+                if (data.success) {
                     const tbody = document.getElementById('documentsTableBody');
                     const noRow = document.getElementById('noDocumentsRow');
                     if (noRow) noRow.style.display = 'none';
 
                     // Update SharePoint Link
                     const spLink = document.getElementById('sharepointLink');
-                    if (att.folder_url) {
-                        spLink.href = att.folder_url;
+                    if (data.folder_url) {
+                        spLink.href = data.folder_url;
                         spLink.style.visibility = 'visible';
                     }
 
                     // Avoid duplicates if fetchInputPdf already ran
                     const existingRows = Array.from(tbody.querySelectorAll('td')).map(td => td.textContent);
-                    if (existingRows.includes(att.name)) return;
+                    console.log('[DEBUG] Existing rows:', existingRows);
 
-                    tbody.insertAdjacentHTML('afterbegin', `
-                        <tr>
-                            <td><a href="${att.web_url}" target="_blank" style="color: #b8860b; text-decoration: none; font-weight: 500;">${att.name || 'Original Input'}</a></td>
-                            <td>Original Input</td>
-                            <td>${new Date().toLocaleDateString()}</td>
-                        </tr>
-                    `);
-                } else if (data.success && data.folder_url) {
-                    // Even if no specific ACORD PDF found, show folder URL if available
-                    const spLink = document.getElementById('sharepointLink');
-                    spLink.href = data.folder_url;
-                    spLink.style.visibility = 'visible';
+                    // Use the files array from API response
+                    const files = data.files || [];
+                    console.log('[DEBUG] Processing files:', files);
+
+                    // Add all files to the table
+                    files.forEach((file, index) => {
+                        console.log(`[DEBUG] File ${index}:`, file);
+                        if (!existingRows.includes(file.name)) {
+                            console.log(`[DEBUG] Adding file to table: ${file.name}`);
+                            tbody.insertAdjacentHTML('afterbegin', `
+                                <tr>
+                                    <td><a href="${file.web_url}" target="_blank" style="color: #b8860b; text-decoration: none; font-weight: 500;">${file.name}</a></td>
+                                    <td>Original Input</td>
+                                    <td>${new Date().toLocaleDateString()}</td>
+                                </tr>
+                            `);
+                        } else {
+                            console.log(`[DEBUG] Skipping duplicate file: ${file.name}`);
+                        }
+                    });
+
+                    console.log('[DEBUG] Files added to table');
                 }
             } catch (err) {
                 console.error('Error fetching input attachment:', err);
