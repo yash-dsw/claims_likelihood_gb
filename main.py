@@ -180,7 +180,7 @@ class ClaimsAnalysisOrchestrator:
             return False, pd.DataFrame(), {}, error_msg
     
     def generate_pdf_report(self, property_df: pd.DataFrame, claims_df: pd.DataFrame, 
-                          scored_df: pd.DataFrame, client_name: str, input_pdf_name: str = None) -> Tuple[bool, str, str]:
+                          scored_df: pd.DataFrame, client_name: str, input_pdf_name: str = None, policy_number: str = None) -> Tuple[bool, str, str]:
         """
         Generate PDF report
         
@@ -190,6 +190,7 @@ class ClaimsAnalysisOrchestrator:
             scored_df: Property data with risk scores
             client_name: Client name for filename
             input_pdf_name: Optional input PDF filename to base output name on
+            policy_number: Optional policy number to display in the report
             
         Returns:
             Tuple of (success, pdf_path, error_message)
@@ -206,7 +207,8 @@ class ClaimsAnalysisOrchestrator:
                 claims_df=claims_df if not claims_df.empty else pd.DataFrame(),
                 output_df=scored_df,
                 logo_path=logo_path,
-                input_pdf_name=input_pdf_name
+                input_pdf_name=input_pdf_name,
+                policy_number=policy_number
             )
             
             # Move PDF to reports directory if not already there

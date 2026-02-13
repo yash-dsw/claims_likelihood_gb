@@ -1,0 +1,516 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>New Policy - PolicyCenter</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: #f5f6f8;
+            min-height: 100vh;
+        }
+
+        /* Top Navigation */
+        .top-nav {
+            background: #2c3e50;
+            color: white;
+            padding: 0 30px;
+            height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .nav-brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 18px;
+            font-weight: 600;
+        }
+
+        .nav-logo {
+            width: 36px;
+            height: 36px;
+            background: linear-gradient(135deg, #b8860b 0%, #daa520 100%);
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 18px;
+        }
+
+        /* Secondary Nav Bar */
+        .secondary-nav {
+            background: white;
+            border-bottom: 1px solid #e5e7eb;
+            padding: 15px 30px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .breadcrumb {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 13px;
+            color: #6b7280;
+        }
+
+        .breadcrumb a {
+            color: #6b7280;
+            text-decoration: none;
+        }
+
+        .breadcrumb a:hover {
+            color: #1f2937;
+        }
+
+        .breadcrumb-separator {
+            color: #d1d5db;
+        }
+
+        .nav-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        /* Page Content */
+        .page-content {
+            padding: 30px;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .page-header {
+            margin-bottom: 24px;
+        }
+
+        .page-title {
+            font-size: 24px;
+            font-weight: 600;
+            color: #1a1f36;
+            margin-bottom: 8px;
+        }
+
+        .status-info {
+            background: #fef3c7;
+            color: #92400e;
+            padding: 8px 16px;
+            border-radius: 6px;
+            font-size: 13px;
+            font-weight: 600;
+            display: inline-block;
+        }
+
+        .attachment-info {
+            background: #e1f5fe;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 24px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            font-size: 14px;
+            border: 1px solid #b3e5fc;
+        }
+
+        .attachment-info a {
+            color: #0288d1;
+            font-weight: 600;
+            text-decoration: none;
+        }
+
+        .attachment-info a:hover {
+            text-decoration: underline;
+        }
+
+        /* Form Card */
+        .form-card {
+            background: white;
+            border: 1px solid #e5e7eb;
+            border-radius: 12px;
+            padding: 24px;
+            margin-bottom: 24px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+        }
+
+        .card-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: #1a1f36;
+            margin-bottom: 20px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .form-group.full {
+            grid-column: 1 / -1;
+        }
+
+        .form-label {
+            font-size: 13px;
+            font-weight: 500;
+            color: #374151;
+        }
+
+        .form-label .required {
+            color: #dc2626;
+            margin-left: 2px;
+        }
+
+        .form-input,
+        .form-select,
+        .form-textarea {
+            padding: 10px 12px;
+            border: 1px solid #d1d5db;
+            border-radius: 6px;
+            font-size: 14px;
+            font-family: inherit;
+            transition: all 0.2s;
+            background: white;
+        }
+
+        .form-input:focus,
+        .form-select:focus,
+        .form-textarea:focus {
+            outline: none;
+            border-color: #b8860b;
+            box-shadow: 0 0 0 3px rgba(184, 134, 11, 0.1);
+        }
+
+        .form-textarea {
+            resize: vertical;
+            min-height: 80px;
+        }
+
+        /* Documents Section */
+        .documents-section {
+            background: white;
+            border: 1px solid #e5e7eb;
+            border-radius: 12px;
+            padding: 24px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+        }
+
+        .documents-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        .documents-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: #1a1f36;
+        }
+
+        /* Documents Table */
+        .documents-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .documents-table thead {
+            background: #f9fafb;
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        .documents-table th {
+            padding: 12px 16px;
+            text-align: left;
+            font-weight: 600;
+            font-size: 11px;
+            color: #6b7280;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .documents-table tbody tr {
+            border-bottom: 1px solid #f3f4f6;
+            transition: all 0.15s;
+        }
+
+        .documents-table td {
+            padding: 14px 16px;
+            font-size: 14px;
+            color: #1a1f36;
+        }
+
+        /* Buttons */
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 6px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #b8860b 0%, #daa520 100%);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(184, 134, 11, 0.3);
+        }
+
+        .btn-secondary {
+            background: #f3f4f6;
+            color: #374151;
+            border: 1px solid #d1d5db;
+        }
+
+        .btn-secondary:hover {
+            background: #e5e7eb;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Top Navigation -->
+    <div class="top-nav">
+        <div class="nav-brand">
+            <div class="nav-logo">GB</div>
+            PolicyCenter™
+        </div>
+    </div>
+
+    <!-- Secondary Navigation -->
+    <div class="secondary-nav">
+        <div class="breadcrumb">
+            <a href="/policy-center">Desktop</a>
+            <span class="breadcrumb-separator">›</span>
+            <a href="/policy-center">Policy</a>
+            <span class="breadcrumb-separator">›</span>
+            <span>New Policy</span>
+        </div>
+        <div class="nav-actions">
+            <button class="btn btn-secondary" onclick="window.location.href='/policy-center'">Cancel</button>
+            <button class="btn btn-primary" onclick="savePolicy()">Save Policy</button>
+        </div>
+    </div>
+
+    <!-- Page Content -->
+    <div class="page-content">
+        <div class="page-header">
+            <h1 class="page-title" id="pageTitle">Create New Policy</h1>
+            <div class="status-info" id="policyStatusBadge">Draft</div>
+        </div>
+
+        <div id="attachmentSection" class="attachment-info" style="display: none;">
+            <span>📎 <strong>Source Document:</strong> <span id="sourceFileName"></span></span>
+            <a id="sourceFileLink" href="#" target="_blank">View File</a>
+        </div>
+
+        <form id="policyForm">
+            <!-- Policy Information Form -->
+            <div class="form-card">
+                <h2 class="card-title">Policy Information</h2>
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label class="form-label">Policy ID <span class="required">*</span></label>
+                        <input type="text" class="form-input" id="policy_id" name="policy_id" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Policy Name</label>
+                        <input type="text" class="form-input" id="policy_name" name="policy_name"
+                            placeholder="e.g. Commercial Property Insurance">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Insured Name (Beneficiary) <span class="required">*</span></label>
+                        <input type="text" class="form-input" id="policy_beneficiary" name="policy_beneficiary"
+                            required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Policy Type <span class="required">*</span></label>
+                        <select class="form-select" id="policy_type" name="policy_type">
+                            <option value="Property">Property</option>
+                            <option value="Casualty">Casualty</option>
+                            <option value="General Liability">General Liability</option>
+                            <option value="Commercial Multi-Peril">Commercial Multi-Peril</option>
+                        </select>
+                    </div>
+                    <div class="form-group full">
+                        <label class="form-label">Insured Address</label>
+                        <textarea class="form-textarea" id="insured_address" name="insured_address" rows="2"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Agent Name</label>
+                        <input type="text" class="form-input" id="agent_name" name="agent_name">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Broker Name</label>
+                        <input type="text" class="form-input" id="broker_name" name="broker_name">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Effective Date</label>
+                        <input type="date" class="form-input" id="policy_start_date" name="policy_start_date">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Expiration Date</label>
+                        <input type="date" class="form-input" id="policy_end_date" name="policy_end_date">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Sum Insured</label>
+                        <input type="number" class="form-input" id="sum_insured" name="sum_insured" step="0.01">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Premium Amount</label>
+                        <input type="number" class="form-input" id="premium_amount" name="premium_amount" step="0.01">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Status</label>
+                        <select class="form-select" id="policy_status" name="policy_status">
+                            <option value="New">New</option>
+                            <option value="Renewed">Renewed</option>
+                            <option value="Pending">Pending</option>
+                            <option value="Draft" selected>Draft</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Underwriter Name</label>
+                        <input type="text" class="form-input" id="underwriter_name" name="underwriter_name">
+                    </div>
+                </div>
+            </div>
+        </form>
+
+        <!-- Documents Section -->
+        <div class="documents-section">
+            <div class="documents-header">
+                <h2 class="documents-title">Documents</h2>
+            </div>
+
+            <table class="documents-table">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Type</th>
+                        <th>Status</th>
+                        <th>Uploaded</th>
+                    </tr>
+                </thead>
+                <tbody id="documentsTableBody">
+                    <tr id="noDocumentsRow">
+                        <td colspan="4" style="text-align: center; padding: 20px; color: #6b7280;">No documents attached
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <script>
+        const urlParams = new URLSearchParams(window.location.search);
+        const sessionId = urlParams.get('session_id');
+
+        if (sessionId) {
+            fetchPreFillData(sessionId);
+        }
+
+        async function fetchPreFillData(sid) {
+            try {
+                // Fetch Input PDF instead of Output PDF
+                const response = await fetch(`/api/input-pdf?session_id=${sid}`);
+                const data = await response.json();
+
+                if (data.success) {
+                    if (data.pdf_url) {
+                        document.getElementById('attachmentSection').style.display = 'flex';
+                        document.getElementById('sourceFileName').textContent = data.filename || 'Input Attachment';
+                        document.getElementById('sourceFileLink').href = data.pdf_url;
+
+                        // Add to documents table
+                        const tbody = document.getElementById('documentsTableBody');
+                        const noRow = document.getElementById('noDocumentsRow');
+                        if (noRow) noRow.style.display = 'none';
+                        tbody.innerHTML = `
+                            <tr>
+                                <td><a href="${data.pdf_url}" target="_blank" style="color: #b8860b; text-decoration: none; font-weight: 500;">${data.filename || 'Input Attachment'}</a></td>
+                                <td>Original Input</td>
+                                <td>Final</td>
+                                <td>${new Date().toLocaleDateString()}</td>
+                            </tr>
+                        `;
+                    }
+
+                    const fieldRes = await fetch(`/api/email-fields/${sid}`);
+                    const fieldData = await fieldRes.json();
+
+                    if (fieldData.success) {
+                        const fields = fieldData.confirmed_email_fields || fieldData.extracted_email_fields || {};
+                        if (fields.policy_number) document.getElementById('policy_id').value = fields.policy_number;
+                        if (fields.broker_name) document.getElementById('broker_name').value = fields.broker_name;
+                        if (fields.underwriter_name) document.getElementById('underwriter_name').value = fields.underwriter_name;
+                        if (fields.insured_name) document.getElementById('policy_beneficiary').value = fields.insured_name;
+                    }
+                }
+            } catch (error) {
+                console.error('Error pre-filling form:', error);
+            }
+        }
+
+        async function savePolicy() {
+            const form = document.getElementById('policyForm');
+            if (!form.checkValidity()) {
+                form.reportValidity();
+                return;
+            }
+
+            const formData = new FormData(form);
+            const data = Object.fromEntries(formData.entries());
+
+            try {
+                const response = await fetch('/api/policies', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(data)
+                });
+                const result = await response.json();
+                if (result.success) {
+                    alert('Policy saved successfully!');
+                    window.location.href = '/policy-center';
+                } else {
+                    alert('Error: ' + result.error);
+                }
+            } catch (error) {
+                alert('Connection error');
+            }
+        }
+    </script>
+</body>
+
+</html>

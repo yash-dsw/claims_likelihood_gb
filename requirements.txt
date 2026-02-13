@@ -274,3 +274,7 @@ zope.proxy==6.1
 zstandard==0.25.0
 
 reportlab
+
+# Flask API dependencies
+Flask
+Flask-CORS

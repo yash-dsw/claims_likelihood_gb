@@ -161,3 +161,49 @@ IMPORTANT:
    - Use this for broad requests to see the property card/profile.
 
 Respond with ONLY the intent name (e.g., "DATA_QUERY" or "ANALYZE"), nothing else."""
+
+
+EMAIL_EXTRACTION_PROMPT = """Extract the following information from the email subject and body provided below.
+
+**Required Fields:**
+1. Sender Email - The email of the person/broker sending the submission
+2. Sender Name - The name of the sender
+3. Receiver Email - The email of the person/underwriter receiving the submission
+4. Receiver Name - The name of the receiver or team
+5. Policy Number - The insurance policy number mentioned
+6. Agency Name - The name of the agency/company
+7. Agency ID - Any agency identification number
+8. Email Summary - A concise 2-3 sentence summary highlighting CRITICAL details an underwriter might overlook, such as: special conditions, coverage modifications, pending requirements, risk concerns, time-sensitive requests, unusual property characteristics, prior loss history mentions, or any red flags that require immediate attention
+
+**Email Data:**
+From: {from_email}
+To: {to_email}
+Subject: {subject}
+Body: {body}
+
+**Instructions:**
+- The SENDER is the person/agent submitting the policy information (typically from the "From" field or email signature)
+- The RECEIVER is the person/team receiving the submission (typically the "To" field or addressed in the body)
+- Look carefully at the email body content for names, email addresses, and signatures
+- If the body contains sender information (signature, name at end), use that for the sender
+- If the body addresses a team ("Underwriting Team", "Claims Team", etc), use that as the receiver name
+- For emails and names mentioned IN THE BODY TEXT, prioritize those over the from/to fields if they provide more detail
+- If from_email and to_email are the same, look in the body for the actual sender and recipient information
+- Extract policy numbers, agency names, and IDs from both subject and body
+- For the Email Summary: Focus on CRITICAL UNDERWRITING DETAILS that might be easily missed, including: special conditions, endorsements, coverage modifications, pending requirements, deadlines, risk concerns (prior losses, claims history, property issues), unusual circumstances, broker requests, or any red flags requiring immediate attention. Do NOT just restate basic information - highlight what's important for underwriting decisions.
+- If a field cannot be found anywhere, use "Not Found" as the value
+
+**Output Format:**
+Return ONLY a valid JSON object with these exact keys:
+{{
+  "sender_email": "extracted email or Not Found",
+  "sender_name": "extracted name or Not Found",
+  "receiver_email": "extracted email or Not Found",
+  "receiver_name": "extracted name or Not Found",
+  "policy_number": "extracted policy number or Not Found",
+  "agency_name": "extracted agency name or Not Found",
+  "agency_id": "extracted agency ID or Not Found",
+  "email_summary": "2-3 sentence summary focusing on critical underwriting details, risk concerns, special conditions, or any important information that requires immediate attention"
+}}
+
+Do not include any explanation or additional text, only the JSON object."""

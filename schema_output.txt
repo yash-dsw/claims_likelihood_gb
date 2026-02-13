@@ -1,0 +1,23 @@
+policy_id: character varying
+policy_name: character varying
+policy_type: character varying
+policy_beneficiary: character varying
+insured_entity_type: character varying
+insured_address: character varying
+risk_location: character varying
+property_type: character varying
+coverage_type: character varying
+agent_name: character varying
+broker_name: character varying
+underwriter_name: character varying
+policy_start_date: date
+policy_end_date: date
+policy_issue_date: date
+policy_status: character varying
+policy_duration_years: integer
+sum_insured: numeric
+premium_amount: numeric
+deductible_amount: numeric
+currency: character varying
+created_at: timestamp without time zone
+claim_status: text

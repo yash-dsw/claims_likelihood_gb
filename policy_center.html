@@ -1,0 +1,539 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Policy Center - Golden Bear Insurance</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: #f5f6f8;
+            min-height: 100vh;
+        }
+
+        /* Top Navigation */
+        .top-nav {
+            background: #2c3e50;
+            color: white;
+            padding: 0 30px;
+            height: 80px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .nav-brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 30px;
+            font-weight: 600;
+            font-variant: small-caps;
+        }
+
+        .nav-logo {
+            height: 40px;
+            display: flex;
+            align-items: center;
+        }
+
+        .nav-logo img {
+            height: 100%;
+            width: auto;
+            border-radius: 4px;
+        }
+
+        .nav-menu {
+            display: flex;
+            gap: 30px;
+        }
+
+        .nav-link {
+            color: rgba(255, 255, 255, 0.9);
+            text-decoration: none;
+            font-size: 14px;
+            padding: 8px 12px;
+            border-radius: 6px;
+            transition: all 0.2s;
+        }
+
+        .nav-link:hover,
+        .nav-link.active {
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+        }
+
+        /* Secondary Nav Bar */
+        .secondary-nav {
+            background: white;
+            border-bottom: 1px solid #e5e7eb;
+            padding: 15px 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .breadcrumb {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 13px;
+            color: #6b7280;
+        }
+
+        .breadcrumb a {
+            color: #6b7280;
+            text-decoration: none;
+        }
+
+        .breadcrumb a:hover {
+            color: #1f2937;
+        }
+
+        .breadcrumb-separator {
+            color: #d1d5db;
+        }
+
+        .nav-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        /* Page Content */
+        .page-content {
+            padding: 30px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .page-header {
+            margin-bottom: 24px;
+        }
+
+        .page-title {
+            font-size: 22px;
+            font-weight: 600;
+            color: #1a1f36;
+            margin-bottom: 8px;
+        }
+
+        .page-subtitle {
+            font-size: 14px;
+            color: #6b7280;
+        }
+
+        /* Search and Actions Bar */
+        .search-actions-bar {
+            background: white;
+            border: 1px solid #e5e7eb;
+            border-radius: 12px;
+            padding: 20px 24px;
+            margin-bottom: 24px;
+            display: flex;
+            gap: 12px;
+            align-items: center;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+        }
+
+        .search-box {
+            flex: 1;
+            position: relative;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 12px 45px 12px 15px;
+            border: 1px solid #d1d5db;
+            border-radius: 8px;
+            font-size: 14px;
+            font-family: inherit;
+            transition: all 0.2s;
+        }
+
+        .search-input:focus {
+            outline: none;
+            border-color: #b8860b;
+            box-shadow: 0 0 0 3px rgba(184, 134, 11, 0.1);
+        }
+
+        .search-icon {
+            position: absolute;
+            right: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #6b7280;
+            font-size: 18px;
+        }
+
+        /* Buttons */
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            white-space: nowrap;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #b8860b 0%, #daa520 100%);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(184, 134, 11, 0.3);
+        }
+
+        /* Results Card */
+        .results-card {
+            background: white;
+            border: 1px solid #e5e7eb;
+            border-radius: 12px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+        }
+
+        .results-header {
+            padding: 20px 24px;
+            border-bottom: 1px solid #e5e7eb;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .results-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: #1a1f36;
+        }
+
+        .results-count {
+            font-size: 14px;
+            color: #6b7280;
+        }
+
+        /* Table */
+        .table-container {
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        thead {
+            background: #f9fafb;
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        th {
+            padding: 14px 16px;
+            text-align: left;
+            font-weight: 600;
+            font-size: 11px;
+            color: #6b7280;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        th.sortable {
+            cursor: pointer;
+            user-select: none;
+        }
+
+        th.sortable:hover {
+            background: #f3f4f6;
+        }
+
+        tbody tr {
+            border-bottom: 1px solid #f3f4f6;
+            transition: all 0.15s;
+        }
+
+        tbody tr:hover {
+            background: #fafbfc;
+        }
+
+        td {
+            padding: 16px;
+            font-size: 14px;
+            color: #1a1f36;
+        }
+
+        .policy-number {
+            color: #b8860b;
+            font-weight: 600;
+            cursor: pointer;
+            text-decoration: none;
+        }
+
+        .policy-number:hover {
+            color: #daa520;
+            text-decoration: underline;
+        }
+
+
+        /* Loading */
+        .loading-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.3);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+        }
+
+        .spinner {
+            width: 50px;
+            height: 50px;
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #b8860b;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto;
+        }
+
+        @keyframes spin {
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .search-actions-bar {
+                flex-direction: column;
+            }
+
+            .nav-menu {
+                display: none;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Loading Overlay -->
+    <div id="loadingOverlay" class="loading-overlay" style="display: none;">
+        <div style="background: white; padding: 30px; border-radius: 12px; text-align: center;">
+            <div class="spinner"></div>
+            <div style="margin-top: 15px; color: #1a1f36;">Loading policies...</div>
+        </div>
+    </div>
+
+    <!-- Top Navigation -->
+    <div class="top-nav">
+        <div class="nav-brand">
+            <div class="nav-logo">
+                <img src="/logo-cropped.svg" alt="Golden Bear Logo">
+            </div>
+            Golden Bear Policy Center
+        </div>
+        <!-- <div class="nav-menu">
+            <a href="/policy-center" class="nav-link active">Policy</a>
+            <a href="/claims" class="nav-link">Claims</a>
+            <a href="#" class="nav-link">Account</a>
+            <a href="#" class="nav-link">Contact</a>
+            <a href="#" class="nav-link">Reinsurance</a>
+        </div> -->
+    </div>
+
+    <!-- Secondary Navigation -->
+    <div class="secondary-nav">
+        <div class="breadcrumb">
+            <a href="#">Admin</a>
+            <span class="breadcrumb-separator">›</span>
+            <span>Policy Transactions</span>
+        </div>
+    </div>
+
+    <!-- Page Content -->
+    <div class="page-content">
+        <div class="page-header">
+            <h1 class="page-title">Policy Transactions</h1>
+            <p class="page-subtitle">View and manage all insurance policies</p>
+        </div>
+
+        <!-- Search and Actions Bar -->
+        <div class="search-actions-bar">
+            <div class="search-box">
+                <input type="text" class="search-input" id="searchInput"
+                    placeholder="Search policies by policy number, name, beneficiary...">
+                <span class="search-icon">🔍</span>
+            </div>
+            <button class="btn btn-primary" onclick="window.location.href='/policy-new'">+ New Policy</button>
+        </div>
+
+        <!-- Results Card -->
+        <div class="results-card">
+            <div class="results-header">
+                <h2 class="results-title">All Policies</h2>
+                <div class="results-count" id="resultsCount">Loading...</div>
+            </div>
+            <div class="table-container">
+                <table id="policiesTable">
+                    <thead>
+                        <tr>
+                            <th class="sortable" onclick="sortTable(0)">Policy #</th>
+                            <th class="sortable" onclick="sortTable(1)">Policy Name</th>
+                            <th class="sortable" onclick="sortTable(2)">Type</th>
+                            <th class="sortable" onclick="sortTable(3)">Beneficiary</th>
+                            <th>Coverage Type</th>
+                            <th>Sum Insured</th>
+                            <th class="sortable" onclick="sortTable(5)">Start Date</th>
+                            <th class="sortable" onclick="sortTable(6)">End Date</th>
+
+                        </tr>
+                    </thead>
+                    <tbody id="policiesTableBody">
+                        <tr>
+                            <td colspan="8" style="text-align: center; padding: 40px; color: #6b7280;">
+                                Loading policies...
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let allPolicies = [];
+
+        // Load policies on page load
+        document.addEventListener('DOMContentLoaded', loadPolicies);
+
+        async function loadPolicies() {
+            const tableBody = document.getElementById('policiesTableBody');
+            const loadingOverlay = document.getElementById('loadingOverlay');
+            const resultsCount = document.getElementById('resultsCount');
+
+            loadingOverlay.style.display = 'flex';
+
+            try {
+                const response = await fetch('/api/policies');
+                const data = await response.json();
+
+                loadingOverlay.style.display = 'none';
+
+                if (data.success) {
+                    allPolicies = data.policies;
+                    renderPolicies(data.policies);
+                    resultsCount.textContent = `${data.policies.length} policies`;
+                } else {
+                    tableBody.innerHTML = `<tr><td colspan="8" style="text-align: center; color: red; padding: 40px;">Error: ${data.error}</td></tr>`;
+                }
+            } catch (error) {
+                loadingOverlay.style.display = 'none';
+                console.error('Error fetching policies:', error);
+                tableBody.innerHTML = '<tr><td colspan="8" style="text-align: center; color: red; padding: 40px;">Failed to load policies.</td></tr>';
+            }
+        }
+
+        function renderPolicies(policies) {
+            const tableBody = document.getElementById('policiesTableBody');
+            tableBody.innerHTML = '';
+
+            if (policies.length === 0) {
+                tableBody.innerHTML = '<tr><td colspan="8" style="text-align: center; padding: 40px; color: #6b7280;">No policies found.</td></tr>';
+                return;
+            }
+
+            policies.forEach(policy => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td><a href="/policy-detail/${policy.policy_id}" class="policy-number">${policy.policy_id}</a></td>
+                    <td>${policy.policy_name || '—'}</td>
+                    <td>${policy.policy_type || '—'}</td>
+                    <td>${policy.policy_beneficiary || '—'}</td>
+                    <td>${policy.coverage_type || '—'}</td>
+                    <td>${formatCurrency(policy.sum_insured)}</td>
+                    <td>${formatDate(policy.policy_start_date) || '—'}</td>
+                    <td>${formatDate(policy.policy_end_date) || '—'}</td>
+                `;
+                tableBody.appendChild(row);
+            });
+        }
+
+        document.getElementById('searchInput').addEventListener('input', (e) => {
+            const searchTerm = e.target.value.toLowerCase();
+            const filteredPolicies = allPolicies.filter(policy => {
+                return (
+                    (policy.policy_id || '').toLowerCase().includes(searchTerm) ||
+                    (policy.policy_name || '').toLowerCase().includes(searchTerm) ||
+                    (policy.policy_beneficiary || '').toLowerCase().includes(searchTerm) ||
+                    (policy.policy_type || '').toLowerCase().includes(searchTerm)
+                );
+            });
+
+            renderPolicies(filteredPolicies);
+            document.getElementById('resultsCount').textContent = `${filteredPolicies.length} policies`;
+        });
+
+
+        function formatDate(dateStr) {
+            if (!dateStr) return null;
+            try {
+                const date = new Date(dateStr);
+                return date.toLocaleDateString('en-US', {
+                    year: 'numeric',
+                    month: '2-digit',
+                    day: '2-digit'
+                });
+            } catch {
+                return dateStr;
+            }
+        }
+
+        function formatCurrency(amount) {
+            if (!amount) return '—';
+            try {
+                return new Intl.NumberFormat('en-US', {
+                    style: 'currency',
+                    currency: 'USD',
+                    minimumFractionDigits: 0,
+                    maximumFractionDigits: 0
+                }).format(amount);
+            } catch {
+                return `$${parseFloat(amount).toLocaleString()}`;
+            }
+        }
+
+        function sortTable(columnIndex) {
+            const tbody = document.getElementById('policiesTableBody');
+            const rows = Array.from(tbody.querySelectorAll('tr'));
+
+            rows.sort((a, b) => {
+                const aValue = a.children[columnIndex]?.textContent.trim() || '';
+                const bValue = b.children[columnIndex]?.textContent.trim() || '';
+                return aValue.localeCompare(bValue);
+            });
+
+            rows.forEach(row => tbody.appendChild(row));
+        }
+    </script>
+</body>
+
+</html>

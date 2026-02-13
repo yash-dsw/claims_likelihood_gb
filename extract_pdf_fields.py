@@ -13,6 +13,8 @@ def extract_pdf_form_fields(pdf_path):
     
     # Initialize output dictionary
     extracted_data = {
+        "Policy Number": "",  # NEW: Add policy number field
+        "Agency Customer ID": "",  # NEW: Add agency customer ID field
         "Named Insured": "",
         "Mailing Address": "",
         "City": "",
@@ -47,6 +49,35 @@ def extract_pdf_form_fields(pdf_path):
     
     # Extract specific fields based on actual PDF structure
     if fields:
+        # Policy Number - try multiple possible field names
+        policy_fields = [
+            'F[0].P1[0].AgencyCustomerInfo_PolicyNumber_A[0]',
+            'PolicyNumber',
+            'Policy_Number',
+            'policy_number',
+            'F[0].P1[0].PolicyNumber_A[0]'
+        ]
+        if not extracted_data["Policy Number"]:
+            print(f"[DEBUG] Policy Number not found in standard fields. Available fields: {list(fields.keys())}")
+            # Try to find anything with 'Policy' in the name
+            for f in fields.keys():
+                if 'Policy' in f:
+                    print(f"[DEBUG] Found potential policy field: {f} = {fields[f].get('/V', '')}")
+                    if not extracted_data["Policy Number"]:
+                        extracted_data["Policy Number"] = fields[f].get('/V', '')
+        
+        # Agency Customer ID - try multiple possible field names  
+        agency_id_fields = [
+            'F[0].P1[0].AgencyCustomer_ID_A[0]',
+            'AgencyCustomerID',
+            'Agency_Customer_ID',
+            'F[0].P1[0].AgencyCustomerInfo_ID_A[0]'
+        ]
+        for af in agency_id_fields:
+            if af in fields and fields[af].get('/V', ''):
+                extracted_data["Agency Customer ID"] = fields[af].get('/V', '')
+                break
+        
         # Named Insured
         if 'F[0].P1[0].NamedInsured_FullName_A[0]' in fields:
             extracted_data["Named Insured"] = fields['F[0].P1[0].NamedInsured_FullName_A[0]'].get('/V', '')

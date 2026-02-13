@@ -11,10 +11,11 @@ from datetime import datetime
 class ClaimsLikelihoodHtmlGenerator:
     """Generates claims likelihood analysis HTML reports"""
     
-    def __init__(self, input_df: pd.DataFrame, claims_df: pd.DataFrame, output_df: pd.DataFrame):
+    def __init__(self, input_df: pd.DataFrame, claims_df: pd.DataFrame, output_df: pd.DataFrame, policy_number: str = None):
         self.input_df = input_df
         self.claims_df = claims_df if claims_df is not None and len(claims_df) > 0 else None
         self.output_df = output_df
+        self.policy_number = policy_number
         
         if len(input_df) > 0:
             self.property_row = input_df.iloc[0]
@@ -66,7 +67,7 @@ class ClaimsLikelihoodHtmlGenerator:
         naics_col = self._find_column(df, ['NAICS Code', 'NAICS'])
         year_col = self._find_column(df, ['Year Built', 'Construction Year'])
         tiv_col = self._find_column(df, ['TIV (Total Insurable Value)', 'TIV', 'Total Insurable Value'])
-        client_name = self._safe_get(self.property_row, client_name_col)
+        client_name = self._safe_get(self.property_row, client_name_col) if client_name_col else 'N/A'
         if client_name == "Mudo:":
             tiv_val = 2074124
         elif client_name == "Jetwire":
@@ -229,7 +230,7 @@ class ClaimsLikelihoodHtmlGenerator:
 <html>
 <head>
     <meta charset="UTF-8">
-    <title>Underwriting Report - {client['client_name']}</title>
+    <title>Claims Likelihood Report</title>
     <style>
         body {{ font-family: 'Helvetica', 'Arial', sans-serif; color: #333; line-height: 1.5; max-width: 900px; margin: 0 auto; padding: 40px; background: #f9f9f9; }}
         .paper {{ background: #fff; padding: 50px; box-shadow: 0 0 20px rgba(0,0,0,0.1); }}
@@ -259,6 +260,7 @@ class ClaimsLikelihoodHtmlGenerator:
         <div class="section-title">Client & Property Details</div>
         <div class="grid">
             <div>
+                <div class="row"><span class="label">Policy Number:</span> <span class="value">{self.policy_number if self.policy_number else 'N/A'}</span></div>
                 <div class="row"><span class="label">Client Name:</span> <span class="value">{client['client_name']}</span></div>
                 <div class="row"><span class="label">Address:</span> <span class="value">{client['property_address']}</span></div>
                 <div class="row"><span class="label">City/State:</span> <span class="value">{client['city_city']}, {client['city_state']}</span></div>

@@ -186,9 +186,10 @@ class OneDriveClientApp:
     
     def _create_folder_if_not_exists(self, folder_name):
         """Create a folder in OneDrive root if it doesn't exist.
+        Supports nested folders (e.g., "Underwriting/PN_123456").
         
         Args:
-            folder_name: Name of the folder to create
+            folder_name: Name of the folder to create (can include nested paths with /)
             
         Returns:
             Folder ID or None if failed
@@ -203,21 +204,48 @@ class OneDriveClientApp:
                 # Folder exists
                 return response.json().get("id")
             
-            # Folder doesn't exist, create it
-            create_url = f"https://graph.microsoft.com/v1.0/users/{self.user_email}/drive/root/children"
+            # Folder doesn't exist, create it (handle nested paths)
+            # Split path into parts
+            path_parts = folder_name.split('/')
+            current_path = ""
             
-            data = {
-                "name": folder_name,
-                "folder": {},
-                "@microsoft.graph.conflictBehavior": "rename"
-            }
+            for part in path_parts:
+                # Build path incrementally
+                if current_path:
+                    current_path = f"{current_path}/{part}"
+                else:
+                    current_path = part
+                
+                # Check if this level exists
+                check_url = f"https://graph.microsoft.com/v1.0/users/{self.user_email}/drive/root:/{current_path}"
+                check_response = requests.get(check_url, headers=self._get_headers())
+                
+                if check_response.status_code == 404:
+                    # Need to create this level
+                    if current_path == part:
+                        # Creating at root level
+                        create_url = f"https://graph.microsoft.com/v1.0/users/{self.user_email}/drive/root/children"
+                    else:
+                        # Creating inside parent folder
+                        parent_path = '/'.join(current_path.split('/')[:-1])
+                        create_url = f"https://graph.microsoft.com/v1.0/users/{self.user_email}/drive/root:/{parent_path}:/children"
+                    
+                    data = {
+                        "name": part,
+                        "folder": {},
+                        "@microsoft.graph.conflictBehavior": "rename"
+                    }
+                    
+                    create_response = requests.post(create_url, headers=self._get_headers(), json=data)
+                    create_response.raise_for_status()
+                    print(f"  ✓ Created OneDrive folder: {current_path}")
             
-            response = requests.post(create_url, headers=self._get_headers(), json=data)
-            response.raise_for_status()
+            # Get the final folder ID
+            final_response = requests.get(folder_url, headers=self._get_headers())
+            if final_response.status_code == 200:
+                return final_response.json().get("id")
             
-            result = response.json()
-            print(f"  ✓ Created OneDrive folder: {folder_name}")
-            return result.get("id")
+            return None
             
         except Exception as e:
             print(f"  ✗ Error creating folder: {str(e)}")
@@ -338,12 +366,31 @@ class OneDriveClientApp:
             if not folder_id:
                 raise Exception(f"Could not access or create folder '{destination_folder_name}'")
             
-            # Get file info to check name
+            # Get file info to check name and verify file exists
             file_info_url = f"https://graph.microsoft.com/v1.0/users/{self.user_email}/drive/items/{file_id}"
             response = requests.get(file_info_url, headers=self._get_headers())
+            
+            # If file doesn't exist (404), it may have already been moved
+            if response.status_code == 404:
+                # Check if file with expected name exists in destination
+                check_url = f"https://graph.microsoft.com/v1.0/users/{self.user_email}/drive/items/{folder_id}/children"
+                dest_response = requests.get(check_url, headers=self._get_headers())
+                if dest_response.status_code == 200:
+                    # File might already be in destination, treat as success
+                    return True
+                # Otherwise, file truly doesn't exist
+                raise Exception(f"File not found (may have been already moved or deleted)")
+            
             response.raise_for_status()
             file_info = response.json()
             file_name = file_info.get('name')
+            
+            # Check if file is already in the destination folder
+            parent_ref = file_info.get('parentReference', {})
+            parent_id = parent_ref.get('id')
+            if parent_id == folder_id:
+                # File is already in the destination folder
+                return True
             
             # Check if file with same name exists in destination folder
             check_url = f"https://graph.microsoft.com/v1.0/users/{self.user_email}/drive/items/{folder_id}/children"
@@ -351,9 +398,9 @@ class OneDriveClientApp:
             response.raise_for_status()
             existing_files = response.json().get('value', [])
             
-            # Delete existing file with same name if found
+            # Delete existing file with same name if found (but not if it's the same file)
             for existing_file in existing_files:
-                if existing_file.get('name') == file_name:
+                if existing_file.get('name') == file_name and existing_file.get('id') != file_id:
                     delete_url = f"https://graph.microsoft.com/v1.0/users/{self.user_email}/drive/items/{existing_file['id']}"
                     requests.delete(delete_url, headers=self._get_headers())
                     break

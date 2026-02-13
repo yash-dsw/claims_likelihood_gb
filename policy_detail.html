@@ -1,0 +1,916 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Policy Details - PolicyCenter</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: #f5f6f8;
+            min-height: 100vh;
+        }
+
+        /* Top Navigation */
+        .top-nav {
+            background: #2c3e50;
+            color: white;
+            padding: 0 30px;
+            height: 80px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .nav-brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 30px;
+            font-weight: 600;
+            font-variant: small-caps;
+        }
+
+        .nav-logo {
+            height: 40px;
+            display: flex;
+            align-items: center;
+        }
+
+        .nav-logo img {
+            height: 100%;
+            width: auto;
+            border-radius: 4px;
+        }
+
+        .nav-menu {
+            display: flex;
+            gap: 30px;
+        }
+
+        .nav-link {
+            color: rgba(255, 255, 255, 0.9);
+            text-decoration: none;
+            font-size: 14px;
+            padding: 8px 12px;
+            border-radius: 6px;
+            transition: all 0.2s;
+        }
+
+        .nav-link:hover,
+        .nav-link.active {
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+        }
+
+        /* Secondary Nav Bar */
+        .secondary-nav {
+            background: white;
+            border-bottom: 1px solid #e5e7eb;
+            padding: 15px 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .breadcrumb {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 13px;
+            color: #6b7280;
+        }
+
+        .breadcrumb a {
+            color: #6b7280;
+            text-decoration: none;
+        }
+
+        .breadcrumb a:hover {
+            color: #1f2937;
+        }
+
+        .breadcrumb-separator {
+            color: #d1d5db;
+        }
+
+        .nav-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        /* Page Content */
+        .page-content {
+            padding: 30px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        /* Account Summary Header */
+        .account-summary {
+            background: white;
+            border: 1px solid #e5e7eb;
+            border-radius: 12px;
+            padding: 24px;
+            margin-bottom: 24px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+        }
+
+        .account-summary-title {
+            font-size: 20px;
+            font-weight: 600;
+            color: #1a1f36;
+            margin-bottom: 16px;
+        }
+
+        .summary-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+        }
+
+        .summary-item {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .summary-label {
+            font-size: 12px;
+            font-weight: 500;
+            color: #6b7280;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .summary-value {
+            font-size: 16px;
+            font-weight: 600;
+            color: #1a1f36;
+        }
+
+        /* Section Card */
+        .section-card {
+            background: white;
+            border: 1px solid #e5e7eb;
+            border-radius: 12px;
+            margin-bottom: 24px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+        }
+
+        .section-header {
+            padding: 20px 24px;
+            border-bottom: 1px solid #e5e7eb;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .section-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: #1a1f36;
+        }
+
+        .section-actions {
+            display: flex;
+            gap: 8px;
+        }
+
+        .section-body {
+            padding: 24px;
+        }
+
+        /* Info Grid */
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+        }
+
+        .info-item {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .info-label {
+            font-size: 12px;
+            font-weight: 600;
+            color: #6b7280;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .info-value {
+            font-size: 15px;
+            color: #1a1f36;
+            font-weight: 500;
+        }
+
+
+        /* Buttons */
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 6px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #b8860b 0%, #daa520 100%);
+            color: white;
+        }
+
+        .btn-secondary {
+            background: #f3f4f6;
+            color: #374151;
+            border: 1px solid #d1d5db;
+        }
+
+        /* Table */
+        .table-container {
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        thead {
+            background: #f9fafb;
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        th {
+            padding: 12px 16px;
+            text-align: left;
+            font-weight: 600;
+            font-size: 11px;
+            color: #6b7280;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        tbody tr {
+            border-bottom: 1px solid #f3f4f6;
+        }
+
+        td {
+            padding: 14px 16px;
+            font-size: 14px;
+            color: #1a1f36;
+        }
+
+        /* Single Column Layout */
+        .two-column-layout {
+            display: flex;
+            flex-direction: column;
+            gap: 24px;
+        }
+
+        /* Info Panel */
+        .info-panel {
+            background: white;
+            border: 1px solid #e5e7eb;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+        }
+
+        .info-panel-title {
+            font-size: 14px;
+            font-weight: 600;
+            color: #1a1f36;
+            margin-bottom: 16px;
+        }
+
+        .attachment-info {
+            background: #e1f5fe;
+            padding: 12px 16px;
+            border-radius: 8px;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 14px;
+            border: 1px solid #b3e5fc;
+        }
+
+        .documents-section {
+            background: white;
+            border: 1px solid #e5e7eb;
+            border-radius: 12px;
+            padding: 16px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+            margin-bottom: 20px;
+        }
+
+        .documents-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+
+        .dropzone {
+            border: 2px dashed #d1d5db;
+            border-radius: 8px;
+            padding: 20px;
+            text-align: center;
+            color: #6b7280;
+            cursor: pointer;
+            margin-bottom: 12px;
+        }
+
+        .dropzone.dragover {
+            background: #f8fafc;
+            border-color: #b8860b;
+        }
+
+        .info-panel-list {
+            list-style: none;
+        }
+
+        .info-panel-list li {
+            padding: 8px 0;
+            border-bottom: 1px solid #f3f4f6;
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .panel-item-label {
+            font-size: 11px;
+            color: #6b7280;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            font-weight: 600;
+        }
+
+        .panel-item-value {
+            font-size: 13px;
+            font-weight: 500;
+            color: #1a1f36;
+        }
+
+        /* Document Header Icons */
+        .doc-header-actions {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .sharepoint-link {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 32px;
+            height: 32px;
+            transition: transform 0.2s;
+        }
+
+        .sharepoint-link:hover {
+            transform: scale(1.1);
+        }
+
+        .sharepoint-logo {
+            width: 24px;
+            height: 24px;
+        }
+
+        .btn-icon {
+            width: 32px;
+            height: 32px;
+            padding: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 6px;
+            background: #f3f4f6;
+            color: #374151;
+            border: 1px solid #d1d5db;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-size: 20px;
+            line-height: 1;
+        }
+
+        .btn-icon:hover {
+            background: #e5e7eb;
+            color: #111827;
+        }
+
+        /* Loading */
+        .loading-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.3);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+        }
+
+        .spinner {
+            width: 50px;
+            height: 50px;
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #b8860b;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto;
+        }
+
+        @keyframes spin {
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Loading Overlay -->
+    <div id="loadingOverlay" class="loading-overlay">
+        <div style="background: white; padding: 30px; border-radius: 12px; text-align: center;">
+            <div class="spinner"></div>
+            <div style="margin-top: 15px; color: #1a1f36;">Loading policy details...</div>
+        </div>
+    </div>
+
+    <!-- Top Navigation -->
+    <div class="top-nav">
+        <div class="nav-brand">
+            <div class="nav-logo">
+                <img src="/logo-cropped.svg" alt="Golden Bear Logo">
+            </div>
+            Golden Bear Policy Center
+        </div>
+        <!-- <div class="nav-menu">
+            <a href="/policy-center" class="nav-link active">Policy</a>
+            <a href="/claims" class="nav-link">Claims</a>
+            <a href="#" class="nav-link">Account</a>
+            <a href="#" class="nav-link">Contact</a>
+        </div> -->
+    </div>
+
+    <!-- Secondary Navigation -->
+    <div class="secondary-nav">
+        <div class="breadcrumb">
+            <a href="/policy-center">Admin</a>
+            <span class="breadcrumb-separator">›</span>
+            <a href="/policy-center">Policy</a>
+            <span class="breadcrumb-separator">›</span>
+            <span id="policyIdBreadcrumb">Loading...</span>
+        </div>
+        <div class="nav-actions">
+            <button class="btn btn-secondary" onclick="window.location.href='/policy-center'">Back to List</button>
+        </div>
+    </div>
+
+    <!-- Page Content -->
+    <div class="page-content">
+        <div id="attachmentSection" class="attachment-info" style="display: none; margin-bottom: 16px;">
+            <span>📎 <strong>Source Document:</strong> <span id="sourceFileName"></span></span>
+            <a id="sourceFileLink" href="#" target="_blank">View File</a>
+        </div>
+        <!-- Account Summary -->
+        <div class="account-summary" id="accountSummary">
+            <!-- Content will be loaded here -->
+        </div>
+
+        <!-- Two Column Layout -->
+        <div class="two-column-layout">
+            <!-- Left Column -->
+            <div>
+                <!-- Policy Details -->
+                <div class="section-card">
+                    <div class="section-header">
+                        <h2 class="section-title">Policy Details</h2>
+                    </div>
+                    <div class="section-body">
+                        <div class="info-grid" id="policyDetailsGrid">
+                            <!-- Content will be loaded here -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Loss History -->
+                <div class="section-card">
+                    <div class="section-header">
+                        <h2 class="section-title">Loss History</h2>
+                    </div>
+                    <div class="section-body" style="padding: 0;">
+                        <div class="table-container">
+                            <table>
+                                <thead id="lossHistoryHeader">
+                                    <tr>
+                                        <th>Loss Date</th>
+                                        <th>Loss Type</th>
+                                        <th>Amount</th>
+                                        <th>Claim Date</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="lossHistoryTableBody">
+                                    <tr>
+                                        <td colspan="4" style="text-align: center; padding: 20px; color: #6b7280;">No
+                                            loss history recorded</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Documents Section -->
+                <div class="documents-section">
+                    <div class="documents-header">
+                        <h2 class="documents-title">Documents</h2>
+                        <div class="doc-header-actions">
+                            <a id="sharepointLink" href="#" target="_blank" class="sharepoint-link"
+                                title="Open in OneDrive">
+                                <img src="/sharepoint_logo.svg" alt="SP" class="sharepoint-logo"
+                                    onerror="this.style.display='none'; this.parentElement.innerHTML='SP';">
+                            </a>
+                            <button class="btn-icon" id="addDocumentBtn" title="Add Document">+</button>
+                        </div>
+                    </div>
+
+                    <div id="dropzone" class="dropzone">Drag & drop files here, or click to select</div>
+
+                    <table class="documents-table">
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Type</th>
+                                <th>Uploaded</th>
+                            </tr>
+                        </thead>
+                        <tbody id="documentsTableBody">
+                            <tr id="noDocumentsRow">
+                                <td colspan="3" style="text-align: center; padding: 20px; color: #6b7280;">No documents
+                                    attached</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Right Column - Info Panels -->
+            <div>
+                <!-- Claims Likelihood Panel -->
+                <!-- <div class="info-panel" id="claimsLikelihoodPanel">
+                    <h3 class="section-title">Claims Likelihood</h3>
+                    <div id="likelihoodDetails">
+                        <div style="font-size: 14px; color: #6b7280; text-align: center; padding: 10px;">Loading
+                            likelihood data...</div>
+                    </div>
+                </div> -->
+
+
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const policyId = window.location.pathname.split('/').pop();
+
+        async function loadPolicyDetails() {
+            const overlay = document.getElementById('loadingOverlay');
+            try {
+                // Load core policy details (now includes underwriting scores in policy_db)
+                const response = await fetch(`/api/policies/${policyId}`);
+                const data = await response.json();
+
+                if (data.success) {
+                    renderPolicyDetails(data.policy);
+                    // Render claims likelihood directly from policy data
+                    // renderClaimsLikelihood(data.policy);
+                    // Render loss history from policy data
+                    renderLossHistory(data.policy.loss_history);
+                    // Load original input attachment link
+                    fetchInputAttachment(policyId);
+                } else {
+                    overlay.style.display = 'none';
+                    document.getElementById('accountSummary').innerHTML = `<div style="color: red; padding: 20px;">Error: ${data.error}</div>`;
+                }
+            } catch (error) {
+                overlay.style.display = 'none';
+                console.error('Error fetching policy details:', error);
+            } finally {
+                overlay.style.display = 'none';
+            }
+        }
+
+        function renderLossHistory(lossHistory) {
+            const tbody = document.getElementById('lossHistoryTableBody');
+            if (!lossHistory || !Array.isArray(lossHistory) || lossHistory.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="4" style="text-align: center; padding: 20px; color: #6b7280;">No loss history recorded</td></tr>';
+                return;
+            }
+
+            tbody.innerHTML = lossHistory.map(loss => {
+                // Map based on actual keys seen: "Date of Occurrence", "Type", "Amount Paid"
+                const date = loss['Date of Occurrence'] || loss.date || '—';
+                const type = loss['Type'] || loss.type || '—';
+                const amount = loss['Amount Paid'] || loss.amount || 0;
+                const description = loss.description || loss['Description of Loss'] || (loss['Date of Claim'] ? `${loss['Date of Claim']}` : '—');
+
+                return `
+                    <tr>
+                        <td>${date}</td>
+                        <td>${type}</td>
+                        <td>${formatCurrency(amount)}</td>
+                        <td>${description}</td>
+                    </tr>
+                `;
+            }).join('');
+        }
+
+        function renderClaimsLikelihood(policy) {
+            const detailsDiv = document.getElementById('likelihoodDetails');
+
+            if (!policy || !policy.claims_likelihood_score) {
+                detailsDiv.innerHTML = '<div style="font-size: 14px; color: #6b7280; text-align: center; padding: 10px;">No likelihood data available for this policy.</div>';
+                return;
+            }
+
+            const score = policy.claims_likelihood_score;
+            const riskLevel = policy.claims_likelihood_level || (score < 30 ? 'LOW' : (score < 60 ? 'MEDIUM' : 'HIGH'));
+            const recommendation = policy.underwriting_recommendation || 'AUTO-BIND ELIGIBLE';
+
+            detailsDiv.innerHTML = `
+                <div style="margin-bottom: 20px;">
+                    <div style="font-size: 16px; font-weight: 700; color: #1a1f36; margin-bottom: 8px; margin-top: 8px;">OVERALL SCORE: ${score}% (${riskLevel})</div>
+                    <div style="font-size: 14px; font-weight: 600; color: #065f46; background: #d1fae5; padding: 4px 8px; border-radius: 4px; display: inline-block;">${recommendation}</div>
+                </div>
+                
+                <div style="display: flex; flex-direction: column; gap: 15px;">
+                    <!-- Property Risk -->
+                    <div>
+                        <div style="font-size: 16px; font-weight: 700; color: #1a1f36; margin-bottom: 5px; display: flex; justify-content: space-between;">
+                            <span>Property Risk</span>
+                            <span>${policy.property_risk_score || '0'}%</span>
+                        </div>
+                        <ul style="list-style: none; font-size: 14px; color: #4b5563; padding-left: 10px; border-left: 2px solid #e5e7eb;">
+                            <li>• Roof Condition: ${policy.roof_condition || '—'}</li>
+                            <li>• Construction: ${policy.construction_type || '—'}</li>
+                            <li>• Year Built: ${policy.year_built || '—'}</li>
+                        </ul>
+                    </div>
+
+                    <!-- Claims History Risk -->
+                    <div>
+                        <div style="font-size: 16px; font-weight: 700; color: #1a1f36; margin-bottom: 5px; display: flex; justify-content: space-between;">
+                            <span>Claims History Risk</span>
+                            <span>${policy.claims_history_risk_score || '0'}%</span>
+                        </div>
+                        <ul style="list-style: none; font-size: 14px; color: #4b5563; padding-left: 10px; border-left: 2px solid #e5e7eb;">
+                            <li>• Claim Count: ${policy.claim_count || '0'}</li>
+                            <li>• Total Loss: ${formatCurrency(policy.total_loss_amount)}</li>
+                            <li>• Loss Types: ${policy.loss_types || 'None'}</li>
+                        </ul>
+                    </div>
+
+                    <!-- Geographic Risk -->
+                    <div>
+                        <div style="font-size: 16px; font-weight: 700; color: #1a1f36; margin-bottom: 5px; display: flex; justify-content: space-between;">
+                            <span>Geographic Risk</span>
+                            <span>${policy.geographic_risk_score || '0'}%</span>
+                        </div>
+                        <ul style="list-style: none; font-size: 14px; color: #4b5563; padding-left: 10px; border-left: 2px solid #e5e7eb;">
+                            <li>• Wildfire Risk: ${policy.wildfire_risk || '0'}</li>
+                            <li>• Flood Zone: ${policy.fema_flood_zone || '—'}</li>
+                            <li>• Earthquake: ${policy.earthquake_zone || '—'}</li>
+                            <li>• Crime Score: ${policy.crime_score || '0'}</li>
+                        </ul>
+                    </div>
+
+                    <!-- Protection Risk -->
+                    <div>
+                        <div style="font-size: 16px; font-weight: 700; color: #1a1f36; margin-bottom: 5px; display: flex; justify-content: space-between;">
+                            <span>Protection Risk</span>
+                            <span>${policy.protection_risk_score || '0'}%</span>
+                        </div>
+                        <ul style="list-style: none; font-size: 14px; color: #4b5563; padding-left: 10px; border-left: 2px solid #e5e7eb;">
+                            <li>• Fire Class: ${policy.fire_protection_class || '—'}</li>
+                            <li>• Burglar Alarm: ${policy.burglar_alarm_type || '—'}</li>
+                            <li>• Fire Station: ${policy.distance_fire_station || '—'}</li>
+                        </ul>
+                    </div>
+                </div>
+            `;
+        }
+
+        function renderPolicyDetails(policy) {
+            document.getElementById('policyIdBreadcrumb').textContent = policy.policy_id;
+
+            // Account Summary
+            document.getElementById('accountSummary').innerHTML = `
+                <h2 class="account-summary-title">Account Summary: ${policy.policy_beneficiary || 'Unnamed Insured'}</h2>
+                <div class="summary-grid">
+                    <div class="summary-item"><div class="summary-label">Policy #</div><div class="summary-value">${policy.policy_id}</div></div>
+                    <div class="summary-item"><div class="summary-label">Product</div><div class="summary-value">${policy.policy_name || '—'}</div></div>
+                    <div class="summary-item"><div class="summary-label">Effective Period</div><div class="summary-value">${formatDate(policy.policy_start_date)} - ${formatDate(policy.policy_end_date)}</div></div>
+                    <div class="summary-item"><div class="summary-label">Sum Insured</div><div class="summary-value">${formatCurrency(policy.sum_insured)}</div></div>
+                    <div class="summary-item"><div class="summary-label">Underwriter</div><div class="summary-value">${policy.underwriter_name || '—'}</div></div>
+                </div>
+            `;
+
+            // Policy Details Grid
+            document.getElementById('policyDetailsGrid').innerHTML = `
+                <div class="info-item"><div class="info-label">Policy Type</div><div class="info-value">${policy.policy_type || '—'}</div></div>
+                <div class="info-item"><div class="info-label">Premium Amount</div><div class="info-value">${formatCurrency(policy.premium_amount)}</div></div>
+                <div class="info-item"><div class="info-label">Deductible</div><div class="info-value">${formatCurrency(policy.deductible_amount)}</div></div>
+                <div class="info-item"><div class="info-label">Broker</div><div class="info-value">${policy.broker_name || '—'}</div></div>
+                <div class="info-item"><div class="info-label">Agent</div><div class="info-value">${policy.agent_name || '—'}</div></div>
+                <div class="info-item" style="grid-column: span 2;"><div class="info-label">Insured Address</div><div class="info-value">${policy.insured_address || '—'}</div></div>
+            `;
+        }
+
+
+        function formatDate(dateStr) {
+            if (!dateStr) return '—';
+            return new Date(dateStr).toLocaleDateString();
+        }
+
+        function formatCurrency(amount) {
+            if (!amount) return '—';
+            return new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(amount);
+        }
+
+        async function fetchInputAttachment(pid) {
+            try {
+                const response = await fetch(`/api/policies/${pid}/input-attachment`);
+                const data = await response.json();
+
+                if (data.success && data.attachment) {
+                    const att = data.attachment;
+                    const tbody = document.getElementById('documentsTableBody');
+                    const noRow = document.getElementById('noDocumentsRow');
+                    if (noRow) noRow.style.display = 'none';
+
+                    // Update SharePoint Link
+                    const spLink = document.getElementById('sharepointLink');
+                    if (att.folder_url) {
+                        spLink.href = att.folder_url;
+                        spLink.style.visibility = 'visible';
+                    }
+
+                    // Avoid duplicates if fetchInputPdf already ran
+                    const existingRows = Array.from(tbody.querySelectorAll('td')).map(td => td.textContent);
+                    if (existingRows.includes(att.name)) return;
+
+                    tbody.insertAdjacentHTML('afterbegin', `
+                        <tr>
+                            <td><a href="${att.web_url}" target="_blank" style="color: #b8860b; text-decoration: none; font-weight: 500;">${att.name || 'Original Input'}</a></td>
+                            <td>Original Input</td>
+                            <td>${new Date().toLocaleDateString()}</td>
+                        </tr>
+                    `);
+                } else if (data.success && data.folder_url) {
+                    // Even if no specific ACORD PDF found, show folder URL if available
+                    const spLink = document.getElementById('sharepointLink');
+                    spLink.href = data.folder_url;
+                    spLink.style.visibility = 'visible';
+                }
+            } catch (err) {
+                console.error('Error fetching input attachment:', err);
+            }
+        }
+
+        loadPolicyDetails();
+
+        // If session_id is provided in query params, fetch the input PDF and populate documents
+        const urlParams = new URLSearchParams(window.location.search);
+        const sessionId = urlParams.get('session_id');
+
+        if (sessionId) {
+            fetchInputPdf(sessionId);
+        }
+
+        async function fetchInputPdf(sid) {
+            try {
+                const response = await fetch(`/api/input-pdf?session_id=${sid}`);
+                const data = await response.json();
+                if (data.success && data.pdf_url) {
+                    document.getElementById('attachmentSection').style.display = 'flex';
+                    document.getElementById('sourceFileName').textContent = data.filename || 'Input Attachment';
+                    document.getElementById('sourceFileLink').href = data.pdf_url;
+
+                    // Add to documents table
+                    const tbody = document.getElementById('documentsTableBody');
+                    const noRow = document.getElementById('noDocumentsRow');
+                    if (noRow) noRow.style.display = 'none';
+                    tbody.insertAdjacentHTML('afterbegin', `
+                        <tr>
+                            <td><a href="${data.pdf_url}" target="_blank" style="color: #b8860b; text-decoration: none; font-weight: 500;">${data.filename || 'Input Attachment'}</a></td>
+                            <td>Original Input</td>
+                            <td>${new Date().toLocaleDateString()}</td>
+                        </tr>
+                    `);
+                }
+            } catch (err) {
+                console.error('Error fetching input PDF:', err);
+            }
+        }
+
+        // Drag and drop / upload handlers
+        const dropzone = document.getElementById('dropzone');
+        const addDocumentBtn = document.getElementById('addDocumentBtn');
+
+        function preventDefaults(e) { e.preventDefault(); e.stopPropagation(); }
+        ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(evt => dropzone.addEventListener(evt, preventDefaults, false));
+
+        ['dragenter', 'dragover'].forEach(evt => dropzone.addEventListener(evt, () => dropzone.classList.add('dragover')));
+        ['dragleave', 'drop'].forEach(evt => dropzone.addEventListener(evt, () => dropzone.classList.remove('dragover')));
+
+        dropzone.addEventListener('drop', (e) => {
+            const dt = e.dataTransfer;
+            const files = dt.files;
+            handleFiles(files);
+        });
+
+        dropzone.addEventListener('click', () => {
+            const inp = document.createElement('input');
+            inp.type = 'file';
+            inp.onchange = () => handleFiles(inp.files);
+            inp.click();
+        });
+
+        addDocumentBtn.addEventListener('click', () => {
+            dropzone.click();
+        });
+
+        async function handleFiles(files) {
+            if (!files || files.length === 0) return;
+            const file = files[0];
+
+            // Try to upload to backend endpoint (may not exist) - endpoint: POST /api/policies/{policyId}/documents
+            try {
+                const fd = new FormData();
+                fd.append('file', file);
+
+                const uploadRes = await fetch(`/api/policies/${policyId}/documents`, {
+                    method: 'POST',
+                    body: fd
+                });
+
+                if (uploadRes.ok) {
+                    const resJson = await uploadRes.json();
+                    // Add to documents table
+                    const tbody = document.getElementById('documentsTableBody');
+                    const noRow = document.getElementById('noDocumentsRow');
+                    if (noRow) noRow.style.display = 'none';
+                    tbody.insertAdjacentHTML('afterbegin', `
+                        <tr>
+                            <td><a href="${resJson.url || '#'}" target="_blank" style="color: #b8860b; text-decoration: none; font-weight: 500;">${file.name}</a></td>
+                            <td>${file.type || 'Document'}</td>
+                            <td>${new Date().toLocaleDateString()}</td>
+                        </tr>
+                    `);
+                } else {
+                    // Fallback: show local row (not uploaded)
+                    const tbody = document.getElementById('documentsTableBody');
+                    const noRow = document.getElementById('noDocumentsRow');
+                    if (noRow) noRow.style.display = 'none';
+                    tbody.insertAdjacentHTML('afterbegin', `
+                        <tr>
+                            <td>${file.name}</td>
+                            <td>${file.type || 'Document'}</td>
+                            <td>${new Date().toLocaleDateString()}</td>
+                        </tr>
+                    `);
+                }
+            } catch (err) {
+                console.error('Upload failed:', err);
+            }
+        }
+    </script>
+</body>
+
+</html>
