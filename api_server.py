@@ -2195,6 +2195,54 @@ def api_get_policy_input_attachment(policy_id):
         'success': False, 
         'error': 'Input attachment not found for this policy'
     }), 404
+
+
+@app.route('/api/policies/<policy_id>/documents', methods=['POST'])
+def api_upload_policy_document(policy_id):
+    """Upload a document to the policy's OneDrive folder"""
+    try:
+        if 'file' not in request.files:
+            return jsonify({'success': False, 'error': 'No file provided'}), 400
+        
+        file = request.files['file']
+        if file.filename == '':
+            return jsonify({'success': False, 'error': 'No file selected'}), 400
+            
+        # Save file temporarily
+        temp_path = os.path.join(CONFIG['UPLOAD_FOLDER'], file.filename)
+        file.save(temp_path)
+        
+        # Determine OneDrive folder path
+        folder_path = f"Underwriting/PN_{policy_id}"
+        
+        # Upload to OneDrive
+        # Use Output folder client because Underwriting is usually there
+        if all([CONFIG['TENANT_ID'], CONFIG['CLIENT_ID'], CONFIG['CLIENT_SECRET'], CONFIG['USER_EMAIL']]):
+            client = get_onedrive_client(CONFIG['OUTPUT_FOLDER_OD'])
+            result = client.upload_file(temp_path, folder_path)
+            
+            # Clean up temp file
+            if os.path.exists(temp_path):
+                os.remove(temp_path)
+                
+            if result:
+                return jsonify({
+                    'success': True,
+                    'url': result.get('web_url'),
+                    'name': result.get('name'),
+                    'id': result.get('id')
+                })
+            else:
+                return jsonify({'success': False, 'error': 'Failed to upload to OneDrive'}), 500
+        else:
+            # Clean up temp file
+            if os.path.exists(temp_path):
+                os.remove(temp_path)
+            return jsonify({'success': False, 'error': 'OneDrive credentials not configured'}), 500
+            
+    except Exception as e:
+        return jsonify({'success': False, 'error': str(e)}), 500
+
 # ============================================================================
 # SERVE HTML PAGES
 # ============================================================================
