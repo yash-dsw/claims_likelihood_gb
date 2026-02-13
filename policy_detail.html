@@ -20,7 +20,7 @@
 
         /* Top Navigation */
         .top-nav {
-            background: #2a1c55;
+            background: #2c3e50;
             color: white;
             padding: 0 30px;
             height: 80px;
@@ -86,8 +86,9 @@
             display: flex;
             align-items: center;
             gap: 8px;
-            font-size: 13px;
+            font-size: 14px;
             color: #6b7280;
+            padding-left: 4%;
         }
 
         .breadcrumb a {
@@ -106,6 +107,7 @@
         .nav-actions {
             display: flex;
             gap: 10px;
+            padding-right: 4%;
         }
 
         /* Page Content */
@@ -220,7 +222,7 @@
 
         /* Buttons */
         .btn {
-            padding: 10px 20px;
+            padding: 10px 30px;
             border: none;
             border-radius: 6px;
             font-size: 14px;
@@ -234,19 +236,26 @@
 
         .btn-primary {
             background: #ffbf3c;
-            color: white;
+            color: black;
         }
 
         .btn-primary:hover {
             background: #2a1c55;
+            color: white;
             transform: translateY(-1px);
             box-shadow: 0 4px 12px rgba(42, 28, 85, 0.3);
         }
 
         .btn-secondary {
-            background: #f3f4f6;
-            color: #374151;
-            border: 1px solid #d1d5db;
+            background: #ffbf3c;
+            color: black;
+        }
+
+        .btn-secondary:hover {
+            background: #2a1c55;
+            color: white;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(42, 28, 85, 0.3);
         }
 
         /* Table */
@@ -752,8 +761,8 @@
             // Account Summary
             document.getElementById('accountSummary').innerHTML = `
                 <div class="info-grid">
-                    <div class="info-item"><div class="info-label">Beneficiary</div><div class="info-value" style="font-weight: 700;">${policy.policy_beneficiary || 'Unnamed Insured'}</div></div>
-                    <div class="info-item"><div class="info-label">Company</div><div class="info-value" style="font-weight: 700;">${policy.company_name || '—'}</div></div>
+                    <div class="info-item"><div class="info-label">Beneficiary</div><div class="info-value" ">${policy.policy_beneficiary || 'Unnamed Insured'}</div></div>
+                    <div class="info-item"><div class="info-label">Company</div><div class="info-value" ">${policy.company_name || '—'}</div></div>
                     <div class="info-item"><div class="info-label">Policy #</div><div class="info-value">${policy.policy_id}</div></div>
                     <div class="info-item"><div class="info-label">Product</div><div class="info-value">${policy.policy_name || '—'}</div></div>
                     
