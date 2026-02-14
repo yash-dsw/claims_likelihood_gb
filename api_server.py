@@ -464,7 +464,7 @@ def get_policy_input_attachment(policy_id):
             actual_name = item.get('name')
             print(f"   [DEBUG] Checking file: {actual_name}")
             # Match acord_*.pdf (original), acord_*_report.pdf (report), or acord_*.eml (email)
-            if name.startswith('acord_') and (name.endswith('.pdf') or name.endswith('.eml')):
+            if name.startswith('acord_') and (name.endswith('.pdf') or name.endswith('.eml')  or name.endswith('.docx')):
                 print(f"   [DEBUG] ✓ Match! Adding: {actual_name}")
                 files.append({
                     'name': actual_name,
