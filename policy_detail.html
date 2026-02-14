@@ -806,28 +806,26 @@
                 if (data.success) {
                     const tbody = document.getElementById('documentsTableBody');
                     const noRow = document.getElementById('noDocumentsRow');
-                    if (noRow) noRow.style.display = 'none';
-
-                    // Update SharePoint Link
-                    const spLink = document.getElementById('sharepointLink');
-                    if (data.folder_url) {
-                        spLink.href = data.folder_url;
-                        spLink.style.visibility = 'visible';
-                    }
-
-                    // Avoid duplicates if fetchInputPdf already ran
-                    const existingRows = Array.from(tbody.querySelectorAll('td')).map(td => td.textContent);
-                    console.log('[DEBUG] Existing rows:', existingRows);
-
+                    
                     // Use the files array from API response
                     const files = data.files || [];
                     console.log('[DEBUG] Processing files:', files);
+                    console.log('[DEBUG] Files count:', files.length);
 
-                    // Add all files to the table
-                    files.forEach((file, index) => {
-                        console.log(`[DEBUG] File ${index}:`, file);
-                        if (!existingRows.includes(file.name)) {
-                            console.log(`[DEBUG] Adding file to table: ${file.name}`);
+                    if (files && files.length > 0) {
+                        // Clear table and remove empty row
+                        tbody.innerHTML = '';
+                        
+                        // Update SharePoint Link
+                        const spLink = document.getElementById('sharepointLink');
+                        if (data.folder_url) {
+                            spLink.href = data.folder_url;
+                            spLink.style.visibility = 'visible';
+                        }
+
+                        // Add all files to the table
+                        files.forEach((file, index) => {
+                            console.log(`[DEBUG] File ${index}:`, file);
 
                             // Determine file type based on filename
                             let fileType = 'Original Input';
@@ -836,21 +834,21 @@
                                 fileType = 'Report';
                             } else if (fileName.endsWith('.eml')) {
                                 fileType = 'Email';
+                            } else if (fileName.endsWith('.docx')) {
+                                fileType = 'Document';
                             }
 
-                            tbody.insertAdjacentHTML('afterbegin', `
+                            tbody.insertAdjacentHTML('beforeend', `
                                 <tr>
                                     <td><a href="${file.web_url}" target="_blank" style="color: #b8860b; text-decoration: none; font-weight: 500;">${file.name}</a></td>
                                     <td>${fileType}</td>
                                     <td>${new Date().toLocaleDateString()}</td>
                                 </tr>
                             `);
-                        } else {
-                            console.log(`[DEBUG] Skipping duplicate file: ${file.name}`);
-                        }
-                    });
+                        });
 
-                    console.log('[DEBUG] Files added to table');
+                        console.log('[DEBUG] Files added to table');
+                    }
                 }
             } catch (err) {
                 console.error('Error fetching input attachment:', err);

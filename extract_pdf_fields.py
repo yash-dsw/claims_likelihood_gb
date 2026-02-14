@@ -58,11 +58,11 @@ def extract_pdf_form_fields(pdf_path):
             'F[0].P1[0].PolicyNumber_A[0]'
         ]
         if not extracted_data["Policy Number"]:
-            print(f"[DEBUG] Policy Number not found in standard fields. Available fields: {list(fields.keys())}")
+            # print(f"[DEBUG] Policy Number not found in standard fields. Available fields: {list(fields.keys())}")
             # Try to find anything with 'Policy' in the name
             for f in fields.keys():
                 if 'Policy' in f:
-                    print(f"[DEBUG] Found potential policy field: {f} = {fields[f].get('/V', '')}")
+                    # print(f"[DEBUG] Found potential policy field: {f} = {fields[f].get('/V', '')}")
                     if not extracted_data["Policy Number"]:
                         extracted_data["Policy Number"] = fields[f].get('/V', '')
         
