@@ -456,6 +456,7 @@ Extract the identifier now (just the identifier, nothing else):"""
         local_pdf_path = None
         local_json_path = None
         local_eml_path = None
+        local_docx_path = None
         email_metadata = None
         underwriting_subfolder = None
         
@@ -467,6 +468,19 @@ Extract the identifier now (just the identifier, nothing else):"""
                 CONFIG['TEMP_INPUT_DIR']
             )
             print(f"   ✓ Downloaded PDF: {local_pdf_path}")
+            
+            # Search for and download any DOCX file from input folder
+            try:
+                files_in_input = self.input_client.list_files()
+                docx_file = next((f for f in files_in_input if f['name'].lower().endswith('.docx')), None)
+                if docx_file:
+                    local_docx_path = self.input_client.download_file(
+                        docx_file,
+                        CONFIG['TEMP_INPUT_DIR']
+                    )
+                    print(f"   ✓ Downloaded DOCX: {local_docx_path}")
+            except Exception as e:
+                print(f"   ⚠ DOCX search/download skipped: {str(e)}")
             
             # Download companion JSON if available
             if json_info:
@@ -673,7 +687,15 @@ Extract the identifier now (just the identifier, nothing else):"""
                                         if input_upload:
                                             print(f"[WATCHER]    ✓ Input PDF uploaded")
                                     
-                                    # Upload output PDF
+                                    # Upload input DOCX if it exists
+                                    if local_docx_path and os.path.exists(local_docx_path):
+                                        docx_upload = self.output_client.upload_file(
+                                            local_docx_path, session.underwriting_subfolder
+                                        )
+                                        if docx_upload:
+                                            print(f"[WATCHER]    ✓ Input DOCX uploaded")
+                                    
+                                    # Upload output PDF (report)
                                     if pdf_path and os.path.exists(pdf_path):
                                         output_upload = self.output_client.upload_file(
                                             pdf_path, session.underwriting_subfolder
@@ -682,20 +704,10 @@ Extract the identifier now (just the identifier, nothing else):"""
                                             session.output_pdf_url = output_upload['web_url']
                                             print(f"[WATCHER]    ✓ Output PDF uploaded: {session.output_pdf_url}")
                                     
-                                    # # Upload HTML
-                                    # if html_path and os.path.exists(html_path):
-                                    #     self.output_client.upload_file(html_path, session.underwriting_subfolder)
-                                    #     print(f"[WATCHER]    ✓ HTML uploaded")
-                                    
                                     # Upload EML
                                     if local_eml_path and os.path.exists(local_eml_path):
                                         self.output_client.upload_file(local_eml_path, session.underwriting_subfolder)
                                         print(f"[WATCHER]    ✓ EML uploaded")
-                                    
-                                    # # Upload form PDF
-                                    # if session.form_pdf_path and os.path.exists(session.form_pdf_path):
-                                    #     self.output_client.upload_file(session.form_pdf_path, session.underwriting_subfolder)
-                                    #     print(f"[WATCHER]    ✓ Form PDF uploaded")
                                     
                                 except Exception as e:
                                     print(f"[WATCHER]    ⚠ Upload error: {e}")
