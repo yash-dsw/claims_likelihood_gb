@@ -1283,6 +1283,19 @@ def process_with_updated_details():
             if filename:
                 print(f"\n[PROCESS] No session found yet for {filename}")
                 print(f"[PROCESS] Storing frontend data for later use...")
+
+                file_prefix = os.getenv("FILE_PREFIX", "acord_")
+                if not filename.lower().startswith(file_prefix.lower()):
+                    print(f"[PROCESS] ⊘ Skipping file (doesn't start with '{file_prefix}'): {filename}")
+                    print(f"[PROCESS] This file will be uploaded to OneDrive but not processed")
+                    
+                    return jsonify({
+                        'success': True,
+                        'status': 'skipped',
+                        'message': f'File skipped - only files starting with "{file_prefix}" are processed',
+                        'filename': filename,
+                        'reason': 'filename_filter'
+                    }), 200
                 
                 pending_frontend_data[filename] = {
                     'email_fields': email_fields,

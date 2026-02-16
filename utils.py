@@ -879,6 +879,7 @@ def generate_analysis_summary(result: Dict, llm=None) -> str:
             )
             
             response = llm.invoke([HumanMessage(content=prompt)])
+            print("GENERATED LLM RESPONSE==========================")
             return response.content.strip()
             
         except Exception as e:
