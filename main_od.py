@@ -11,6 +11,7 @@ import re
 import requests
 import pandas as pd
 from datetime import datetime
+from concurrent.futures import ThreadPoolExecutor, as_completed
 from dotenv import load_dotenv
 from langchain_openai import ChatOpenAI
 from langchain_core.messages import HumanMessage
@@ -53,7 +54,7 @@ CONFIG = {
     "TEMP_OUTPUT_DIR": "./temp_output",
     
     # Processing
-    "POLL_INTERVAL": int(os.getenv("POLL_INTERVAL", "5")),
+    "POLL_INTERVAL": int(os.getenv("POLL_INTERVAL", "2")),
     "PROCESS_EXTENSION": ".pdf",
     "FILE_PREFIX": os.getenv("FILE_PREFIX", "acord_")  # Only process files starting with this prefix
 }
@@ -453,6 +454,9 @@ Extract the identifier now (just the identifier, nothing else):"""
             print(f"WITH JSON: {json_filename}")
         print(f"{'='*70}")
         
+        # Start overall timing
+        process_start = time.time()
+        
         local_pdf_path = None
         local_json_path = None
         local_eml_path = None
@@ -461,66 +465,85 @@ Extract the identifier now (just the identifier, nothing else):"""
         underwriting_subfolder = None
         
         try:
-            # Step 1: Download files from OneDrive
-            print(f"[1/3] Downloading from OneDrive...")
-            local_pdf_path = self.input_client.download_file(
-                pdf_info, 
-                CONFIG['TEMP_INPUT_DIR']
-            )
-            print(f"   ✓ Downloaded PDF: {local_pdf_path}")
+            # Step 1: Download files from OneDrive (PARALLEL)
+            print(f"[1/3] Downloading from OneDrive (parallel)...")
+            download_start = time.time()
             
-            # Search for and download any DOCX file from input folder
+            # Prepare download tasks
+            download_tasks = []
+            download_tasks.append(('pdf', pdf_info))
+            
+            # Find DOCX file first (quick operation)
+            docx_file = None
             try:
                 files_in_input = self.input_client.list_files()
                 docx_file = next((f for f in files_in_input if f['name'].lower().endswith('.docx')), None)
                 if docx_file:
-                    local_docx_path = self.input_client.download_file(
-                        docx_file,
-                        CONFIG['TEMP_INPUT_DIR']
-                    )
-                    print(f"   ✓ Downloaded DOCX: {local_docx_path}")
+                    download_tasks.append(('docx', docx_file))
             except Exception as e:
-                print(f"   ⚠ DOCX search/download skipped: {str(e)}")
+                print(f"   ⚠ DOCX search skipped: {str(e)}")
             
-            # Download companion JSON if available
+            # Add JSON download if available
             if json_info:
-                local_json_path = os.path.join(CONFIG['TEMP_INPUT_DIR'], json_filename)
-                local_json_path = self.input_client.download_file(
-                    json_info,
-                    CONFIG['TEMP_INPUT_DIR']
-                )
-                print(f"   ✓ Downloaded JSON: {local_json_path}")
+                download_tasks.append(('json', json_info))
+            
+            # Download files in parallel
+            def download_file_task(task_info):
+                file_type, file_info = task_info
+                try:
+                    local_path = self.input_client.download_file(file_info, CONFIG['TEMP_INPUT_DIR'])
+                    return (file_type, True, local_path, None)
+                except Exception as e:
+                    return (file_type, False, None, str(e))
+            
+            results = {}
+            with ThreadPoolExecutor(max_workers=len(download_tasks)) as executor:
+                futures = {executor.submit(download_file_task, task): task for task in download_tasks}
                 
-                # Load email metadata
+                for future in as_completed(futures):
+                    file_type, success, local_path, error = future.result()
+                    if success:
+                        results[file_type] = local_path
+                        print(f"   ✓ Downloaded {file_type.upper()}: {local_path}")
+                    else:
+                        print(f"   ⚠ {file_type.upper()} download failed: {error}")
+            
+            local_pdf_path = results.get('pdf')
+            local_docx_path = results.get('docx')
+            local_json_path = results.get('json')
+            
+            download_time = time.time() - download_start
+            print(f"   ⏱ Parallel download completed in {download_time:.2f}s")
+            
+            # Load email metadata and download EML (depends on JSON being downloaded first)
+            if local_json_path:
                 email_metadata = load_email_metadata(local_json_path)
                 
-                # Note: Subfolder name will be determined after PDF extraction using NEW policy number
-                if email_metadata:
-                    # Download email as EML if message ID is available
-                    message_id = email_metadata.get('id')
-                    if message_id:
-                        # Extract receiver email (the "to" recipient)
-                        receiver_email = get_recipient_email(email_metadata)
-                        if not receiver_email:
-                            receiver_email = CONFIG['USER_EMAIL']  # Fallback
-                        
-                        # Use input PDF filename with .eml extension
-                        eml_filename = os.path.splitext(filename)[0] + '.eml'
-                        local_eml_path = os.path.join(CONFIG['TEMP_INPUT_DIR'], eml_filename)
-                        success = self._download_email_as_eml(email_metadata, local_eml_path, receiver_email=receiver_email)
-                        if not success:
-                            print(f"   ⚠ Continuing without EML file")
-                            local_eml_path = None  # Clear path so it won't try to upload
+                # Download email as EML if message ID is available
+                if email_metadata and email_metadata.get('id'):
+                    receiver_email = get_recipient_email(email_metadata)
+                    if not receiver_email:
+                        receiver_email = CONFIG['USER_EMAIL']
+                    
+                    eml_filename = os.path.splitext(filename)[0] + '.eml'
+                    local_eml_path = os.path.join(CONFIG['TEMP_INPUT_DIR'], eml_filename)
+                    success = self._download_email_as_eml(email_metadata, local_eml_path, receiver_email=receiver_email)
+                    if not success:
+                        print(f"   ⚠ Continuing without EML file")
+                        local_eml_path = None
             
             # Step 2: Extract data from PDF
             print(f"[2/3] Extracting data from PDF...")
+            extract_start = time.time()
             success, extracted_data, error = self.orchestrator.extract_data_from_pdf(local_pdf_path)
+            extract_time = time.time() - extract_start
             if not success:
                 print(f"   ✗ Extraction failed: {error}")
                 return False
             
             populated_count = len([v for v in extracted_data.values() if v])
             print(f"   ✓ Extracted {populated_count} fields")
+            print(f"   ⏱ PDF extraction took {extract_time:.2f}s")
             
             # ---- SAVE TO DATABASE IMMEDIATELY AFTER EXTRACTION ----
             if UNIFIED_MODE:
@@ -628,6 +651,7 @@ Extract the identifier now (just the identifier, nothing else):"""
                             
                             # Continue with processing
                             print(f"[WATCHER] 📊 Starting analysis...")
+                            analysis_start = time.time()
                             
                             # Prepare DataFrames
                             success, property_df, claims_df, error = self.orchestrator.prepare_dataframes(extracted_data)
@@ -643,109 +667,164 @@ Extract the identifier now (just the identifier, nothing else):"""
                                 print(f"[WATCHER]    ✗ Risk analysis failed: {error}")
                                 return False
                             
+                            analysis_time = time.time() - analysis_start
                             client_name = analysis_summary.get('named_insured', 'Property')
+                            print(f"[WATCHER]    ⏱ Analysis completed in {analysis_time:.2f}s")
                             
-                            # Generate PDF report
-                            print(f"[WATCHER] 📄 Generating PDF report...")
-                            success, pdf_path, error = self.orchestrator.generate_pdf_report(
-                                property_df, claims_df, scored_df, client_name, 
-                                input_pdf_name=filename, policy_number=policy_number
-                            )
+                            # Generate PDF and HTML reports IN PARALLEL
+                            print(f"[WATCHER] 📄 Generating reports (parallel)...")
+                            report_start = time.time()
                             
-                            if not success:
-                                print(f"[WATCHER]    ✗ PDF generation failed: {error}")
-                                return False
+                            def generate_pdf_task():
+                                success, pdf_path, error = self.orchestrator.generate_pdf_report(
+                                    property_df, claims_df, scored_df, client_name, 
+                                    input_pdf_name=filename, policy_number=policy_number
+                                )
+                                return ('pdf', success, pdf_path, error)
+                            
+                            def generate_html_task():
+                                try:
+                                    html_path = self._generate_html_report(
+                                        property_df, claims_df, scored_df, client_name, filename
+                                    )
+                                    return ('html', True, html_path, None)
+                                except Exception as e:
+                                    return ('html', False, None, str(e))
+                            
+                            # Execute both in parallel
+                            pdf_path = None
+                            html_path = None
+                            with ThreadPoolExecutor(max_workers=2) as executor:
+                                pdf_future = executor.submit(generate_pdf_task)
+                                html_future = executor.submit(generate_html_task)
+                                
+                                # Get PDF result (required)
+                                pdf_type, pdf_success, pdf_path, pdf_error = pdf_future.result()
+                                if not pdf_success:
+                                    print(f"[WATCHER]    ✗ PDF generation failed: {pdf_error}")
+                                    return False
+                                print(f"[WATCHER]    ✓ PDF generated: {os.path.basename(pdf_path)}")
+                                
+                                # Get HTML result (optional)
+                                html_type, html_success, html_path, html_error = html_future.result()
+                                if html_success:
+                                    print(f"[WATCHER]    ✓ HTML generated: {os.path.basename(html_path)}")
+                                else:
+                                    print(f"[WATCHER]    ⚠ HTML generation failed: {html_error}")
+                            
+                            report_time = time.time() - report_start
+                            print(f"[WATCHER]    ⏱ Report generation took {report_time:.2f}s")
                             
                             session.output_pdf_path = pdf_path
-                            print(f"[WATCHER]    ✓ PDF generated: {os.path.basename(pdf_path)}")
                             
-                            # ---- SAVE ANALYSIS RESULTS TO POLICY_DB ----
-                            # if policy_number:
-                            #     save_underwriting_results_to_policy_db(policy_number, analysis_summary, extracted_data)
-                            
-                            # Generate HTML report
-                            try:
-                                html_path = self._generate_html_report(
-                                    property_df, claims_df, scored_df, client_name, filename
-                                )
-                                if html_path:
-                                    print(f"[WATCHER]    ✓ HTML generated: {os.path.basename(html_path)}")
-                            except Exception as e:
-                                print(f"[WATCHER]    ⚠ HTML generation failed: {e}")
-                                html_path = None
-                            
-                            # Upload to OneDrive
-                            print(f"[WATCHER] ☁ Uploading to OneDrive...")
-                            
-                            if session.underwriting_subfolder:
-                                try:
-                                    # Upload input PDF
-                                    if local_pdf_path and os.path.exists(local_pdf_path):
-                                        input_upload = self.output_client.upload_file(
-                                            local_pdf_path, session.underwriting_subfolder
-                                        )
-                                        if input_upload:
-                                            print(f"[WATCHER]    ✓ Input PDF uploaded")
-                                    
-                                    # Upload input DOCX if it exists
-                                    if local_docx_path and os.path.exists(local_docx_path):
-                                        docx_upload = self.output_client.upload_file(
-                                            local_docx_path, session.underwriting_subfolder
-                                        )
-                                        if docx_upload:
-                                            print(f"[WATCHER]    ✓ Input DOCX uploaded")
-                                    
-                                    # Upload output PDF (report)
-                                    if pdf_path and os.path.exists(pdf_path):
-                                        output_upload = self.output_client.upload_file(
-                                            pdf_path, session.underwriting_subfolder
-                                        )
-                                        if output_upload and output_upload.get('web_url'):
-                                            session.output_pdf_url = output_upload['web_url']
-                                            print(f"[WATCHER]    ✓ Output PDF uploaded: {session.output_pdf_url}")
-                                    
-                                    # Upload EML
-                                    if local_eml_path and os.path.exists(local_eml_path):
-                                        self.output_client.upload_file(local_eml_path, session.underwriting_subfolder)
-                                        print(f"[WATCHER]    ✓ EML uploaded")
-                                    
-                                except Exception as e:
-                                    print(f"[WATCHER]    ⚠ Upload error: {e}")
-                            
-                            # Send email
-                            if email_metadata:
-                                print(f"[WATCHER] 📧 Sending email...")
-                                try:
-                                    recipient = get_recipient_email(email_metadata)
-                                    if recipient:
-                                        html_content = ""
-                                        if html_path and os.path.exists(html_path):
-                                            with open(html_path, 'r', encoding='utf-8') as f:
-                                                html_content = f.read()
+                            # Background task for uploads, email, and file moving
+                            def background_upload_email_cleanup():
+                                """Background task: upload files, send email, and move files"""
+                                time.sleep(0.1)  # Small delay to ensure main flow completes
+                                
+                                # Upload to OneDrive
+                                print(f"\n[Background] ☁ Uploading to OneDrive...")
+                                upload_start = time.time()
+                                
+                                if session.underwriting_subfolder:
+                                    try:
+                                        # Prepare upload tasks
+                                        upload_tasks = []
                                         
-                                        if self.email_sender.send_claims_report_email(
-                                            to_email=recipient,
-                                            email_metadata=email_metadata,
-                                            html_report=html_content,
-                                            input_pdf_path=local_pdf_path,
-                                            output_pdf_path=pdf_path,
-                                            report_web_url=session.output_pdf_url,
-                                            output_folder_url=None
-                                        ):
-                                            print(f"[WATCHER]    ✓ Email sent to {recipient}")
+                                        # Task 1: Upload input PDF
+                                        if local_pdf_path and os.path.exists(local_pdf_path):
+                                            upload_tasks.append(('input_pdf', local_pdf_path, 'Input PDF'))
+                                        
+                                        # Task 2: Upload input DOCX if it exists
+                                        if local_docx_path and os.path.exists(local_docx_path):
+                                            upload_tasks.append(('input_docx', local_docx_path, 'Input DOCX'))
+                                        
+                                        # Task 3: Upload output PDF (report)
+                                        if pdf_path and os.path.exists(pdf_path):
+                                            upload_tasks.append(('output_pdf', pdf_path, 'Output PDF'))
+                                        
+                                        # Task 4: Upload EML
+                                        if local_eml_path and os.path.exists(local_eml_path):
+                                            upload_tasks.append(('eml', local_eml_path, 'EML'))
+                                        
+                                        # Execute uploads in parallel
+                                        if upload_tasks:
+                                            def upload_file_task(task_info):
+                                                task_type, file_path, display_name = task_info
+                                                try:
+                                                    result = self.output_client.upload_file(file_path, session.underwriting_subfolder)
+                                                    return (task_type, True, result, display_name)
+                                                except Exception as e:
+                                                    return (task_type, False, str(e), display_name)
+                                            
+                                            with ThreadPoolExecutor(max_workers=len(upload_tasks)) as executor:
+                                                futures = {executor.submit(upload_file_task, task): task for task in upload_tasks}
+                                                
+                                                for future in as_completed(futures):
+                                                    task_type, success, result, display_name = future.result()
+                                                    
+                                                    if success:
+                                                        print(f"[Background]    ✓ {display_name} uploaded")
+                                                        
+                                                        # Store output PDF URL if available
+                                                        if task_type == 'output_pdf' and result and result.get('web_url'):
+                                                            session.output_pdf_url = result['web_url']
+                                                            print(f"[Background]    ✓ Output PDF URL: {session.output_pdf_url}")
+                                                    else:
+                                                        print(f"[Background]    ⚠ {display_name} upload error: {result}")
+                                        
+                                        upload_time = time.time() - upload_start
+                                        print(f"[Background]    ⏱ Parallel upload completed in {upload_time:.2f}s")
+                                        
+                                    except Exception as e:
+                                        print(f"[Background]    ⚠ Upload error: {e}")
+                                
+                                # Send email
+                                if email_metadata:
+                                    print(f"\n[Background] Sending email...")
+                                    try:
+                                        recipient = get_recipient_email(email_metadata)
+                                        if recipient:
+                                            html_content = ""
+                                            if html_path and os.path.exists(html_path):
+                                                with open(html_path, 'r', encoding='utf-8') as f:
+                                                    html_content = f.read()
+                                            
+                                            if self.email_sender.send_claims_report_email(
+                                                to_email=recipient,
+                                                email_metadata=email_metadata,
+                                                html_report=html_content,
+                                                input_pdf_path=local_pdf_path,
+                                                output_pdf_path=pdf_path,
+                                                report_web_url=session.output_pdf_url,
+                                                output_folder_url=None
+                                            ):
+                                                print(f"[Background]    ✓ Email sent to {recipient}")
+                                    except Exception as e:
+                                        print(f"[Background]    ⚠ Email error: {e}")
+                                
+                                # Move files to processed
+                                print(f"\n[Background] Moving files to processed folder...")
+                                try:
+                                    self._move_to_processed(pdf_info['id'], filename)
+                                    if json_info:
+                                        self._move_to_processed(json_info['id'], json_filename)
+                                    print(f"[Background]    ✓ Files moved to processed folder")
                                 except Exception as e:
-                                    print(f"[WATCHER]    ⚠ Email error: {e}")
+                                    print(f"[Background]    ⚠ Move error: {e}")
+                                
+                                print(f"\n[Background] All background tasks completed")
                             
-                            # Move files to processed
-                            print(f"[WATCHER] 🗂 Moving files to processed folder...")
-                            try:
-                                self._move_to_processed(pdf_info['id'], filename)
-                                if json_info:
-                                    self._move_to_processed(json_info['id'], json_filename)
-                            except Exception as e:
-                                print(f"[WATCHER]    ⚠ Move error: {e}")
+                            # Start background thread
+                            import threading
+                            background_thread = threading.Thread(target=background_upload_email_cleanup, daemon=True)
+                            background_thread.start()
                             
-                            print(f"[WATCHER] ✓ Processing complete with frontend data!")
+                            total_time = time.time() - process_start
+                            print(f"\n[WATCHER] ✅ Processing complete with frontend data!")
+                            print(f"[WATCHER] ✅ Background tasks started (upload + email + file moving)")
+                            print(f"[WATCHER] ⏱ MAIN PROCESSING TIME: {total_time:.2f}s")
+                            print(f"[WATCHER] 📌 Frontend can access /api/output-pdf immediately")
                             
                             # Mark as processed
                             frontend_data['processed'] = True
