@@ -769,6 +769,10 @@
                     <div class="info-item"><div class="info-label">Effective Period</div><div class="info-value">${formatDate(policy.policy_start_date)} - ${formatDate(policy.policy_end_date)}</div></div>
                     <div class="info-item"><div class="info-label">Sum Insured</div><div class="info-value">${formatCurrency(policy.sum_insured)}</div></div>
                     <div class="info-item"><div class="info-label">Underwriter</div><div class="info-value">${policy.underwriter_name || '—'}</div></div>
+                    <div class="info-item">
+                        <div class="info-label">Comments</div>
+                        <div class="info-value" style="white-space: pre-wrap;">${policy.comments || '—'}</div>
+                    </div>
                 </div>
             `;
 
@@ -806,7 +810,7 @@
                 if (data.success) {
                     const tbody = document.getElementById('documentsTableBody');
                     const noRow = document.getElementById('noDocumentsRow');
-                    
+
                     // Use the files array from API response
                     const files = data.files || [];
                     console.log('[DEBUG] Processing files:', files);
@@ -815,7 +819,7 @@
                     if (files && files.length > 0) {
                         // Clear table and remove empty row
                         tbody.innerHTML = '';
-                        
+
                         // Update SharePoint Link
                         const spLink = document.getElementById('sharepointLink');
                         if (data.folder_url) {

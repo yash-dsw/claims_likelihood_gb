@@ -1349,6 +1349,19 @@ def process_with_updated_details():
         print(f"  Subject: {email_fields.get('subject', 'N/A')[:50]}...")
         print(f"  Document: {email_fields.get('document_name', 'N/A')}")
         
+        # Save comments to policy_db
+        comments = email_fields.get('comments')
+        if policy_number and comments:
+            print(f"  Comments: {comments}")
+            try:
+                save_policy_to_db({
+                    'policy_id': policy_number,
+                    'comments': comments
+                })
+                print(f"  ✓ Comments saved to policy_db for {policy_number}")
+            except Exception as e:
+                print(f"  ⚠ Failed to save comments: {str(e)}")
+        
         # Handle form PDF upload if provided
         form_pdf_uploaded = False
         if form_pdf_base64:
