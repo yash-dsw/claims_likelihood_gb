@@ -473,13 +473,19 @@ Extract the identifier now (just the identifier, nothing else):"""
             download_tasks = []
             download_tasks.append(('pdf', pdf_info))
             
-            # Find DOCX file first (quick operation)
+            # Find DOCX file and its companion JSON (loss run files)
             docx_file = None
+            docx_json_file = None
             try:
                 files_in_input = self.input_client.list_files()
                 docx_file = next((f for f in files_in_input if f['name'].lower().endswith('.docx')), None)
                 if docx_file:
                     download_tasks.append(('docx', docx_file))
+                    # Look for companion JSON for the docx file
+                    docx_json_name = f"{docx_file['name']}.json"
+                    docx_json_file = next((f for f in files_in_input if f['name'] == docx_json_name), None)
+                    if docx_json_file:
+                        download_tasks.append(('docx_json', docx_json_file))
             except Exception as e:
                 print(f"   ⚠ DOCX search skipped: {str(e)}")
             
@@ -597,6 +603,8 @@ Extract the identifier now (just the identifier, nothing else):"""
                 session.email_metadata = email_metadata
                 session.onedrive_file_id = pdf_info['id']
                 session.onedrive_json_id = json_info['id'] if json_info else None
+                session.onedrive_docx_id = docx_file['id'] if docx_file else None
+                session.onedrive_docx_json_id = docx_json_file['id'] if docx_json_file else None
                 session.underwriting_subfolder = underwriting_subfolder
                 session.local_eml_path = local_eml_path
                 session.input_pdf_url = pdf_info.get('web_url')
@@ -728,6 +736,9 @@ Extract the identifier now (just the identifier, nothing else):"""
                                 
                                 if session.underwriting_subfolder:
                                     try:
+                                        # Ensure folder exists ONCE before parallel uploads
+                                        self.output_client._create_folder_if_not_exists(session.underwriting_subfolder)
+                                        
                                         # Prepare upload tasks
                                         upload_tasks = []
                                         
@@ -810,8 +821,17 @@ Extract the identifier now (just the identifier, nothing else):"""
                                     if json_info:
                                         self._move_to_processed(json_info['id'], json_filename)
                                     print(f"[Background]    ✓ Files moved to processed folder")
+                                    
+                                    # Delete loss run files from input_attachments
+                                    if session.onedrive_docx_id:
+                                        self.input_client.delete_file(session.onedrive_docx_id)
+                                        print(f"[Background]    ✓ Deleted loss run Word document from input folder")
+                                    
+                                    if session.onedrive_docx_json_id:
+                                        self.input_client.delete_file(session.onedrive_docx_json_id)
+                                        print(f"[Background]    ✓ Deleted loss run JSON from input folder")
                                 except Exception as e:
-                                    print(f"[Background]    ⚠ Move error: {e}")
+                                    print(f"[Background]    ⚠ Move/delete error: {e}")
                                 
                                 print(f"\n[Background] All background tasks completed")
                             

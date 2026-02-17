@@ -459,14 +459,14 @@ def get_policy_input_attachment(policy_id):
         
         print(f"   [DEBUG] Found {len(children)} items in folder")
         
-        # Find all relevant files: acord_*.pdf, acord_*_report.pdf, acord_*.eml
+        # Find all relevant files: acord_*.pdf, acord_*_report.pdf, acord_*.eml, and loss run .docx
         files = []
         for item in children:
             name = item.get('name', '').lower()
             actual_name = item.get('name')
             print(f"   [DEBUG] Checking file: {actual_name}")
-            # Match acord_*.pdf (original), acord_*_report.pdf (report), or acord_*.eml (email)
-            if name.startswith('acord_') and (name.endswith('.pdf') or name.endswith('.eml')  or name.endswith('.docx')):
+            # Match acord_*.pdf (original), acord_*_report.pdf (report), acord_*.eml (email), or any .docx (loss run)
+            if (name.startswith('acord_') and (name.endswith('.pdf') or name.endswith('.eml'))) or name.endswith('.docx'):
                 print(f"   [DEBUG] ✓ Match! Adding: {actual_name}")
                 files.append({
                     'name': actual_name,
@@ -546,6 +546,8 @@ class SessionData:
         self.updated_data = None
         self.onedrive_file_id = None
         self.onedrive_json_id = None
+        self.onedrive_docx_id = None  # Loss run Word document file ID
+        self.onedrive_docx_json_id = None  # Loss run JSON companion file ID
         self.email_metadata = None
         self.extracted_email_fields = None
         self.confirmed_email_fields = None
@@ -1544,6 +1546,9 @@ def process_with_updated_details():
                         # Use output_client for Underwriting uploads
                         uw_client = get_onedrive_client(CONFIG['OUTPUT_FOLDER_OD'])
                         
+                        # Ensure folder exists ONCE before parallel uploads
+                        uw_client._create_folder_if_not_exists(session.underwriting_subfolder)
+                        
                         # Prepare upload tasks
                         upload_tasks = []
                         
@@ -1664,8 +1669,17 @@ def process_with_updated_details():
                     if session.onedrive_json_id:
                         input_client.move_file(session.onedrive_json_id, processed_folder)
                         print(f"   ✓ Moved input JSON to {processed_folder}")
+                    
+                    # Delete loss run files from input_attachments
+                    if session.onedrive_docx_id:
+                        input_client.delete_file(session.onedrive_docx_id)
+                        print(f"   ✓ Deleted loss run Word document from input folder")
+                    
+                    if session.onedrive_docx_json_id:
+                        input_client.delete_file(session.onedrive_docx_json_id)
+                        print(f"   ✓ Deleted loss run JSON from input folder")
                 except Exception as e:
-                    print(f"   ⚠ File move error: {str(e)}")
+                    print(f"   ⚠ File move/delete error: {str(e)}")
             
             # Clean up temporary input files
             try:

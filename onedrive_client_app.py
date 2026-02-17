@@ -233,12 +233,17 @@ class OneDriveClientApp:
                     data = {
                         "name": part,
                         "folder": {},
-                        "@microsoft.graph.conflictBehavior": "rename"
+                        "@microsoft.graph.conflictBehavior": "fail"
                     }
                     
                     create_response = requests.post(create_url, headers=self._get_headers(), json=data)
-                    create_response.raise_for_status()
-                    print(f"  ✓ Created OneDrive folder: {current_path}")
+                    if create_response.status_code == 201:
+                        print(f"  ✓ Created OneDrive folder: {current_path}")
+                    elif create_response.status_code == 409:
+                        # Folder already exists (race condition with parallel upload)
+                        pass
+                    else:
+                        create_response.raise_for_status()
             
             # Get the final folder ID
             final_response = requests.get(folder_url, headers=self._get_headers())
