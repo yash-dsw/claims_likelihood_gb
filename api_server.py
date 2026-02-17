@@ -459,14 +459,18 @@ def get_policy_input_attachment(policy_id):
         
         print(f"   [DEBUG] Found {len(children)} items in folder")
         
-        # Find all relevant files: acord_*.pdf, acord_*_report.pdf, acord_*.eml, and loss run .docx
+        # Find all relevant files: .pdf, .docx, .eml, .xlsx, .msg, .jpg, .png
         files = []
+        allowed_extensions = ('.pdf', '.docx', '.doc', '.eml')
+        
         for item in children:
             name = item.get('name', '').lower()
             actual_name = item.get('name')
             print(f"   [DEBUG] Checking file: {actual_name}")
-            # Match acord_*.pdf (original), acord_*_report.pdf (report), acord_*.eml (email), or any .docx (loss run)
-            if (name.startswith('acord_') and (name.endswith('.pdf') or name.endswith('.eml'))) or name.endswith('.docx'):
+            
+            # Check if it's a file (has 'file' property or size) and matches allowed extensions
+            # We no longer enforce 'acord_' prefix for all files
+            if name.endswith(allowed_extensions):
                 print(f"   [DEBUG] ✓ Match! Adding: {actual_name}")
                 files.append({
                     'name': actual_name,
@@ -2077,159 +2081,159 @@ def get_input_pdf():
     }), 200
 
 
-def register_watcher_file(pdf_path: str, extracted_data: dict, 
-                         onedrive_file_id: str = None, 
-                         onedrive_json_id: str = None,
-                         email_metadata: dict = None,
-                         extracted_email_fields: dict = None,
-                         underwriting_subfolder: str = None,
-                         local_eml_path: str = None,
-                         input_pdf_url: str = None) -> str:
-    """
-    Register a file detected by watcher for frontend processing
-    Called by watcher after extraction
+# def register_watcher_file(pdf_path: str, extracted_data: dict, 
+#                          onedrive_file_id: str = None, 
+#                          onedrive_json_id: str = None,
+#                          email_metadata: dict = None,
+#                          extracted_email_fields: dict = None,
+#                          underwriting_subfolder: str = None,
+#                          local_eml_path: str = None,
+#                          input_pdf_url: str = None) -> str:
+#     """
+#     Register a file detected by watcher for frontend processing
+#     Called by watcher after extraction
     
-    Args:
-        pdf_path: Local path to PDF file
-        extracted_data: Extracted ACORD data
-        onedrive_file_id: OneDrive file ID for the PDF
-        onedrive_json_id: OneDrive file ID for the companion JSON
-        email_metadata: Email metadata dict
-        extracted_email_fields: Extracted email fields (broker, underwriter, etc.)
-        underwriting_subfolder: Path to underwriting subfolder (e.g., "Underwriting/PN_123456")
-        local_eml_path: Local path to downloaded .eml file
-        input_pdf_url: OneDrive web URL to the input PDF
+#     Args:
+#         pdf_path: Local path to PDF file
+#         extracted_data: Extracted ACORD data
+#         onedrive_file_id: OneDrive file ID for the PDF
+#         onedrive_json_id: OneDrive file ID for the companion JSON
+#         email_metadata: Email metadata dict
+#         extracted_email_fields: Extracted email fields (broker, underwriter, etc.)
+#         underwriting_subfolder: Path to underwriting subfolder (e.g., "Underwriting/PN_123456")
+#         local_eml_path: Local path to downloaded .eml file
+#         input_pdf_url: OneDrive web URL to the input PDF
     
-    Returns:
-        session_id for tracking
-    """
-    session_id = str(uuid.uuid4())
-    session = SessionData(session_id)
+#     Returns:
+#         session_id for tracking
+#     """
+#     session_id = str(uuid.uuid4())
+#     session = SessionData(session_id)
     
-    session.pdf_path = pdf_path
-    session.extracted_data = extracted_data
-    session.onedrive_file_id = onedrive_file_id
-    session.onedrive_json_id = onedrive_json_id
-    session.email_metadata = email_metadata
-    session.extracted_email_fields = extracted_email_fields
-    session.underwriting_subfolder = underwriting_subfolder
-    session.local_eml_path = local_eml_path
-    session.input_pdf_url = input_pdf_url
+#     session.pdf_path = pdf_path
+#     session.extracted_data = extracted_data
+#     session.onedrive_file_id = onedrive_file_id
+#     session.onedrive_json_id = onedrive_json_id
+#     session.email_metadata = email_metadata
+#     session.extracted_email_fields = extracted_email_fields
+#     session.underwriting_subfolder = underwriting_subfolder
+#     session.local_eml_path = local_eml_path
+#     session.input_pdf_url = input_pdf_url
     
-    sessions[session_id] = session
+#     sessions[session_id] = session
     
-    print(f"✓ Registered watcher file: {os.path.basename(pdf_path)} → Session: {session_id}")
-    if extracted_email_fields:
-        print(f"  Email fields: Broker={extracted_email_fields.get('broker_name')}, Policy={extracted_email_fields.get('policy_number')}")
-    if underwriting_subfolder:
-        print(f"  Underwriting folder: {underwriting_subfolder}")
-    if local_eml_path:
-        print(f"  EML file: {os.path.basename(local_eml_path)}")
+#     print(f"✓ Registered watcher file: {os.path.basename(pdf_path)} → Session: {session_id}")
+#     if extracted_email_fields:
+#         print(f"  Email fields: Broker={extracted_email_fields.get('broker_name')}, Policy={extracted_email_fields.get('policy_number')}")
+#     if underwriting_subfolder:
+#         print(f"  Underwriting folder: {underwriting_subfolder}")
+#     if local_eml_path:
+#         print(f"  EML file: {os.path.basename(local_eml_path)}")
     
-    # ---- SAVE TO DATABASE IMMEDIATELY AFTER WATCHER REGISTRATION ----
-    # print(f"\n{'='*70}")
-    # print(f"[WATCHER DB SAVE] ATTEMPTING TO SAVE TO DATABASE")
-    # print(f"{'='*70}")
-    # print(f"[WATCHER DB SAVE] Checking for policy number in extracted data...")
-    # print(f"[WATCHER DB SAVE] Available keys: {list(extracted_data.keys())}")
-    # 
-    # # Extract policy number from various possible fields
-    # print(f"[WATCHER DB SAVE] Trying 'Policy Number': {extracted_data.get('Policy Number')}")
-    # print(f"[WATCHER DB SAVE] Trying 'policy_number': {extracted_data.get('policy_number')}")
-    # print(f"[WATCHER DB SAVE] Trying 'Policy ID': {extracted_data.get('Policy ID')}")
-    # print(f"[WATCHER DB SAVE] Email fields available: {extracted_email_fields is not None}")
-    # if extracted_email_fields:
-    #     print(f"[WATCHER DB SAVE] Email fields keys: {list(extracted_email_fields.keys())}")
-    #     print(f"[WATCHER DB SAVE] Trying email 'policy_number': {extracted_email_fields.get('policy_number')}")
-    # 
-    # policy_number = (
-    #     extracted_data.get('Policy Number') or 
-    #     extracted_data.get('policy_number') or
-    #     extracted_data.get('Policy ID') or
-    #     (extracted_email_fields.get('policy_number') if extracted_email_fields else None)
-    # )
-    # 
-    # # FALLBACK: Use Agency Customer ID or Named Insured if no policy number
-    # if not policy_number:
-    #     print(f"[WATCHER DB SAVE] No policy number found, trying fallback identifiers...")
-    #     policy_number = (
-    #         extracted_data.get('Agency Customer ID') or
-    #         extracted_data.get('FEIN') or
-    #         extracted_data.get('Named Insured')
-    #     )
-    #     if policy_number:
-    #         print(f"[WATCHER DB SAVE] Using fallback identifier: {policy_number}")
-    # 
-    # print(f"[WATCHER DB SAVE] >>> Final policy_number: {policy_number}")
-    # 
-    # if policy_number:
-    #     try:
-    #         print(f"[WATCHER DB SAVE] ✓ Policy number found: {policy_number}")
-    #         print(f"[WATCHER DB SAVE] Preparing to save data to underwriting_data table...")
-    #         print(f"[WATCHER DB SAVE] >>> policy_id (policy number) = '{policy_number}'")
-    #         print(f"\n[WATCHER DB SAVE] DATA BEING SENT TO save_underwriting_data():")
-    #         print(f"{'-'*70}")
-    #         
-    #         # Show what will be saved to database
-    #         db_fields = [
-    #             'Named Insured', 'Mailing Address', 'City', 'State',
-    #             'NAICS Code', 'Legal Entity Type', 'FEIN', 'Years in Business',
-    #             'Business Description', 'Prior Carrier',
-    #             'Loss History - Count', 'Loss History - Total Amount', 'Loss History',
-    #             'Premises #', 'Bldg #', 'Street Address',
-    #             'Subject of Insurance', 'Coverage Limit',
-    #             'Construction Type', 'Year Built', 'Total Area (Sq Ft)',
-    #             '# of Stories', 'Sprinklered %',
-    #             'Building Improvements - Wiring', 'Building Improvements - Roofing', 
-    #             'Building Improvements - Plumbing',
-    #             'Burglar Alarm Type', 'Fire Protection Class',
-    #             'Distance to Fire Hydrant', 'Distance to Fire Station'
-    #         ]
-    #         
-    #         for field in db_fields:
-    #             value = extracted_data.get(field)
-    #             if value is None:
-    #                 value_display = "[NULL]"
-    #             elif value == "":
-    #                 value_display = "[EMPTY]"
-    #             elif isinstance(value, list):
-    #                 value_display = f"[LIST: {len(value)} items] {str(value)[:60]}..."
-    #             else:
-    #                 value_str = str(value)
-    #                 value_display = value_str if len(value_str) <= 60 else value_str[:60] + '...'
-    #             print(f"  {field:35s} = {value_display}")
-    #         
-    #         print(f"{'-'*70}")
-    #         print(f"[WATCHER DB SAVE] Calling save_underwriting_data()...")
-    #         underwriting_id = save_underwriting_data(policy_number, extracted_data)
-    #         if underwriting_id:
-    #             print(f"\n{'='*70}")
-    #             print(f"[WATCHER DB SAVE] ✓✓✓ SUCCESS - Data saved to PostgreSQL")
-    #             print(f"[WATCHER DB SAVE] Policy: {policy_number}")
-    #             print(f"[WATCHER DB SAVE] Record ID: {underwriting_id}")
-    #             print(f"{'='*70}\n")
-    #         else:
-    #             print(f"\n{'='*70}")
-    #             print(f"[WATCHER DB SAVE] ⚠⚠⚠ WARNING - save_underwriting_data returned None")
-    #             print(f"[WATCHER DB SAVE] This usually means the INSERT/UPDATE didn't return an ID")
-    #             print(f"{'='*70}\n")
-    #     except Exception as e:
-    #         print(f"\n{'='*70}")
-    #         print(f"[WATCHER DB SAVE] ✗✗✗ EXCEPTION during database save")
-    #         print(f"[WATCHER DB SAVE] Error: {e}")
-    #         print(f"[WATCHER DB SAVE] Full traceback:")
-    #         import traceback
-    #         traceback.print_exc()
-    #         print(f"{'='*70}\n")
-    # else:
-    #     print(f"\n{'='*70}")
-    #     print(f"[WATCHER DB SAVE] ✗✗✗ SKIPPING DATABASE SAVE")
-    #     print(f"[WATCHER DB SAVE] Reason: No policy number found in extracted data")
-    #     print(f"[WATCHER DB SAVE] Searched fields: Policy Number, policy_number, Policy ID, email fields")
-    #     print(f"[WATCHER DB SAVE] Please ensure the PDF contains a policy number field")
-    #     print(f"{'='*70}\n")
+#     # ---- SAVE TO DATABASE IMMEDIATELY AFTER WATCHER REGISTRATION ----
+#     print(f"\n{'='*70}")
+#     print(f"[WATCHER DB SAVE] ATTEMPTING TO SAVE TO DATABASE")
+#     print(f"{'='*70}")
+#     print(f"[WATCHER DB SAVE] Checking for policy number in extracted data...")
+#     print(f"[WATCHER DB SAVE] Available keys: {list(extracted_data.keys())}")
     
-    return session_id
+#     # Extract policy number from various possible fields
+#     print(f"[WATCHER DB SAVE] Trying 'Policy Number': {extracted_data.get('Policy Number')}")
+#     print(f"[WATCHER DB SAVE] Trying 'policy_number': {extracted_data.get('policy_number')}")
+#     print(f"[WATCHER DB SAVE] Trying 'Policy ID': {extracted_data.get('Policy ID')}")
+#     print(f"[WATCHER DB SAVE] Email fields available: {extracted_email_fields is not None}")
+#     if extracted_email_fields:
+#         print(f"[WATCHER DB SAVE] Email fields keys: {list(extracted_email_fields.keys())}")
+#         print(f"[WATCHER DB SAVE] Trying email 'policy_number': {extracted_email_fields.get('policy_number')}")
+    
+#     policy_number = (
+#         extracted_data.get('Policy Number') or 
+#         extracted_data.get('policy_number') or
+#         extracted_data.get('Policy ID') or
+#         (extracted_email_fields.get('policy_number') if extracted_email_fields else None)
+#     )
+    
+#     # FALLBACK: Use Agency Customer ID or Named Insured if no policy number
+#     if not policy_number:
+#         print(f"[WATCHER DB SAVE] No policy number found, trying fallback identifiers...")
+#         policy_number = (
+#             extracted_data.get('Agency Customer ID') or
+#             extracted_data.get('FEIN') or
+#             extracted_data.get('Named Insured')
+#         )
+#         if policy_number:
+#             print(f"[WATCHER DB SAVE] Using fallback identifier: {policy_number}")
+    
+#     print(f"[WATCHER DB SAVE] >>> Final policy_number: {policy_number}")
+    
+#     if policy_number:
+#         try:
+#             print(f"[WATCHER DB SAVE] ✓ Policy number found: {policy_number}")
+#             print(f"[WATCHER DB SAVE] Preparing to save data to underwriting_data table...")
+#             print(f"[WATCHER DB SAVE] >>> policy_id (policy number) = '{policy_number}'")
+#             print(f"\n[WATCHER DB SAVE] DATA BEING SENT TO save_underwriting_data():")
+#             print(f"{'-'*70}")
+            
+#             # Show what will be saved to database
+#             db_fields = [
+#                 'Named Insured', 'Mailing Address', 'City', 'State',
+#                 'NAICS Code', 'Legal Entity Type', 'FEIN', 'Years in Business',
+#                 'Business Description', 'Prior Carrier',
+#                 'Loss History - Count', 'Loss History - Total Amount', 'Loss History',
+#                 'Premises #', 'Bldg #', 'Street Address',
+#                 'Subject of Insurance', 'Coverage Limit',
+#                 'Construction Type', 'Year Built', 'Total Area (Sq Ft)',
+#                 '# of Stories', 'Sprinklered %',
+#                 'Building Improvements - Wiring', 'Building Improvements - Roofing', 
+#                 'Building Improvements - Plumbing',
+#                 'Burglar Alarm Type', 'Fire Protection Class',
+#                 'Distance to Fire Hydrant', 'Distance to Fire Station'
+#             ]
+            
+#             for field in db_fields:
+#                 value = extracted_data.get(field)
+#                 if value is None:
+#                     value_display = "[NULL]"
+#                 elif value == "":
+#                     value_display = "[EMPTY]"
+#                 elif isinstance(value, list):
+#                     value_display = f"[LIST: {len(value)} items] {str(value)[:60]}..."
+#                 else:
+#                     value_str = str(value)
+#                     value_display = value_str if len(value_str) <= 60 else value_str[:60] + '...'
+#                 print(f"  {field:35s} = {value_display}")
+            
+#             print(f"{'-'*70}")
+#             print(f"[WATCHER DB SAVE] Calling save_underwriting_data()...")
+#             underwriting_id = save_underwriting_data(policy_number, extracted_data)
+#             if underwriting_id:
+#                 print(f"\n{'='*70}")
+#                 print(f"[WATCHER DB SAVE] ✓✓✓ SUCCESS - Data saved to PostgreSQL")
+#                 print(f"[WATCHER DB SAVE] Policy: {policy_number}")
+#                 print(f"[WATCHER DB SAVE] Record ID: {underwriting_id}")
+#                 print(f"{'='*70}\n")
+#             else:
+#                 print(f"\n{'='*70}")
+#                 print(f"[WATCHER DB SAVE] ⚠⚠⚠ WARNING - save_underwriting_data returned None")
+#                 print(f"[WATCHER DB SAVE] This usually means the INSERT/UPDATE didn't return an ID")
+#                 print(f"{'='*70}\n")
+#         except Exception as e:
+#             print(f"\n{'='*70}")
+#             print(f"[WATCHER DB SAVE] ✗✗✗ EXCEPTION during database save")
+#             print(f"[WATCHER DB SAVE] Error: {e}")
+#             print(f"[WATCHER DB SAVE] Full traceback:")
+#             import traceback
+#             traceback.print_exc()
+#             print(f"{'='*70}\n")
+#     else:
+#         print(f"\n{'='*70}")
+#         print(f"[WATCHER DB SAVE] ✗✗✗ SKIPPING DATABASE SAVE")
+#         print(f"[WATCHER DB SAVE] Reason: No policy number found in extracted data")
+#         print(f"[WATCHER DB SAVE] Searched fields: Policy Number, policy_number, Policy ID, email fields")
+#         print(f"[WATCHER DB SAVE] Please ensure the PDF contains a policy number field")
+#         print(f"{'='*70}\n")
+    
+#     return session_id
 
 
 # ============================================================================
