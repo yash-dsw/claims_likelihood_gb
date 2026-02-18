@@ -1,6 +1,6 @@
 """
-Unified Server - Runs both API Server and OneDrive Watcher simultaneously
-Combines api_server.py and main_od.py into a single process
+Unified Server wrapper.
+For likelihood direct flow, run api_server.py directly.
 """
 
 import os
@@ -73,6 +73,7 @@ def run_api_server():
     print("  GET    /api/email-fields/<sid>   - Get extracted email fields")
     print("  POST   /api/email-fields         - Confirm/update email fields")
     print("  GET    /api/output-pdf           - Get path to latest output PDF")
+    print("  POST   /api/submit               - Direct end-to-end processing")
     print("  POST   /api/process              - Process with updated data")
     print("  GET    /api/sessions             - List active sessions")
     print("  DELETE /api/sessions/<id>        - Delete session")
@@ -107,13 +108,13 @@ def run_onedrive_watcher():
 
 
 def main():
-    """Main entry point - starts both API server and watcher"""
+    """Main entry point."""
     import argparse
     
     # Register signal handler for Ctrl+C
     signal.signal(signal.SIGINT, signal_handler)
     
-    parser = argparse.ArgumentParser(description='Unified Claims Processing Server')
+    parser = argparse.ArgumentParser(description='Likelihood server launcher')
     parser.add_argument('--api-only', action='store_true', help='Run API server only (no watcher)')
     parser.add_argument('--watcher-only', action='store_true', help='Run watcher only (no API)')
     parser.add_argument('--port', type=int, default=5003, help='API server port (default: 5003)')
@@ -124,8 +125,8 @@ def main():
     os.environ['PORT'] = str(args.port)
     
     print("\n" + "█"*70)
-    print("  UNIFIED CLAIMS PROCESSING SERVER")
-    print("  API Server + OneDrive Watcher")
+    print("  LIKELIHOOD SERVER LAUNCHER")
+    print("  Direct API mode recommended")
     print("█"*70)
     print(f"\nStarting at {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
     
@@ -133,7 +134,7 @@ def main():
     required = ["ONEDRIVE_TENANT_ID", "ONEDRIVE_CLIENT_ID", "ONEDRIVE_CLIENT_SECRET", "ONEDRIVE_USER_EMAIL"]
     missing = [k for k in required if not os.getenv(k)]
     
-    if missing and not args.api_only:
+    if missing and not args.api_only and not args.watcher_only:
         print(f"\n⚠️  Warning: Missing OneDrive credentials: {', '.join(missing)}")
         print("   OneDrive watcher will not function properly.")
         print("   API server can still accept file uploads.\n")
@@ -149,24 +150,10 @@ def main():
         run_api_server()
         
     else:
-        # Run both (default)
-        print("\nMode: Unified (API + Watcher)")
-        print("\nStarting both services...")
-        
-        # Start OneDrive watcher in background thread
-        watcher_thread = threading.Thread(
-            target=run_onedrive_watcher,
-            daemon=True,
-            name="OneDriveWatcher"
-        )
-        watcher_thread.start()
-        
-        # Run API server in main thread (this blocks)
-        try:
-            run_api_server()
-        except KeyboardInterrupt:
-            # This will be caught by the signal handler
-            pass
+        # Default to API-only for direct submit architecture
+        print("\nMode: API Only (default)")
+        print("Run with --watcher-only only if you explicitly need legacy watcher behavior.")
+        run_api_server()
 
 
 if __name__ == "__main__":

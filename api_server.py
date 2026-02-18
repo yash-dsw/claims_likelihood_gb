@@ -559,6 +559,12 @@ class SessionData:
         self.local_eml_path = None
         self.form_pdf_path = None  # Path to uploaded form PDF from frontend
         self.input_pdf_url = None  # OneDrive web URL to the original input PDF
+        self.extra_attachment_paths = []  # Paths to extra attachments (loss run DOCX etc.)
+        # Async processing state
+        self.processing_status = 'idle'  # idle | processing | done | error
+        self.processing_error = None
+        self.analysis_summary = None
+        self.sse_queue = __import__('queue').Queue()  # SSE push channel
     
     def is_expired(self) -> bool:
         """Check if session has expired"""
@@ -578,6 +584,8 @@ class SessionData:
             'has_email_fields': self.extracted_email_fields is not None,
             'has_confirmed_email_fields': self.confirmed_email_fields is not None,
             'has_input_pdf_url': self.input_pdf_url is not None,
+            'processing_status': self.processing_status,
+            'processing_error': self.processing_error,
         }
 
 
@@ -609,6 +617,24 @@ def get_orchestrator() -> ClaimsAnalysisOrchestrator:
     return _orchestrator_cache
 
 
+def _save_extracted_data_to_db(extracted_data: dict, extracted_email_fields: Optional[dict] = None) -> None:
+    """Persist extracted ACORD data when policy number is available."""
+    policy_number = (
+        extracted_data.get('Policy Number')
+        or extracted_data.get('policy_number')
+        or extracted_data.get('Policy ID')
+        or (extracted_email_fields.get('policy_number') if extracted_email_fields else None)
+    )
+    if not policy_number:
+        print("[DATABASE] No policy number found; skipping underwriting_data save")
+        return
+    try:
+        save_underwriting_data(policy_number, extracted_data)
+        print(f"[DATABASE] Saved extracted data for policy {policy_number}")
+    except Exception as e:
+        print(f"[DATABASE] Save failed for policy {policy_number}: {e}")
+
+
 def get_onedrive_client(folder_name: str) -> OneDriveClientApp:
     """Create OneDrive client instance"""
     return OneDriveClientApp(
@@ -618,6 +644,65 @@ def get_onedrive_client(folder_name: str) -> OneDriveClientApp:
         user_email=CONFIG['USER_EMAIL'],
         folder_name=folder_name
     )
+
+
+def _download_email_as_eml(email_metadata: dict, output_path: str) -> bool:
+    """
+    Download email as EML file from Microsoft Graph API.
+    Uses itemId (from Outlook add-in) to fetch the raw MIME message.
+    Falls back to internetMessageId search if itemId is not available.
+    """
+    try:
+        from email_sender import EmailSender
+        email_sender = EmailSender(
+            tenant_id=CONFIG['TENANT_ID'],
+            client_id=CONFIG['CLIENT_ID'],
+            client_secret=CONFIG['CLIENT_SECRET'],
+            user_email=CONFIG['USER_EMAIL']
+        )
+        headers = email_sender._get_headers()
+
+        user_email = CONFIG['USER_EMAIL']
+        item_id = email_metadata.get('id') or email_metadata.get('itemId')
+        internet_message_id = email_metadata.get('internetMessageId')
+        receiver_email = email_metadata.get('userEmail') or user_email
+
+        # Strategy 1: Direct download using itemId from the receiver's mailbox
+        if item_id and receiver_email:
+            print(f"   [EML] Trying direct download via itemId from {receiver_email}")
+            url = f"https://graph.microsoft.com/v1.0/users/{receiver_email}/messages/{item_id}/$value"
+            resp = requests.get(url, headers=headers)
+            if resp.status_code == 200:
+                with open(output_path, 'wb') as f:
+                    f.write(resp.content)
+                print(f"   [EML] ✓ Downloaded via itemId: {os.path.basename(output_path)}")
+                return True
+            else:
+                print(f"   [EML] itemId download failed: {resp.status_code}")
+
+        # Strategy 2: Search by internetMessageId
+        if internet_message_id and receiver_email:
+            print(f"   [EML] Searching by internetMessageId in {receiver_email}")
+            search_url = f"https://graph.microsoft.com/v1.0/users/{receiver_email}/messages"
+            params = {"$filter": f"internetMessageId eq '{internet_message_id}'", "$select": "id"}
+            search_resp = requests.get(search_url, headers=headers, params=params)
+            if search_resp.status_code == 200:
+                values = search_resp.json().get('value', [])
+                if values:
+                    found_id = values[0]['id']
+                    url = f"https://graph.microsoft.com/v1.0/users/{receiver_email}/messages/{found_id}/$value"
+                    resp = requests.get(url, headers=headers)
+                    if resp.status_code == 200:
+                        with open(output_path, 'wb') as f:
+                            f.write(resp.content)
+                        print(f"   [EML] ✓ Downloaded via internetMessageId: {os.path.basename(output_path)}")
+                        return True
+
+        print(f"   [EML] ⚠ Could not download EML (no valid ID found)")
+        return False
+    except Exception as e:
+        print(f"   [EML] ⚠ Error: {e}")
+        return False
 
 
 # Error handlers to ensure all responses are JSON
@@ -716,6 +801,35 @@ def extract_details():
             pdf_path = os.path.join(CONFIG['UPLOAD_FOLDER'], filename)
             file.save(pdf_path)
             print(f"✓ Saved uploaded file: {pdf_path}")
+
+            # Save extra attachments (loss run DOCX etc.) - skip images
+            IMAGE_EXTS = {'.png', '.jpg', '.jpeg', '.gif', '.bmp', '.tiff', '.webp', '.ico'}
+            extra_files = request.files.getlist('extra_attachments')
+            for extra_file in extra_files:
+                if extra_file and extra_file.filename:
+                    ext = os.path.splitext(extra_file.filename)[1].lower()
+                    if ext in IMAGE_EXTS:
+                        print(f"⚠ Skipping image attachment: {extra_file.filename}")
+                        continue
+                    extra_filename = f"{session_id}_{extra_file.filename}"
+                    extra_path = os.path.join(CONFIG['UPLOAD_FOLDER'], extra_filename)
+                    extra_file.save(extra_path)
+                    session.extra_attachment_paths.append(extra_path)
+                    print(f"✓ Saved extra attachment: {extra_path}")
+
+            # Download EML if email_metadata provided
+            email_metadata_str = request.form.get('email_metadata')
+            if email_metadata_str:
+                try:
+                    email_metadata = json.loads(email_metadata_str)
+                    session.email_metadata = email_metadata
+                    eml_filename = f"{session_id}_{file.filename.replace('.pdf', '')}.eml"
+                    eml_path = os.path.join(CONFIG['UPLOAD_FOLDER'], eml_filename)
+                    eml_ok = _download_email_as_eml(email_metadata, eml_path)
+                    if eml_ok:
+                        session.local_eml_path = eml_path
+                except Exception as e:
+                    print(f"⚠ EML download skipped: {e}")
         
         # Check if OneDrive filename provided
         elif request.is_json:
@@ -1351,7 +1465,12 @@ def process_with_updated_details():
         
         # Save comments to policy_db
         comments = email_fields.get('comments')
-        if policy_number and comments:
+
+        # If no comment received, add placeholder
+        if not comments:
+            comments = "No comments provided."
+
+        if policy_number:
             print(f"  Comments: {comments}")
             try:
                 save_policy_to_db({
@@ -1409,361 +1528,532 @@ def process_with_updated_details():
             session.underwriting_subfolder = f"{underwriting_folder}/PN_{policy_number}"
             print(f"  ✓ Underwriting folder: {session.underwriting_subfolder}")
         
-        # Continue with analysis workflow using the original ACORD data
-        import time
-        start_time = time.time()
-        orchestrator = get_orchestrator()  # Use cached orchestrator instance
-        
-        # Prepare DataFrames
-        print(f"\n[1/4] Preparing data for analysis...")
-        prep_start = time.time()
-        success, property_df, claims_df, error = orchestrator.prepare_dataframes(final_data)
-        prep_time = time.time() - prep_start
-        
-        if not success:
-            return jsonify({'error': f'Data preparation failed: {error}'}), 500
-        
-        session.property_df = property_df
-        session.claims_df = claims_df
-        print(f"   ⏱ Preparation took {prep_time:.2f}s")
-        
-        # Perform risk analysis
-        print(f"[2/4] Performing risk analysis...")
-        analysis_start = time.time()
-        success, scored_df, analysis_summary, error = orchestrator.perform_risk_analysis(
-            property_df, claims_df
-        )
-        analysis_time = time.time() - analysis_start
-        
-        if not success:
-            return jsonify({'error': f'Risk analysis failed: {error}'}), 500
-        
-        client_name = analysis_summary.get('named_insured', 'Property')
-        print(f"   ⏱ Risk analysis took {analysis_time:.2f}s")
-        
-        # Save intermediate data
-        orchestrator.save_intermediate_data(scored_df, analysis_summary, client_name)
-        
-        # Generate PDF and HTML reports IN PARALLEL
-        print(f"[3/4] Generating reports (parallel)...")
-        gen_start = time.time()
-        # Use input PDF filename for output naming (e.g., acord_quickbites.pdf -> acord_quickbites_report.pdf)
-        pdf_filename = os.path.basename(session.pdf_path) if session.pdf_path else None
-        
-        # Define PDF generation task
-        def generate_pdf_task():
-            pdf_gen_start = time.time()
-            success, pdf_path, error = orchestrator.generate_pdf_report(
-                property_df, claims_df, scored_df, client_name, input_pdf_name=pdf_filename, policy_number=policy_number
-            )
-            pdf_gen_time = time.time() - pdf_gen_start
-            return ('pdf', success, pdf_path, error, pdf_gen_time)
-        
-        # Define HTML generation task
-        def generate_html_task():
-            html_gen_start = time.time()
+        # ── KICK OFF BACKGROUND PROCESSING ────────────────────────────────────
+        # Everything from here is independent of the form fields (policy_number
+        # and comments are already saved above).  Return 202 immediately so the
+        # user is not blocked.
+        import time, threading
+
+        session.processing_status = 'processing'
+
+        def _do_processing():
             try:
-                from html_generator import ClaimsLikelihoodHtmlGenerator
-                
-                generator = ClaimsLikelihoodHtmlGenerator(
-                    input_df=property_df,
-                    claims_df=claims_df if not claims_df.empty else pd.DataFrame(),
-                    output_df=scored_df,
-                    policy_number=policy_number
+                start_time = time.time()
+                orchestrator = get_orchestrator()
+
+                # 1/4 Prepare DataFrames
+                print(f"\n[1/4] Preparing data for analysis...")
+                prep_start = time.time()
+                success, property_df, claims_df, error = orchestrator.prepare_dataframes(final_data)
+                prep_time = time.time() - prep_start
+
+                if not success:
+                    session.processing_status = 'error'
+                    session.processing_error = f'Data preparation failed: {error}'
+                    return
+
+                session.property_df = property_df
+                session.claims_df = claims_df
+                print(f"   ⏱ Preparation took {prep_time:.2f}s")
+
+                # 2/4 Risk analysis
+                print(f"[2/4] Performing risk analysis...")
+                analysis_start = time.time()
+                success, scored_df, analysis_summary, error = orchestrator.perform_risk_analysis(
+                    property_df, claims_df
                 )
-                
-                if pdf_filename:
-                    base_name = pdf_filename[:-4] if pdf_filename.lower().endswith('.pdf') else pdf_filename
-                    html_filename = f"{base_name}_report.html"
-                else:
-                    timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-                    safe_name = client_name.replace(' ', '_').replace('/', '_').replace('\\', '_')
-                    html_filename = f"Report_{safe_name}_{timestamp}.html"
-                
-                html_path = os.path.join(CONFIG['OUTPUT_FOLDER'], html_filename)
-                generator.generate_html(output_path=html_path)
-                html_gen_time = time.time() - html_gen_start
-                return ('html', True, html_path, None, html_gen_time)
-            except Exception as e:
-                html_gen_time = time.time() - html_gen_start
-                return ('html', False, None, str(e), html_gen_time)
-        
-        # Execute both in parallel
-        pdf_path = None
-        html_path = None
-        with ThreadPoolExecutor(max_workers=2) as executor:
-            pdf_future = executor.submit(generate_pdf_task)
-            html_future = executor.submit(generate_html_task)
-            
-            # Get PDF result (required)
-            pdf_type, pdf_success, pdf_path, pdf_error, pdf_time = pdf_future.result()
-            if not pdf_success:
-                return jsonify({
-                    'success': False,
-                    'error': f'PDF generation failed: {pdf_error}',
-                    'analysis_summary': analysis_summary,
-                    'policy_number': policy_number
-                }), 500
-            print(f"   ✓ PDF report generated ({pdf_time:.2f}s)")
-            
-            # Get HTML result (optional)
-            html_type, html_success, html_path, html_error, html_time = html_future.result()
-            if html_success:
-                print(f"   ✓ HTML report generated ({html_time:.2f}s)")
-            else:
-                print(f"   ⚠ HTML generation warning: {html_error}")
-        
-        gen_total = time.time() - gen_start
-        print(f"   ⏱ Total report generation: {gen_total:.2f}s (saved {max(pdf_time, html_time) - gen_total:.2f}s via parallelization)")
-        
-        # Store output PDF path in session
-        session.output_pdf_path = pdf_path
-        
-        report_url = None
-        output_folder_url = None
-        underwriting_folder_url = None
-        
-        # Upload to OneDrive if configured
-        if all([CONFIG['TENANT_ID'], CONFIG['CLIENT_ID'], CONFIG['CLIENT_SECRET'], CONFIG['USER_EMAIL']]):
-            print(f"\n[4/4] Uploading to OneDrive (parallel)...")
-            upload_start = time.time()
-            try:
-                # COMMENTED OUT: Upload directly to Output_attachments (no policy-specific subfolder)
-                # output_folder = CONFIG['OUTPUT_FOLDER_OD']
-                # print(f"   Using folder: {output_folder}")
-                # 
-                # od_client = get_onedrive_client(output_folder)
-                # 
-                # # Upload PDF
-                # if pdf_path and os.path.exists(pdf_path):
-                #     pdf_result = od_client.upload_file(pdf_path, output_folder)
-                #     if pdf_result and pdf_result.get('web_url'):
-                #         report_url = pdf_result['web_url']
-                #         session.output_pdf_url = report_url  # Store OneDrive URL in session
-                #         print(f"   ✓ PDF uploaded: {report_url}")
-                # 
-                # # Upload HTML
-                # if html_path and os.path.exists(html_path):
-                #     html_result = od_client.upload_file(html_path, output_folder)
-                #     if html_result:
-                #         print(f"   ✓ HTML uploaded")
-                # 
-                # # Get output folder URL
-                # folder_info = od_client.get_folder_info(output_folder)
-                # if folder_info and folder_info.get('web_url'):
-                #     output_folder_url = folder_info['web_url']
-                #     print(f"   📁 Output folder: {output_folder_url}")
-                
-                # Upload to Underwriting subfolder if available
-                if session.underwriting_subfolder:
-                    print(f"\n   📂 Uploading and syncing to Underwriting folder...")
-                    print(f"   📁 Folder Path: {session.underwriting_subfolder}")
-                    
-                    try:
-                        # Use output_client for Underwriting uploads
-                        uw_client = get_onedrive_client(CONFIG['OUTPUT_FOLDER_OD'])
-                        
-                        # Ensure folder exists ONCE before parallel uploads
-                        uw_client._create_folder_if_not_exists(session.underwriting_subfolder)
-                        
-                        # Prepare upload tasks
-                        upload_tasks = []
-                        
-                        # Task 1: Upload input PDF (original attachment)
-                        if session.pdf_path and os.path.exists(session.pdf_path):
-                            upload_tasks.append(('input_pdf', session.pdf_path, 'Input PDF'))
-                        
-                        # Task 2: Upload output PDF (generated report)
-                        if pdf_path and os.path.exists(pdf_path):
-                            upload_tasks.append(('output_pdf', pdf_path, 'Output PDF'))
-                        
-                        # Task 3: Upload EML file (original email)
-                        if session.local_eml_path and os.path.exists(session.local_eml_path):
-                            upload_tasks.append(('eml', session.local_eml_path, 'EML'))
-                        
-                        # Execute uploads in parallel
-                        if upload_tasks:
-                            print(f"   ⬆ Starting parallel upload of {len(upload_tasks)} files...")
-                            
-                            def upload_file_task(task_info):
-                                task_type, file_path, display_name = task_info
-                                try:
-                                    result = uw_client.upload_file(file_path, session.underwriting_subfolder)
-                                    return (task_type, True, result, display_name)
-                                except Exception as e:
-                                    return (task_type, False, str(e), display_name)
-                            
-                            with ThreadPoolExecutor(max_workers=len(upload_tasks)) as executor:
-                                futures = {executor.submit(upload_file_task, task): task for task in upload_tasks}
-                                
-                                for future in as_completed(futures):
-                                    task_type, success, result, display_name = future.result()
-                                    
-                                    if success:
-                                        print(f"   ✓ {display_name} uploaded")
-                                        
-                                        # Store output PDF URL if available
-                                        if task_type == 'output_pdf' and result and result.get('web_url'):
-                                            report_url = result['web_url']
-                                            session.output_pdf_url = report_url
-                                            print(f"   📄 Web URL: {report_url}")
-                                    else:
-                                        print(f"   ⚠ {display_name} upload failed: {result}")
-                        
-                        upload_time = time.time() - upload_start
-                        print(f"   ⏱ Parallel upload completed in {upload_time:.2f}s")
-                        
-                        # Get folder info
-                        try:
-                            uw_folder_info = uw_client.get_folder_info(session.underwriting_subfolder)
-                            if uw_folder_info and uw_folder_info.get('web_url'):
-                                output_folder_url = uw_folder_info['web_url']
-                                print(f"   📁 Underwriting URL: {output_folder_url}")
-                        except Exception as e:
-                            print(f"   ⚠ Could not get Underwriting folder URL: {str(e)}")
-                            
-                    except Exception as e:
-                        print(f"   ✗ Underwriting subfolder operations failed: {str(e)}")
-                
-            except Exception as e:
-                print(f"   ⚠ OneDrive upload warning: {str(e)}")
-        
-        # Move email sending and cleanup to background thread (non-blocking)
-        def background_email_and_cleanup():
-            """Background task: send email and cleanup files"""
-            time.sleep(0.5)  # Small delay to ensure frontend gets response first
-            
-            # Send email if metadata available
-            if session.email_metadata:
-                print(f"\n[Background] Sending email notification...")
-                try:
-                    from email_sender import EmailSender, get_recipient_email
-                    
-                    email_sender = EmailSender(
-                        tenant_id=CONFIG['TENANT_ID'],
-                        client_id=CONFIG['CLIENT_ID'],
-                        client_secret=CONFIG['CLIENT_SECRET'],
-                        user_email=CONFIG['USER_EMAIL']
+                analysis_time = time.time() - analysis_start
+
+                if not success:
+                    session.processing_status = 'error'
+                    session.processing_error = f'Risk analysis failed: {error}'
+                    return
+
+                client_name = analysis_summary.get('named_insured', 'Property')
+                print(f"   ⏱ Risk analysis took {analysis_time:.2f}s")
+
+                orchestrator.save_intermediate_data(scored_df, analysis_summary, client_name)
+
+                # 3/4 Generate PDF + HTML in parallel
+                print(f"[3/4] Generating reports (parallel)...")
+                gen_start = time.time()
+                _raw_pdf_filename = os.path.basename(session.pdf_path) if session.pdf_path else None
+                _session_prefix = session_id + '_'
+                pdf_filename = _raw_pdf_filename[len(_session_prefix):] if (_raw_pdf_filename and _raw_pdf_filename.startswith(_session_prefix)) else _raw_pdf_filename
+
+                def generate_pdf_task():
+                    pdf_gen_start = time.time()
+                    success, pdf_path, error = orchestrator.generate_pdf_report(
+                        property_df, claims_df, scored_df, client_name, input_pdf_name=pdf_filename, policy_number=policy_number
                     )
-                    
-                    recipient = get_recipient_email(session.email_metadata)
-                    print(f"   Sending to: {recipient}")
-                    
-                    if recipient:
-                        html_content = ""
-                        if html_path and os.path.exists(html_path):
-                            with open(html_path, 'r', encoding='utf-8') as f:
-                                html_content = f.read()
-                        
-                        if email_sender.send_claims_report_email(
-                            to_email=recipient,
-                            email_metadata=session.email_metadata,
-                            html_report=html_content,
-                            input_pdf_path=session.pdf_path,
-                            output_pdf_path=pdf_path,
-                            report_web_url=session.output_pdf_url,
-                            output_folder_url=output_folder_url
-                        ):
-                            print(f"   ✓ Email sent to {recipient}")
+                    pdf_gen_time = time.time() - pdf_gen_start
+                    return ('pdf', success, pdf_path, error, pdf_gen_time)
+
+                def generate_html_task():
+                    html_gen_start = time.time()
+                    try:
+                        from html_generator import ClaimsLikelihoodHtmlGenerator
+                        generator = ClaimsLikelihoodHtmlGenerator(
+                            input_df=property_df,
+                            claims_df=claims_df if not claims_df.empty else pd.DataFrame(),
+                            output_df=scored_df,
+                            policy_number=policy_number
+                        )
+                        if pdf_filename:
+                            base_name = pdf_filename[:-4] if pdf_filename.lower().endswith('.pdf') else pdf_filename
+                            html_filename = f"{base_name}_report.html"
                         else:
-                            print(f"   ⚠ Failed to send email")
+                            timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+                            safe_name = client_name.replace(' ', '_').replace('/', '_').replace('\\', '_')
+                            html_filename = f"Report_{safe_name}_{timestamp}.html"
+                        html_path = os.path.join(CONFIG['OUTPUT_FOLDER'], html_filename)
+                        generator.generate_html(output_path=html_path)
+                        html_gen_time = time.time() - html_gen_start
+                        return ('html', True, html_path, None, html_gen_time)
+                    except Exception as e:
+                        html_gen_time = time.time() - html_gen_start
+                        return ('html', False, None, str(e), html_gen_time)
+
+                pdf_path = None
+                html_path = None
+                with ThreadPoolExecutor(max_workers=2) as executor:
+                    pdf_future = executor.submit(generate_pdf_task)
+                    html_future = executor.submit(generate_html_task)
+
+                    pdf_type, pdf_success, pdf_path, pdf_error, pdf_time = pdf_future.result()
+                    if not pdf_success:
+                        session.processing_status = 'error'
+                        session.processing_error = f'PDF generation failed: {pdf_error}'
+                        return
+                    print(f"   ✓ PDF report generated ({pdf_time:.2f}s)")
+
+                    html_type, html_success, html_path, html_error, html_time = html_future.result()
+                    if html_success:
+                        print(f"   ✓ HTML report generated ({html_time:.2f}s)")
                     else:
-                        print(f"   ⚠ No recipient email found")
-                        
-                except Exception as e:
-                    print(f"   ⚠ Email sending error: {str(e)}")
-            
-            # Move processed files (if from OneDrive)
-            if session.onedrive_file_id:
+                        print(f"   ⚠ HTML generation failed: {html_error}")
+
+                gen_time = time.time() - gen_start
+                print(f"   ⏱ Report generation took {gen_time:.2f}s")
+
+                # 4/4 OneDrive upload
+                output_folder_url = None
+                print(f"\n[4/4] Uploading to OneDrive...")
                 try:
-                    print(f"\n[Background] Moving input files to processed folder...")
-                    processed_folder = os.getenv("ONEDRIVE_PROCESSED_INPUTS", "Processed_inputs")
-                    input_client = get_onedrive_client(CONFIG['INPUT_FOLDER'])
-                    
-                    input_client.move_file(session.onedrive_file_id, processed_folder)
-                    print(f"   ✓ Moved input PDF to {processed_folder}")
-                    
-                    if session.onedrive_json_id:
-                        input_client.move_file(session.onedrive_json_id, processed_folder)
-                        print(f"   ✓ Moved input JSON to {processed_folder}")
-                    
-                    # Delete loss run files from input_attachments
-                    if session.onedrive_docx_id:
-                        input_client.delete_file(session.onedrive_docx_id)
-                        print(f"   ✓ Deleted loss run Word document from input folder")
-                    
-                    if session.onedrive_docx_json_id:
-                        input_client.delete_file(session.onedrive_docx_json_id)
-                        print(f"   ✓ Deleted loss run JSON from input folder")
+                    upload_start = time.time()
+
+                    if session.underwriting_subfolder:
+                        print(f"   📂 Uploading to Underwriting folder...")
+                        print(f"   📁 Folder Path: {session.underwriting_subfolder}")
+
+                        try:
+                            uw_client = get_onedrive_client(CONFIG['OUTPUT_FOLDER_OD'])
+                            uw_client._create_folder_if_not_exists(session.underwriting_subfolder)
+
+                            upload_tasks = []
+                            if session.pdf_path and os.path.exists(session.pdf_path):
+                                upload_tasks.append(('input_pdf', session.pdf_path, 'Input PDF'))
+                            if pdf_path and os.path.exists(pdf_path):
+                                upload_tasks.append(('output_pdf', pdf_path, 'Output PDF'))
+                            if session.local_eml_path and os.path.exists(session.local_eml_path):
+                                upload_tasks.append(('eml', session.local_eml_path, 'EML'))
+                            for extra_path in (session.extra_attachment_paths or []):
+                                if os.path.exists(extra_path):
+                                    display = os.path.basename(extra_path)
+                                    upload_tasks.append(('extra', extra_path, display))
+
+                            if upload_tasks:
+                                print(f"   ⬆ Starting parallel upload of {len(upload_tasks)} files...")
+
+                                def upload_file_task(task_info):
+                                    task_type, file_path, display_name = task_info
+                                    try:
+                                        raw_name = os.path.basename(file_path)
+                                        session_prefix = session_id + '_'
+                                        clean_name = raw_name[len(session_prefix):] if raw_name.startswith(session_prefix) else raw_name
+                                        clean_path = os.path.join(os.path.dirname(file_path), clean_name)
+                                        renamed = False
+                                        if clean_path != file_path and not os.path.exists(clean_path):
+                                            os.rename(file_path, clean_path)
+                                            renamed = True
+                                        upload_path = clean_path if renamed else file_path
+                                        result = uw_client.upload_file(upload_path, session.underwriting_subfolder)
+                                        if renamed:
+                                            os.rename(clean_path, file_path)
+                                        return (task_type, True, result, display_name)
+                                    except Exception as e:
+                                        return (task_type, False, str(e), display_name)
+
+                                with ThreadPoolExecutor(max_workers=len(upload_tasks)) as executor:
+                                    futures = {executor.submit(upload_file_task, task): task for task in upload_tasks}
+                                    for future in as_completed(futures):
+                                        task_type, success, result, display_name = future.result()
+                                        if success:
+                                            print(f"   ✓ {display_name} uploaded")
+                                            if task_type == 'output_pdf' and result and result.get('web_url'):
+                                                report_url = result['web_url']
+                                                session.output_pdf_url = report_url
+                                                print(f"   📄 Web URL: {report_url}")
+                                        else:
+                                            print(f"   ⚠ {display_name} upload failed: {result}")
+
+                            upload_time = time.time() - upload_start
+                            print(f"   ⏱ Parallel upload completed in {upload_time:.2f}s")
+
+                            try:
+                                uw_folder_info = uw_client.get_folder_info(session.underwriting_subfolder)
+                                if uw_folder_info and uw_folder_info.get('web_url'):
+                                    output_folder_url = uw_folder_info['web_url']
+                                    print(f"   📁 Underwriting URL: {output_folder_url}")
+                            except Exception as e:
+                                print(f"   ⚠ Could not get Underwriting folder URL: {str(e)}")
+
+                        except Exception as e:
+                            print(f"   ✗ Underwriting subfolder operations failed: {str(e)}")
+
                 except Exception as e:
-                    print(f"   ⚠ File move/delete error: {str(e)}")
-            
-            # Clean up temporary input files
-            try:
-                print(f"\n[Background] Clearing temporary files...")
-                files_deleted = 0
-                
-                if session.pdf_path and os.path.exists(session.pdf_path):
-                    os.remove(session.pdf_path)
-                    files_deleted += 1
-                
-                if session.local_eml_path and os.path.exists(session.local_eml_path):
-                    os.remove(session.local_eml_path)
-                    files_deleted += 1
-                
-                if session.pdf_path:
-                    json_companion = session.pdf_path + '.json'
-                    if os.path.exists(json_companion):
-                        os.remove(json_companion)
+                    print(f"   ⚠ OneDrive upload warning: {str(e)}")
+
+                # Store results in session so /api/stream can push them
+                session.analysis_summary = analysis_summary
+                session.processing_status = 'done'
+                # Push SSE event — client receives this instantly
+                import json as _json
+                session.sse_queue.put(_json.dumps({
+                    'status': 'done',
+                    'policy_number': (session.confirmed_email_fields or {}).get('policy_number')
+                }))
+
+                total_time = time.time() - start_time
+                print(f"\n{'='*70}")
+                print(f"PROCESSING COMPLETE - Session: {session_id}")
+                print(f"Risk Score: {analysis_summary['overall_score']:.1f}% ({analysis_summary['risk_level']})")
+                print(f"⏱ TOTAL PROCESSING TIME: {total_time:.2f}s")
+                print(f"{'='*70}\n")
+
+                # Email + cleanup (already non-blocking within the background thread)
+                if session.email_metadata:
+                    print(f"\n[Background] Sending email notification...")
+                    try:
+                        from email_sender import EmailSender, get_recipient_email
+                        email_sender = EmailSender(
+                            tenant_id=CONFIG['TENANT_ID'],
+                            client_id=CONFIG['CLIENT_ID'],
+                            client_secret=CONFIG['CLIENT_SECRET'],
+                            user_email=CONFIG['USER_EMAIL']
+                        )
+                        recipient = get_recipient_email(session.email_metadata)
+                        print(f"   Sending to: {recipient}")
+                        if recipient:
+                            html_content = ""
+                            if html_path and os.path.exists(html_path):
+                                with open(html_path, 'r', encoding='utf-8') as f:
+                                    html_content = f.read()
+                            if email_sender.send_claims_report_email(
+                                to_email=recipient,
+                                email_metadata=session.email_metadata,
+                                html_report=html_content,
+                                input_pdf_path=session.pdf_path,
+                                output_pdf_path=pdf_path,
+                                report_web_url=session.output_pdf_url,
+                                output_folder_url=output_folder_url
+                            ):
+                                print(f"   ✓ Email sent to {recipient}")
+                            else:
+                                print(f"   ⚠ Failed to send email")
+                        else:
+                            print(f"   ⚠ No recipient email found")
+                    except Exception as e:
+                        print(f"   ⚠ Email sending error: {str(e)}")
+
+                # Move processed files (if from OneDrive)
+                if session.onedrive_file_id:
+                    try:
+                        print(f"\n[Background] Moving input files to processed folder...")
+                        processed_folder = os.getenv("ONEDRIVE_PROCESSED_INPUTS", "Processed_inputs")
+                        input_client = get_onedrive_client(CONFIG['INPUT_FOLDER'])
+                        input_client.move_file(session.onedrive_file_id, processed_folder)
+                        print(f"   ✓ Moved input PDF to {processed_folder}")
+                        if session.onedrive_json_id:
+                            input_client.move_file(session.onedrive_json_id, processed_folder)
+                            print(f"   ✓ Moved input JSON to {processed_folder}")
+                        if session.onedrive_docx_id:
+                            input_client.delete_file(session.onedrive_docx_id)
+                            print(f"   ✓ Deleted loss run Word document from input folder")
+                        if session.onedrive_docx_json_id:
+                            input_client.delete_file(session.onedrive_docx_json_id)
+                            print(f"   ✓ Deleted loss run JSON from input folder")
+                    except Exception as e:
+                        print(f"   ⚠ File move/delete error: {str(e)}")
+
+                # Clean up temporary input files
+                try:
+                    print(f"\n[Background] Clearing temporary files...")
+                    files_deleted = 0
+                    if session.pdf_path and os.path.exists(session.pdf_path):
+                        os.remove(session.pdf_path)
                         files_deleted += 1
-                
-                if session.form_pdf_path and os.path.exists(session.form_pdf_path):
-                    os.remove(session.form_pdf_path)
-                    files_deleted += 1
-                
-                if files_deleted > 0:
-                    print(f"   ✓ Cleaned up {files_deleted} temporary file(s)")
+                    if session.local_eml_path and os.path.exists(session.local_eml_path):
+                        os.remove(session.local_eml_path)
+                        files_deleted += 1
+                    if session.pdf_path:
+                        json_companion = session.pdf_path + '.json'
+                        if os.path.exists(json_companion):
+                            os.remove(json_companion)
+                            files_deleted += 1
+                    if session.form_pdf_path and os.path.exists(session.form_pdf_path):
+                        os.remove(session.form_pdf_path)
+                        files_deleted += 1
+                    for extra_path in (session.extra_attachment_paths or []):
+                        if os.path.exists(extra_path):
+                            os.remove(extra_path)
+                            files_deleted += 1
+                    if files_deleted > 0:
+                        print(f"   ✓ Cleaned up {files_deleted} temporary file(s)")
+                except Exception as e:
+                    print(f"   ⚠ Cleanup error: {str(e)}")
+
+                print(f"\n[Background] All tasks completed for session {session_id}")
+
             except Exception as e:
-                print(f"   ⚠ Cleanup error: {str(e)}")
-            
-            print(f"\n[Background] All cleanup tasks completed for session {session_id}")
-        
-        # Start background thread for email and cleanup
-        import threading
-        background_thread = threading.Thread(target=background_email_and_cleanup, daemon=True)
-        background_thread.start()
-        print(f"\n✓ Background tasks started (email + cleanup)")
-        
-        total_time = time.time() - start_time
-        print(f"\n{'='*70}")
-        print(f"PROCESSING COMPLETE - Session: {session_id}")
-        print(f"Risk Score: {analysis_summary['overall_score']:.1f}% ({analysis_summary['risk_level']})")
-        print(f"✓ Frontend can now access /api/output-pdf")
-        print(f"⏱ TOTAL PROCESSING TIME: {total_time:.2f}s")
-        print(f"{'='*70}\n")
-        
-        # Keep session for frontend to query output PDF URL
-        # Session will be cleaned up by automatic expiration (30 min timeout)
-        # sessions.pop(session_id, None)  # Commented out to allow /api/output-pdf to work
-        
-        # Prepare response - Use session.output_pdf_url to ensure Underwriting URL is used
-        response = {
+                import traceback
+                print(f"✗ Background processing error: {str(e)}")
+                traceback.print_exc()
+                session.processing_status = 'error'
+                session.processing_error = str(e)
+                import json as _json
+                session.sse_queue.put(_json.dumps({'status': 'error', 'error': str(e)}))
+
+        # Start background thread and return immediately
+        bg_thread = threading.Thread(target=_do_processing, daemon=True)
+        bg_thread.start()
+        print(f"\n✓ Background processing started for session {session_id}")
+
+        return jsonify({
             'success': True,
+            'status': 'processing',
             'session_id': session_id,
-            'policy_number': policy_number,  # Only policy number from frontend is used
-            'analysis_summary': analysis_summary,
-            'pdf_report_path': pdf_path,
-            'html_report_path': html_path,
-            'report_url': session.output_pdf_url,  # Use session value (prioritizes Underwriting URL)
-            'output_folder_url': output_folder_url,
-            'email_fields_used': session.confirmed_email_fields if session.confirmed_email_fields else None,
-            'message': 'Analysis completed successfully'
-        }
-        
-        return jsonify(response), 200
-    
+            'policy_number': policy_number,
+            'message': 'Processing started. Poll /api/status/{session_id} for results.'
+        }), 202
+
     except Exception as e:
         print(f"✗ Processing error: {str(e)}")
+        import traceback
+        traceback.print_exc()
+        return jsonify({'error': str(e), 'traceback': traceback.format_exc()}), 500
+
+
+
+@app.route('/api/status/<session_id>', methods=['GET'])
+def get_processing_status(session_id):
+    """
+    Poll endpoint for background processing status.
+    Returns: { status: 'processing'|'done'|'error', ... }
+    """
+    session = sessions.get(session_id)
+    if not session:
+        return jsonify({'status': 'not_found', 'error': 'Session not found or expired'}), 404
+
+    resp = {
+        'status': session.processing_status,
+        'session_id': session_id,
+    }
+    if session.processing_status == 'done':
+        resp['analysis_summary'] = session.analysis_summary
+        resp['report_url'] = session.output_pdf_url
+        resp['policy_number'] = (session.confirmed_email_fields or {}).get('policy_number')
+    elif session.processing_status == 'error':
+        resp['error'] = session.processing_error
+
+    return jsonify(resp), 200
+
+
+@app.route('/api/stream/<session_id>', methods=['GET'])
+def stream_processing_status(session_id):
+    """
+    Server-Sent Events endpoint. Holds the connection open until the background
+    thread pushes a result, then sends it as an SSE event and closes.
+    The client uses  new EventSource(url)  — no polling needed.
+    """
+    session = sessions.get(session_id)
+    if not session:
+        return jsonify({'error': 'Session not found'}), 404
+
+    print(f"[SSE] Client connected to stream for session {session_id}")
+
+    def event_stream():
+        import json as _json
+        try:
+            # Send immediate ping to test connection & flush headers
+            yield ": ping\n\n"
+
+            # If already done/error before the client connected, push immediately
+            if session.processing_status in ('done', 'error'):
+
+                data = _json.dumps({
+                    'status': session.processing_status,
+                    'error': session.processing_error,
+                    'policy_number': (session.confirmed_email_fields or {}).get('policy_number')
+                })
+                yield f"data: {data}\n\n"
+                return
+
+            # Block until background thread pushes the result (timeout = 10 min)
+            try:
+                data = session.sse_queue.get(timeout=600)
+            except Exception:
+                data = _json.dumps({'status': 'error', 'error': 'Processing timed out'})
+            yield f"data: {data}\n\n"
+        except GeneratorExit:
+            pass  # Client disconnected early
+
+    response = app.response_class(
+        event_stream(),
+        mimetype='text/event-stream',
+        headers={
+            'Cache-Control': 'no-cache',
+            'X-Accel-Buffering': 'no',   # disable nginx buffering if behind proxy
+            'Access-Control-Allow-Origin': '*',
+        }
+    )
+    return response
+
+
+@app.route('/api/submit', methods=['POST'])
+
+
+def submit_direct():
+    """
+    Direct intake endpoint from Outlook.
+    Receives attachment + email metadata and runs the existing processing flow.
+    """
+    cleanup_expired_sessions()
+
+    try:
+        data = request.get_json()
+        if not data:
+            return jsonify({'error': 'No JSON data provided'}), 400
+
+        filename = data.get('filename')
+        attachment_base64 = data.get('attachment_base64')
+        email_metadata = data.get('email_metadata') or {}
+        email_fields = data.get('email_fields') or {}
+        form_pdf_base64 = data.get('form_pdf')
+
+        if not filename:
+            return jsonify({'error': 'filename is required'}), 400
+        if not attachment_base64:
+            return jsonify({'error': 'attachment_base64 is required'}), 400
+
+        file_prefix = os.getenv("FILE_PREFIX", "acord_")
+        if not filename.lower().startswith(file_prefix.lower()):
+            return jsonify({
+                'success': True,
+                'status': 'skipped',
+                'message': f'File skipped - only files starting with "{file_prefix}" are processed',
+                'filename': filename,
+                'reason': 'filename_filter'
+            }), 200
+
+        if "," in attachment_base64:
+            attachment_base64 = attachment_base64.split(",", 1)[1]
+
+        session_id = str(uuid.uuid4())
+        session = SessionData(session_id)
+
+        safe_filename = os.path.basename(filename)
+        pdf_path = os.path.join(CONFIG['UPLOAD_FOLDER'], f"{session_id}_{safe_filename}")
+        with open(pdf_path, 'wb') as f:
+            f.write(base64.b64decode(attachment_base64))
+        print(f"[SUBMIT] Saved uploaded file: {pdf_path}")
+
+        # Save extra attachments (loss run DOCX etc.) sent from frontend - skip images
+        IMAGE_EXTS = {'.png', '.jpg', '.jpeg', '.gif', '.bmp', '.tiff', '.webp', '.ico'}
+        extra_attachments_data = data.get('extra_attachments', [])
+        for extra_att in extra_attachments_data:
+            try:
+                extra_name = extra_att.get('name', 'attachment')
+                ext = os.path.splitext(extra_name)[1].lower()
+                if ext in IMAGE_EXTS:
+                    print(f"[SUBMIT] Skipping image attachment: {extra_name}")
+                    continue
+                extra_b64 = extra_att.get('contentBytes', '')
+                if extra_b64:
+                    if ',' in extra_b64:
+                        extra_b64 = extra_b64.split(',', 1)[1]
+                    extra_safe = os.path.basename(extra_name)
+                    extra_path = os.path.join(CONFIG['UPLOAD_FOLDER'], f"{session_id}_{extra_safe}")
+                    with open(extra_path, 'wb') as f:
+                        f.write(base64.b64decode(extra_b64))
+                    session.extra_attachment_paths.append(extra_path)
+                    print(f"[SUBMIT] Saved extra attachment: {extra_path}")
+            except Exception as e:
+                print(f"[SUBMIT] Extra attachment save failed: {e}")
+
+        # Preserve email details as companion JSON (legacy-compatible shape)
+        json_path = pdf_path + '.json'
+        with open(json_path, 'w', encoding='utf-8') as f:
+            json.dump(email_metadata, f, ensure_ascii=True, indent=2)
+        # Store FULL email_metadata (including id, itemId, internetMessageId for EML download)
+        session.email_metadata = email_metadata
+
+        # Download EML via Graph API
+        try:
+            eml_filename = f"{session_id}_{safe_filename.replace('.pdf', '')}.eml"
+            eml_path = os.path.join(CONFIG['UPLOAD_FOLDER'], eml_filename)
+            eml_ok = _download_email_as_eml(email_metadata, eml_path)
+            if eml_ok:
+                session.local_eml_path = eml_path
+                print(f"[SUBMIT] ✓ EML saved: {eml_path}")
+            else:
+                print(f"[SUBMIT] ⚠ EML download failed, continuing without EML")
+        except Exception as e:
+            print(f"[SUBMIT] ⚠ EML error: {e}")
+
+        extracted_data = extract_pdf_form_fields(pdf_path)
+        if not extracted_data or all(not v for v in extracted_data.values()):
+            return jsonify({'error': 'No data could be extracted from PDF'}), 400
+
+        extracted_email_fields = None
+        if email_metadata:
+            try:
+                extracted_email_fields = extract_email_fields(email_metadata)
+                session.extracted_email_fields = extracted_email_fields
+            except Exception as e:
+                print(f"[SUBMIT] Email field extraction failed: {e}")
+
+        session.pdf_path = pdf_path
+        session.extracted_data = extracted_data
+        sessions[session_id] = session
+
+        _save_extracted_data_to_db(extracted_data, extracted_email_fields)
+
+        # Fallback email fields if frontend sent minimal payload
+        if not email_fields:
+            email_fields = extracted_email_fields or {}
+        if not email_fields:
+            email_fields = {
+                'policy_number': extracted_data.get('Policy Number') or extracted_data.get('policy_number') or '',
+                'document_name': safe_filename,
+                'subject': email_metadata.get('subject', ''),
+                'comments': '',
+                'timestamp': datetime.now().isoformat()
+            }
+
+        # Reuse existing /api/process flow so behavior remains identical
+        process_payload = {
+            'session_id': session_id,
+            'email_fields': email_fields
+        }
+        if form_pdf_base64:
+            process_payload['form_pdf'] = form_pdf_base64
+
+        with app.test_request_context('/api/process', method='POST', json=process_payload):
+            return process_with_updated_details()
+
+    except Exception as e:
+        print(f"[SUBMIT] Direct submit error: {e}")
         import traceback
         traceback.print_exc()
         return jsonify({'error': str(e), 'traceback': traceback.format_exc()}), 500
@@ -2430,6 +2720,7 @@ if __name__ == '__main__':
     print("  POST   /api/email-fields         - Confirm/update email fields")
     print("  GET    /api/pending              - Get all pending files")
     print("  GET    /api/output-pdf           - Get latest report URL")
+    print("  POST   /api/submit               - Direct end-to-end processing (no watcher)")
     print("  POST   /api/process              - Finalize processing")
     print("  GET    /api/sessions             - List active sessions")
     print("\nUI Routes:")
@@ -2438,14 +2729,8 @@ if __name__ == '__main__':
     print("  GET    /policy-detail/<id>       - Details Page")
     print("\n" + "="*70)
     
-    app.run(host='0.0.0.0', port=5003, debug=True)
-    print("\n" + "="*70 + "\n")
-    
-    # Run Flask app
     port = int(os.getenv('PORT', 5003))
     debug = os.getenv('FLASK_DEBUG', 'False').lower() == 'true'
-    
-    print(f"\nAPI Server starting on http://127.0.0.1:{port}")
-    # Bind to 127.0.0.1 for maximum compatibility with ngrok
-    app.run(host='127.0.0.1', port=port, debug=debug)
+    print(f"\nAPI Server starting on http://0.0.0.0:{port}")
+    app.run(host='0.0.0.0', port=port, debug=debug, threaded=True)
 

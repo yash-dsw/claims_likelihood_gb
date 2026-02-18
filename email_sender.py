@@ -66,12 +66,13 @@ class EmailSender:
             "Content-Type": "application/json"
         }
     
-    def _encode_file_attachment(self, file_path):
+    def _encode_file_attachment(self, file_path, display_name=None):
         """
         Encode a file as base64 for Microsoft Graph API attachment.
         
         Args:
             file_path: Path to the file to attach
+            display_name: Optional clean display name (overrides basename)
             
         Returns:
             Dictionary with attachment data for Graph API, or None if error
@@ -84,7 +85,7 @@ class EmailSender:
             with open(file_path, 'rb') as f:
                 file_content = f.read()
             
-            file_name = os.path.basename(file_path)
+            file_name = display_name or os.path.basename(file_path)
             content_bytes = base64.b64encode(file_content).decode('utf-8')
             
             # Determine content type based on extension
@@ -311,19 +312,26 @@ Claims Likelihood Analysis Summary
         # Subject line for the email
         subject = f"{original_subject} - Underwriting Report" if original_subject else "Underwriting Report"
         
-        # Build attachments list
+        # Build attachments list - strip session_id prefix from display names
+        import re as _re
+        _uuid_prefix_re = _re.compile(r'^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}_', _re.IGNORECASE)
+        
+        def _clean_name(path):
+            raw = os.path.basename(path)
+            return _uuid_prefix_re.sub('', raw)
+        
         attachments = []
         if input_pdf_path:
-            attachment = self._encode_file_attachment(input_pdf_path)
+            attachment = self._encode_file_attachment(input_pdf_path, display_name=_clean_name(input_pdf_path))
             if attachment:
                 attachments.append(attachment)
-                print(f"  📎 Attaching input PDF: {os.path.basename(input_pdf_path)}")
+                print(f"  📎 Attaching input PDF: {attachment['name']}")
         
         if output_pdf_path:
-            attachment = self._encode_file_attachment(output_pdf_path)
+            attachment = self._encode_file_attachment(output_pdf_path, display_name=_clean_name(output_pdf_path))
             if attachment:
                 attachments.append(attachment)
-                print(f"  📎 Attaching output PDF: {os.path.basename(output_pdf_path)}")
+                print(f"  📎 Attaching output PDF: {attachment['name']}")
         
         # Send email with attachments
         return self.send_email_with_attachments(to_email, to_email, subject, email_body, attachments)
@@ -444,25 +452,19 @@ def load_email_metadata(json_path):
 def get_recipient_email(email_metadata):
     """
     Extract the recipient email address from email metadata.
-    
-    Args:
-        email_metadata: Dictionary loaded from companion JSON
-        
-    Returns:
-        Email address string or None
+    Checks toRecipients first, then falls back to userEmail (the logged-in Outlook user).
     """
     if not email_metadata:
         return None
-        
+
     to_recipients = email_metadata.get("toRecipients", "")
-    
+
     # Handle if it's a string (single email)
     if isinstance(to_recipients, str):
         email = to_recipients.strip() if to_recipients else ""
         if email and '@' in email:
             return email
-        return None
-    
+
     # Handle if it's a list of emails
     if isinstance(to_recipients, list) and len(to_recipients) > 0:
         first_email = to_recipients[0]
@@ -470,7 +472,12 @@ def get_recipient_email(email_metadata):
             email = first_email.strip()
             if email and '@' in email:
                 return email
-    
+
+    # Fallback: use userEmail (the Outlook add-in user who triggered the flow)
+    user_email = email_metadata.get("userEmail", "")
+    if user_email and '@' in user_email:
+        return user_email
+
     return None
 def _extract_email_fields(content):
     """
