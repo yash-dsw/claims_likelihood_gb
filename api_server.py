@@ -811,7 +811,7 @@ def extract_details():
                     if ext in IMAGE_EXTS:
                         print(f"⚠ Skipping image attachment: {extra_file.filename}")
                         continue
-                    extra_filename = f"{session_id}_{extra_file.filename}"
+                    extra_filename = extra_file.filename
                     extra_path = os.path.join(CONFIG['UPLOAD_FOLDER'], extra_filename)
                     extra_file.save(extra_path)
                     session.extra_attachment_paths.append(extra_path)
@@ -1983,7 +1983,7 @@ def submit_direct():
                     if ',' in extra_b64:
                         extra_b64 = extra_b64.split(',', 1)[1]
                     extra_safe = os.path.basename(extra_name)
-                    extra_path = os.path.join(CONFIG['UPLOAD_FOLDER'], f"{session_id}_{extra_safe}")
+                    extra_path = os.path.join(CONFIG['UPLOAD_FOLDER'], extra_safe)
                     with open(extra_path, 'wb') as f:
                         f.write(base64.b64decode(extra_b64))
                     session.extra_attachment_paths.append(extra_path)
