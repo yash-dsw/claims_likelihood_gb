@@ -33,32 +33,32 @@ load_dotenv()
 app = Flask(__name__)
 
 # Enable CORS with explicit permissions for ngrok and local development
-CORS(app, 
-     resources={r"/*": {"origins": "*"}},
-     allow_headers=["Content-Type", "Authorization", "ngrok-skip-browser-warning", "Accept"],
-     methods=["GET", "POST", "OPTIONS", "PUT", "DELETE"],
-     expose_headers=["Content-Type", "Authorization"],
-     supports_credentials=False,
-     max_age=3600)
+# CORS(app, 
+#      resources={r"/*": {"origins": "*"}},
+#      allow_headers=["Content-Type", "Authorization", "ngrok-skip-browser-warning", "Accept"],
+#      methods=["GET", "POST", "OPTIONS", "PUT", "DELETE"],
+#      expose_headers=["Content-Type", "Authorization"],
+#      supports_credentials=False,
+#      max_age=3600)
 
-@app.before_request
-def handle_preflight():
-    """Handle preflight OPTIONS requests"""
-    if request.method == "OPTIONS":
-        response = jsonify({'status': 'ok'})
-        response.headers['Access-Control-Allow-Origin'] = '*'
-        response.headers['Access-Control-Allow-Methods'] = 'GET, POST, OPTIONS, PUT, DELETE'
-        response.headers['Access-Control-Allow-Headers'] = 'Content-Type, Authorization, ngrok-skip-browser-warning, Accept'
-        response.headers['Access-Control-Max-Age'] = '3600'
-        return response, 200
+# @app.before_request
+# def handle_preflight():
+#     """Handle preflight OPTIONS requests"""
+#     if request.method == "OPTIONS":
+#         response = jsonify({'status': 'ok'})
+#         response.headers['Access-Control-Allow-Origin'] = '*'
+#         response.headers['Access-Control-Allow-Methods'] = 'GET, POST, OPTIONS, PUT, DELETE'
+#         response.headers['Access-Control-Allow-Headers'] = 'Content-Type, Authorization, ngrok-skip-browser-warning, Accept'
+#         response.headers['Access-Control-Max-Age'] = '3600'
+#         return response, 200
 
-@app.after_request
-def add_cors_headers(response):
-    response.headers['Access-Control-Allow-Origin'] = '*'
-    response.headers['Access-Control-Allow-Methods'] = 'GET, POST, OPTIONS, PUT, DELETE'
-    response.headers['Access-Control-Allow-Headers'] = 'Content-Type, Authorization, ngrok-skip-browser-warning, Accept'
-    response.headers['Access-Control-Expose-Headers'] = 'Content-Type, Authorization'
-    return response
+# @app.after_request
+# def add_cors_headers(response):
+#     response.headers['Access-Control-Allow-Origin'] = '*'
+#     response.headers['Access-Control-Allow-Methods'] = 'GET, POST, OPTIONS, PUT, DELETE'
+#     response.headers['Access-Control-Allow-Headers'] = 'Content-Type, Authorization, ngrok-skip-browser-warning, Accept'
+#     response.headers['Access-Control-Expose-Headers'] = 'Content-Type, Authorization'
+#     return response
 
 
 # ============================================================================

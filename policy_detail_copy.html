@@ -1,0 +1,906 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Policy Details - PolicyCenter</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: #f5f6f8;
+            min-height: 100vh;
+        }
+
+        /* Top Navigation */
+        .top-nav {
+            background: #2c3e50;
+            color: white;
+            padding: 0 30px;
+            height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .nav-brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 18px;
+            font-weight: 600;
+        }
+
+        .nav-logo {
+            width: 36px;
+            height: 36px;
+            background: linear-gradient(135deg, #b8860b 0%, #daa520 100%);
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 18px;
+        }
+
+        .nav-menu {
+            display: flex;
+            gap: 30px;
+        }
+
+        .nav-link {
+            color: rgba(255, 255, 255, 0.9);
+            text-decoration: none;
+            font-size: 14px;
+            padding: 8px 12px;
+            border-radius: 6px;
+            transition: all 0.2s;
+        }
+
+        .nav-link:hover,
+        .nav-link.active {
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+        }
+
+        /* Secondary Nav Bar */
+        .secondary-nav {
+            background: white;
+            border-bottom: 1px solid #e5e7eb;
+            padding: 15px 30px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .breadcrumb {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 13px;
+            color: #6b7280;
+        }
+
+        .breadcrumb a {
+            color: #6b7280;
+            text-decoration: none;
+        }
+
+        .breadcrumb a:hover {
+            color: #1f2937;
+        }
+
+        .breadcrumb-separator {
+            color: #d1d5db;
+        }
+
+        .nav-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        /* Page Content */
+        .page-content {
+            padding: 30px;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        /* Account Summary Header */
+        .account-summary {
+            background: white;
+            border: 1px solid #e5e7eb;
+            border-radius: 12px;
+            padding: 24px;
+            margin-bottom: 24px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+        }
+
+        .account-summary-title {
+            font-size: 20px;
+            font-weight: 600;
+            color: #1a1f36;
+            margin-bottom: 16px;
+        }
+
+        .summary-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+        }
+
+        .summary-item {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .summary-label {
+            font-size: 12px;
+            font-weight: 500;
+            color: #6b7280;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .summary-value {
+            font-size: 16px;
+            font-weight: 600;
+            color: #1a1f36;
+        }
+
+        /* Section Card */
+        .section-card {
+            background: white;
+            border: 1px solid #e5e7eb;
+            border-radius: 12px;
+            margin-bottom: 24px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+        }
+
+        .section-header {
+            padding: 20px 24px;
+            border-bottom: 1px solid #e5e7eb;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .section-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: #1a1f36;
+        }
+
+        .section-actions {
+            display: flex;
+            gap: 8px;
+        }
+
+        .section-body {
+            padding: 24px;
+        }
+
+        /* Info Grid */
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+        }
+
+        .info-item {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .info-label {
+            font-size: 12px;
+            font-weight: 600;
+            color: #6b7280;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .info-value {
+            font-size: 15px;
+            color: #1a1f36;
+            font-weight: 500;
+        }
+
+        .info-value.empty {
+            color: #9ca3af;
+            font-style: italic;
+        }
+
+        /* Buttons */
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 6px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #b8860b 0%, #daa520 100%);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(184, 134, 11, 0.3);
+        }
+
+        .btn-secondary {
+            background: #f3f4f6;
+            color: #374151;
+            border: 1px solid #d1d5db;
+        }
+
+        .btn-secondary:hover {
+            background: #e5e7eb;
+        }
+
+        /* Table */
+        .table-container {
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        thead {
+            background: #f9fafb;
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        th {
+            padding: 12px 16px;
+            text-align: left;
+            font-weight: 600;
+            font-size: 11px;
+            color: #6b7280;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        tbody tr {
+            border-bottom: 1px solid #f3f4f6;
+            transition: all 0.15s;
+        }
+
+        tbody tr:hover {
+            background: #fafbfc;
+        }
+
+        td {
+            padding: 14px 16px;
+            font-size: 14px;
+            color: #1a1f36;
+        }
+
+        .transaction-link {
+            color: #b8860b;
+            font-weight: 600;
+            text-decoration: none;
+        }
+
+        .transaction-link:hover {
+            color: #daa520;
+            text-decoration: underline;
+        }
+
+        /* Status Badges */
+        .status-badge {
+            display: inline-block;
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-size: 11px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+        }
+
+        .status-in-force {
+            background: #d1fae5;
+            color: #065f46;
+        }
+
+        .status-draft {
+            background: #fef3c7;
+            color: #92400e;
+        }
+
+        /* Empty State */
+        .empty-state {
+            text-align: center;
+            padding: 40px;
+            color: #6b7280;
+        }
+
+        .empty-state-icon {
+            font-size: 48px;
+            margin-bottom: 16px;
+            opacity: 0.5;
+        }
+
+        .empty-state-text {
+            font-size: 16px;
+            font-weight: 500;
+        }
+
+        /* Loading */
+        .loading-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.3);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+        }
+
+        .spinner {
+            width: 50px;
+            height: 50px;
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #b8860b;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Two Column Layout */
+        .two-column-layout {
+            display: grid;
+            grid-template-columns: 1fr 350px;
+            gap: 24px;
+        }
+
+        /* Info Panel */
+        .info-panel {
+            background: white;
+            border: 1px solid #e5e7eb;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+        }
+
+        .info-panel-title {
+            font-size: 14px;
+            font-weight: 600;
+            color: #1a1f36;
+            margin-bottom: 16px;
+        }
+
+        .info-panel-list {
+            list-style: none;
+        }
+
+        .info-panel-list li {
+            padding: 8px 0;
+            border-bottom: 1px solid #f3f4f6;
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .info-panel-list li:last-child {
+            border-bottom: none;
+        }
+
+        .panel-item-label {
+            font-size: 11px;
+            color: #6b7280;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            font-weight: 600;
+        }
+
+        .panel-item-value {
+            font-size: 13px;
+            font-weight: 500;
+            color: #1a1f36;
+        }
+
+        /* Responsive */
+        @media (max-width: 1024px) {
+            .two-column-layout {
+                grid-template-columns: 1fr;
+            }
+
+            .nav-menu {
+                display: none;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .info-grid,
+            .summary-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Loading Overlay -->
+    <div id="loadingOverlay" class="loading-overlay">
+        <div style="background: white; padding: 30px; border-radius: 12px; text-align: center;">
+            <div class="spinner"></div>
+            <div style="margin-top: 15px; color: #1a1f36;">Loading policy details...</div>
+        </div>
+    </div>
+
+    <!-- Top Navigation -->
+    <div class="top-nav">
+        <div class="nav-brand">
+            <div class="nav-logo">GB</div>
+            PolicyCenter™
+        </div>
+        <div class="nav-menu">
+            <a href="/policy-center" class="nav-link active">Policy</a>
+            <a href="/claims" class="nav-link">Claims</a>
+            <a href="#" class="nav-link">Account</a>
+            <a href="#" class="nav-link">Contact</a>
+            <a href="#" class="nav-link">Reinsurance</a>
+        </div>
+    </div>
+
+    <!-- Secondary Navigation -->
+    <div class="secondary-nav">
+        <div class="breadcrumb">
+            <a href="/policy-center">Desktop</a>
+            <span class="breadcrumb-separator">›</span>
+            <a href="/policy-center">Policy</a>
+            <span class="breadcrumb-separator">›</span>
+            <span id="policyIdBreadcrumb">Loading...</span>
+        </div>
+        <div class="nav-actions">
+            <button class="btn btn-secondary" onclick="window.location.href='/policy-center'">Back to List</button>
+        </div>
+    </div>
+
+    <!-- Page Content -->
+    <div class="page-content">
+        <!-- Account Summary -->
+        <div class="account-summary" id="accountSummary">
+            <!-- Content will be loaded here -->
+        </div>
+
+        <!-- Two Column Layout -->
+        <div class="two-column-layout">
+            <!-- Left Column -->
+            <div>
+                <!-- Policy Details -->
+                <div class="section-card">
+                    <div class="section-header">
+                        <h2 class="section-title">Policy Details</h2>
+                        <div class="section-actions">
+                            <button class="btn btn-secondary" onclick="editPolicy()">Edit Policy</button>
+                        </div>
+                    </div>
+                    <div class="section-body">
+                        <div class="info-grid" id="policyDetailsGrid">
+                            <!-- Content will be loaded here -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Policy Transactions -->
+                <div class="section-card" id="transactions">
+                    <div class="section-header">
+                        <h2 class="section-title">Open Policy Transactions</h2>
+                        <div class="section-actions">
+                            <button class="btn btn-primary" onclick="newSubmission()">+ New Submission</button>
+                        </div>
+                    </div>
+                    <div class="section-body" style="padding: 0;">
+                        <div class="table-container">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>Transaction #</th>
+                                        <th>Trans Eff Date</th>
+                                        <th>Type</th>
+                                        <th>Status</th>
+                                        <th>Policy #</th>
+                                        <th>Product</th>
+                                        <th>Named Insured</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="transactionsTableBody">
+                                    <tr>
+                                        <td colspan="7" class="empty-state">
+                                            <div class="empty-state-icon">📄</div>
+                                            <div class="empty-state-text">No open transactions</div>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Claims Section -->
+                <div class="section-card" id="claims">
+                    <div class="section-header">
+                        <h2 class="section-title">Claims</h2>
+                        <div class="section-actions">
+                            <a href="/claims" class="btn btn-secondary">View All Claims</a>
+                        </div>
+                    </div>
+                    <div class="section-body" style="padding: 0;">
+                        <div class="table-container">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>Claim #</th>
+                                        <th>Status</th>
+                                        <th>Loss Date</th>
+                                        <th>Loss Cause</th>
+                                        <th>Product</th>
+                                        <th>Policy #</th>
+                                        <th>Total Incurred</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="claimsTableBody">
+                                    <tr>
+                                        <td colspan="7" class="empty-state">
+                                            <div class="empty-state-icon">⚠️</div>
+                                            <div class="empty-state-text">No claims to display</div>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right Column - Info Panels -->
+            <div>
+                <!-- Producers Panel -->
+                <div class="info-panel">
+                    <h3 class="info-panel-title">Producers</h3>
+                    <ul class="info-panel-list" id="producersList">
+                        <li>
+                            <span class="panel-item-label">Loading...</span>
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- Locations Panel -->
+                <div class="info-panel">
+                    <h3 class="info-panel-title">Locations</h3>
+                    <ul class="info-panel-list" id="locationsList">
+                        <li>
+                            <span class="panel-item-label">Loading...</span>
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- Related Accounts Panel -->
+                <div class="info-panel">
+                    <h3 class="info-panel-title">Related Accounts</h3>
+                    <ul class="info-panel-list">
+                        <li>
+                            <span class="panel-item-value" style="color: #6b7280;">No data to display</span>
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- Notes Panel -->
+                <div class="info-panel" id="notes">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
+                        <h3 class="info-panel-title" style="margin: 0;">Notes</h3>
+                        <button class="btn btn-primary" style="padding: 6px 12px; font-size: 13px;" onclick="newNote()">+ New Note</button>
+                    </div>
+                    <div style="font-size: 13px; color: #6b7280;">No notes available</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const API_BASE_URL = window.location.origin;
+
+        // Get policy ID from URL
+        function getPolicyIdFromUrl() {
+            const pathParts = window.location.pathname.split('/');
+            return pathParts[pathParts.length - 1];
+        }
+
+        // Load policy details on page load
+        document.addEventListener('DOMContentLoaded', loadPolicyDetails);
+
+        async function loadPolicyDetails() {
+            const policyId = getPolicyIdFromUrl();
+            const loadingOverlay = document.getElementById('loadingOverlay');
+
+            // Simulated data - will be replaced with actual API call
+            setTimeout(() => {
+                const samplePolicy = {
+                    policy_id: 'GFP10000069',
+                    policy_name: 'Property - DIC / DIC Excess',
+                    policy_type: 'Property',
+                    policy_beneficiary: 'RMS Defect retest',
+                    policy_status: 'In Force',
+                    policy_start_date: '2026-01-05',
+                    policy_end_date: '2027-01-05',
+                    sum_insured: 342000.00,
+                    premium_amount: 15000.00,
+                    deductible_amount: 5000.00,
+                    currency: 'USD',
+                    underwriter: 'Super User',
+                    agent_name: 'John Smith',
+                    broker_name: 'Armwins Access Insurance Services, LLC',
+                    coverage_type: 'All Risk',
+                    property_type: 'Commercial',
+                    insured_address: '683 I Mesa Dr, Silt, CO 81652',
+                    risk_location: '683 I Mesa Dr, Silt, CO 81652',
+                    locations: [
+                        { name: 'Primary', address: '683 I Mesa Dr, Silt, CO 81652', code: 'Binding Team' },
+                        { name: '# 2', address: '765 1/2 Browning Ave, Ignacio, CO 81137-5009' },
+                        { name: '# 3', address: '527 1/2 Garland St, Clifton, CO 81520-7801' }
+                    ],
+                    transactions: [
+                        {
+                            transaction_id: '0000088816',
+                            trans_eff_date: '2026-02-03',
+                            type: 'Submission',
+                            status: 'Draft',
+                            policy_id: 'GFP10000069',
+                            product: 'Cannabis Package',
+                            named_insured: 'RMS Defect retest'
+                        },
+                        {
+                            transaction_id: '0000190088',
+                            trans_eff_date: '2026-02-03',
+                            type: 'Submission',
+                            status: 'Draft',
+                            policy_id: 'GFP10000069',
+                            product: 'West Coast Package',
+                            named_insured: 'RMS Defect retest'
+                        },
+                        {
+                            transaction_id: '0000266501',
+                            trans_eff_date: '2026-01-05',
+                            type: 'Policy Change',
+                            status: 'Draft',
+                            policy_id: 'GFP10000069',
+                            product: 'Property - DIC / DIC Excess',
+                            named_insured: 'RMS Defect retest'
+                        }
+                    ]
+                };
+
+                renderPolicyDetails(samplePolicy);
+                loadingOverlay.style.display = 'none';
+            }, 1000);
+
+            // TODO: Replace with actual API call
+            /*
+            try {
+                const response = await fetch(`${API_BASE_URL}/api/policies/${policyId}`);
+                const data = await response.json();
+
+                loadingOverlay.style.display = 'none';
+
+                if (data.success) {
+                    renderPolicyDetails(data.policy);
+                } else {
+                    showError(data.error);
+                }
+            } catch (error) {
+                loadingOverlay.style.display = 'none';
+                console.error('Error fetching policy details:', error);
+                showError('Failed to load policy details');
+            }
+            */
+        }
+
+        function renderPolicyDetails(policy) {
+            // Update breadcrumb
+            document.getElementById('policyIdBreadcrumb').textContent = policy.policy_id;
+
+            // Render account summary
+            const accountSummary = document.getElementById('accountSummary');
+            accountSummary.innerHTML = `
+                <h2 class="account-summary-title">Account Summary: ${policy.policy_beneficiary}</h2>
+                <div class="summary-grid">
+                    <div class="summary-item">
+                        <div class="summary-label">Policy #</div>
+                        <div class="summary-value">${policy.policy_id}</div>
+                    </div>
+                    <div class="summary-item">
+                        <div class="summary-label">Product</div>
+                        <div class="summary-value">${policy.policy_name}</div>
+                    </div>
+                    <div class="summary-item">
+                        <div class="summary-label">Status</div>
+                        <div class="summary-value">
+                            <span class="status-badge ${getStatusClass(policy.policy_status)}">${policy.policy_status}</span>
+                        </div>
+                    </div>
+                    <div class="summary-item">
+                        <div class="summary-label">Effective Period</div>
+                        <div class="summary-value">${formatDate(policy.policy_start_date)} - ${formatDate(policy.policy_end_date)}</div>
+                    </div>
+                    <div class="summary-item">
+                        <div class="summary-label">Sum Insured</div>
+                        <div class="summary-value">${formatCurrency(policy.sum_insured, policy.currency)}</div>
+                    </div>
+                    <div class="summary-item">
+                        <div class="summary-label">Underwriter</div>
+                        <div class="summary-value">${policy.underwriter || '—'}</div>
+                    </div>
+                </div>
+            `;
+
+            // Render policy details
+            const policyDetailsGrid = document.getElementById('policyDetailsGrid');
+            policyDetailsGrid.innerHTML = `
+                <div class="info-item">
+                    <div class="info-label">Policy Type</div>
+                    <div class="info-value">${policy.policy_type || '—'}</div>
+                </div>
+                <div class="info-item">
+                    <div class="info-label">Coverage Type</div>
+                    <div class="info-value">${policy.coverage_type || '—'}</div>
+                </div>
+                <div class="info-item">
+                    <div class="info-label">Property Type</div>
+                    <div class="info-value">${policy.property_type || '—'}</div>
+                </div>
+                <div class="info-item">
+                    <div class="info-label">Premium Amount</div>
+                    <div class="info-value">${formatCurrency(policy.premium_amount, policy.currency)}</div>
+                </div>
+                <div class="info-item">
+                    <div class="info-label">Deductible</div>
+                    <div class="info-value">${formatCurrency(policy.deductible_amount, policy.currency)}</div>
+                </div>
+                <div class="info-item">
+                    <div class="info-label">Agent</div>
+                    <div class="info-value">${policy.agent_name || '—'}</div>
+                </div>
+                <div class="info-item">
+                    <div class="info-label">Broker</div>
+                    <div class="info-value">${policy.broker_name || '—'}</div>
+                </div>
+                <div class="info-item">
+                    <div class="info-label">Insured Address</div>
+                    <div class="info-value">${policy.insured_address || '—'}</div>
+                </div>
+                <div class="info-item">
+                    <div class="info-label">Risk Location</div>
+                    <div class="info-value">${policy.risk_location || '—'}</div>
+                </div>
+            `;
+
+            // Render producers
+            const producersList = document.getElementById('producersList');
+            producersList.innerHTML = `
+                <li>
+                    <div class="panel-item-label">Name</div>
+                    <div class="panel-item-value">${policy.broker_name || '—'}</div>
+                </li>
+                <li>
+                    <div class="panel-item-label">Code</div>
+                    <div class="panel-item-value">Binding Team</div>
+                </li>
+            `;
+
+            // Render locations
+            if (policy.locations && policy.locations.length > 0) {
+                const locationsList = document.getElementById('locationsList');
+                locationsList.innerHTML = policy.locations.map(loc => `
+                    <li>
+                        <div class="panel-item-label">${loc.name}</div>
+                        <div class="panel-item-value">${loc.address}</div>
+                    </li>
+                `).join('');
+            }
+
+            // Render transactions
+            if (policy.transactions && policy.transactions.length > 0) {
+                const transactionsTableBody = document.getElementById('transactionsTableBody');
+                transactionsTableBody.innerHTML = policy.transactions.map(trans => `
+                    <tr>
+                        <td><a href="#" class="transaction-link">${trans.transaction_id}</a></td>
+                        <td>${formatDate(trans.trans_eff_date)}</td>
+                        <td>${trans.type}</td>
+                        <td><span class="status-badge ${getStatusClass(trans.status)}">${trans.status}</span></td>
+                        <td>${trans.policy_id}</td>
+                        <td>${trans.product}</td>
+                        <td>${trans.named_insured}</td>
+                    </tr>
+                `).join('');
+            }
+        }
+
+        function getStatusClass(status) {
+            const s = (status || '').toLowerCase().replace(/\s+/g, '-');
+            if (s.includes('force') || s.includes('active')) return 'status-in-force';
+            if (s.includes('draft')) return 'status-draft';
+            return 'status-draft';
+        }
+
+        function formatDate(dateStr) {
+            if (!dateStr) return '—';
+            try {
+                const date = new Date(dateStr);
+                return date.toLocaleDateString('en-US', {
+                    year: 'numeric',
+                    month: '2-digit',
+                    day: '2-digit'
+                });
+            } catch {
+                return dateStr;
+            }
+        }
+
+        function formatCurrency(amount, currency = 'USD') {
+            if (!amount) return '—';
+            try {
+                return new Intl.NumberFormat('en-US', {
+                    style: 'currency',
+                    currency: currency || 'USD',
+                    minimumFractionDigits: 0,
+                    maximumFractionDigits: 0
+                }).format(amount);
+            } catch {
+                return `${currency} ${amount.toLocaleString()}`;
+            }
+        }
+
+        function newSubmission() {
+            alert('New Submission functionality coming soon!');
+        }
+
+        function newNote() {
+            alert('New Note functionality coming soon!');
+        }
+
+        function editPolicy() {
+            const policyId = getPolicyIdFromUrl();
+            window.location.href = `/policy/edit/${policyId}`;
+        }
+
+        function showError(message) {
+            document.getElementById('accountSummary').innerHTML = `
+                <div style="padding: 40px; text-align: center; color: #dc2626;">
+                    <div style="font-size: 48px; margin-bottom: 16px;">⚠️</div>
+                    <div style="font-size: 18px; font-weight: 600;">Error Loading Policy</div>
+                    <div style="margin-top: 8px;">${message}</div>
+                </div>
+            `;
+        }
+    </script>
+</body>
+
+</html>
